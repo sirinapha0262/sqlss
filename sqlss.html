@@ -2,649 +2,1001 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SQL Master — เรียนรู้ SQL</title>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Sarabun:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SQL MASTER — เรียน SQL แบบโปร</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Chakra+Petch:wght@300;400;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0a0e1a;
-  --bg2: #0f1628;
-  --bg3: #161d35;
-  --card: #1a2240;
-  --border: #2a3558;
-  --accent: #00d4ff;
-  --accent2: #7c3aed;
-  --accent3: #10b981;
-  --accent4: #f59e0b;
-  --red: #ef4444;
-  --text: #e2e8f0;
-  --text2: #94a3b8;
-  --text3: #64748b;
-  --glow: 0 0 20px rgba(0,212,255,0.3);
+/* ========== RESET & ROOT ========== */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#04070f;
+  --bg1:#070d1a;
+  --bg2:#0b1323;
+  --bg3:#101d35;
+  --card:#0e1a2e;
+  --card2:#121f36;
+  --border:#1e3050;
+  --border2:#243660;
+  --c1:#00f5ff;
+  --c2:#b44fff;
+  --c3:#00ff88;
+  --c4:#ffaa00;
+  --c5:#ff4466;
+  --text:#dce8ff;
+  --text2:#7a9cc4;
+  --text3:#3a5878;
+  --glow1:0 0 20px rgba(0,245,255,0.4);
+  --glow2:0 0 20px rgba(180,79,255,0.4);
+  --glow3:0 0 20px rgba(0,255,136,0.3);
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-/* SCROLLBAR */
-::-webkit-scrollbar{width:6px;}
-::-webkit-scrollbar-track{background:var(--bg2);}
-::-webkit-scrollbar-thumb{background:var(--accent2);border-radius:3px;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Chakra Petch',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+/* Animated BG */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 20%,rgba(0,245,255,0.04) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 60% at 80% 80%,rgba(180,79,255,0.05) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%,rgba(0,255,136,0.02) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+/* Grid overlay */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(0,245,255,0.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,245,255,0.015) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;z-index:0;
+}
 
-/* NAV */
-nav{background:rgba(10,14,26,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:0.5rem;height:60px;overflow-x:auto;}
-.nav-logo{font-family:'Fira Code',monospace;font-size:1.2rem;color:var(--accent);font-weight:700;margin-right:1.5rem;white-space:nowrap;}
-.nav-logo span{color:var(--accent2);}
-.nav-btn{padding:0.4rem 1rem;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--text2);cursor:pointer;font-family:'Sarabun',sans-serif;font-size:0.85rem;transition:all 0.2s;white-space:nowrap;}
-.nav-btn:hover{color:var(--accent);border-color:var(--border);}
-.nav-btn.active{background:var(--accent2);color:#fff;border-color:var(--accent2);}
+/* Scrollbar */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg1);}
+::-webkit-scrollbar-thumb{background:var(--c2);border-radius:2px;}
 
-/* PAGES */
-.page{display:none;padding:2rem;max-width:1200px;margin:0 auto;}
+/* ========== LAYOUT ========== */
+.app{display:flex;flex-direction:column;min-height:100vh;position:relative;z-index:1;}
+
+/* ========== TOP NAV (Desktop) ========== */
+.topnav{
+  display:flex;align-items:center;gap:0;
+  background:rgba(4,7,15,0.92);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  height:56px;padding:0 1.5rem;
+  position:sticky;top:0;z-index:100;
+  overflow-x:auto;
+}
+.topnav::-webkit-scrollbar{height:0;}
+.logo{
+  font-family:'Orbitron',monospace;
+  font-size:1.1rem;font-weight:900;
+  background:linear-gradient(135deg,var(--c1),var(--c2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  white-space:nowrap;margin-right:2rem;letter-spacing:2px;
+  flex-shrink:0;
+}
+.logo span{color:var(--c4);-webkit-text-fill-color:var(--c4);}
+.navlinks{display:flex;gap:2px;flex:1;}
+.navlink{
+  padding:0.4rem 0.85rem;border-radius:6px;
+  background:transparent;border:none;
+  color:var(--text2);cursor:pointer;
+  font-family:'Chakra Petch',sans-serif;
+  font-size:0.8rem;font-weight:600;
+  transition:all 0.2s;white-space:nowrap;
+  letter-spacing:0.5px;
+  position:relative;
+}
+.navlink:hover{color:var(--c1);}
+.navlink.active{
+  color:var(--c1);
+  background:rgba(0,245,255,0.08);
+}
+.navlink.active::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--c1),transparent);
+}
+.navlink .ni{margin-right:0.35rem;font-size:0.9rem;}
+
+/* ========== BOTTOM NAV (Mobile) ========== */
+.bottomnav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(4,7,15,0.97);
+  backdrop-filter:blur(24px);
+  border-top:1px solid var(--border);
+  z-index:100;
+  padding:0.3rem 0 max(0.3rem, env(safe-area-inset-bottom));
+}
+.bottomnav-inner{display:flex;justify-content:space-around;}
+.bnav-btn{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  background:none;border:none;cursor:pointer;
+  padding:0.4rem 0.6rem;border-radius:10px;
+  transition:all 0.2s;min-width:56px;
+}
+.bnav-btn .bi{font-size:1.4rem;line-height:1;}
+.bnav-btn .bl{font-size:0.58rem;color:var(--text3);font-family:'Chakra Petch',sans-serif;font-weight:600;}
+.bnav-btn.active .bi{filter:drop-shadow(0 0 6px var(--c1));}
+.bnav-btn.active .bl{color:var(--c1);}
+
+/* ========== MAIN CONTENT ========== */
+.main{flex:1;padding:1.5rem;max-width:1280px;margin:0 auto;width:100%;}
+
+/* ========== PAGE TRANSITIONS ========== */
+.page{display:none;animation:pgIn 0.35s ease;}
 .page.active{display:block;}
+@keyframes pgIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 
-/* HERO */
-.hero{text-align:center;padding:3rem 1rem 2rem;}
-.hero h1{font-size:3rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;margin-bottom:1rem;}
-.hero p{color:var(--text2);font-size:1.1rem;max-width:600px;margin:0 auto 2rem;}
-.hero-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-top:2rem;}
-.hero-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;cursor:pointer;transition:all 0.3s;text-align:left;}
-.hero-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:var(--glow);}
-.hero-card .icon{font-size:2rem;margin-bottom:0.8rem;}
-.hero-card h3{font-size:1rem;font-weight:700;margin-bottom:0.4rem;}
-.hero-card p{font-size:0.82rem;color:var(--text2);}
+/* ========== SECTION HEADER ========== */
+.sec-hdr{
+  display:flex;align-items:center;gap:1rem;
+  margin-bottom:1.5rem;
+}
+.sec-hdr h2{
+  font-family:'Orbitron',monospace;
+  font-size:1.1rem;font-weight:700;
+  color:var(--c1);letter-spacing:1px;
+  white-space:nowrap;
+}
+.sec-hdr::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent);}
 
-/* SECTIONS */
-.section-title{font-size:1.5rem;font-weight:700;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.6rem;}
-.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
-.badge{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:0.72rem;font-weight:600;background:var(--accent2);color:#fff;margin-left:0.5rem;}
-.badge.green{background:var(--accent3);}
-.badge.yellow{background:var(--accent4);}
+/* ========== BADGES ========== */
+.badge{
+  display:inline-flex;align-items:center;
+  padding:0.18rem 0.6rem;border-radius:4px;
+  font-size:0.7rem;font-weight:700;letter-spacing:0.5px;
+}
+.badge-c1{background:rgba(0,245,255,0.15);color:var(--c1);border:1px solid rgba(0,245,255,0.3);}
+.badge-c2{background:rgba(180,79,255,0.15);color:var(--c2);border:1px solid rgba(180,79,255,0.3);}
+.badge-c3{background:rgba(0,255,136,0.12);color:var(--c3);border:1px solid rgba(0,255,136,0.3);}
+.badge-c4{background:rgba(255,170,0,0.12);color:var(--c4);border:1px solid rgba(255,170,0,0.3);}
 
-/* SQL COMMAND CARDS */
-.cmd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.2rem;}
-.cmd-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem;transition:all 0.2s;}
-.cmd-card:hover{border-color:var(--accent);box-shadow:0 0 15px rgba(0,212,255,0.1);}
-.cmd-card h4{font-size:0.9rem;font-weight:700;color:var(--accent);margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem;}
-.cmd-card .desc{font-size:0.83rem;color:var(--text2);margin-bottom:0.7rem;line-height:1.6;}
-.cmd-card pre{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.7rem;font-family:'Fira Code',monospace;font-size:0.78rem;color:#a5f3fc;overflow-x:auto;white-space:pre-wrap;}
-.cmd-card .result{margin-top:0.5rem;font-size:0.78rem;color:var(--accent3);background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:6px;padding:0.5rem;}
+/* ========== BUTTONS ========== */
+.btn{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  padding:0.55rem 1.3rem;border-radius:8px;
+  border:none;cursor:pointer;
+  font-family:'Chakra Petch',sans-serif;
+  font-size:0.85rem;font-weight:600;
+  transition:all 0.2s;letter-spacing:0.3px;
+}
+.btn:active{transform:scale(0.97);}
+.btn-c1{background:rgba(0,245,255,0.12);color:var(--c1);border:1px solid rgba(0,245,255,0.4);}
+.btn-c1:hover{background:rgba(0,245,255,0.22);box-shadow:var(--glow1);}
+.btn-c2{background:rgba(180,79,255,0.15);color:var(--c2);border:1px solid rgba(180,79,255,0.4);}
+.btn-c2:hover{background:rgba(180,79,255,0.25);box-shadow:var(--glow2);}
+.btn-c3{background:rgba(0,255,136,0.12);color:var(--c3);border:1px solid rgba(0,255,136,0.35);}
+.btn-c3:hover{background:rgba(0,255,136,0.22);box-shadow:var(--glow3);}
+.btn-c5{background:rgba(255,68,102,0.12);color:var(--c5);border:1px solid rgba(255,68,102,0.35);}
+.btn-c5:hover{background:rgba(255,68,102,0.22);}
+.btn-sm{padding:0.35rem 0.85rem;font-size:0.78rem;}
+.btn-lg{padding:0.75rem 2rem;font-size:0.95rem;}
 
-/* FILTER TABS */
-.filter-tabs{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;}
-.ftab{padding:0.35rem 0.9rem;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-size:0.82rem;transition:all 0.2s;}
-.ftab:hover,.ftab.active{background:var(--accent2);color:#fff;border-color:var(--accent2);}
+/* ========== HOME PAGE ========== */
+.hero{text-align:center;padding:2.5rem 1rem 2rem;}
+.hero-title{
+  font-family:'Orbitron',monospace;
+  font-size:clamp(1.8rem,5vw,3.5rem);
+  font-weight:900;letter-spacing:2px;
+  background:linear-gradient(135deg,var(--c1) 0%,var(--c2) 50%,var(--c1) 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shimmer 4s linear infinite;
+  line-height:1.15;margin-bottom:0.8rem;
+}
+@keyframes shimmer{to{background-position:200% center;}}
+.hero-sub{color:var(--text2);font-size:clamp(0.85rem,2vw,1.05rem);max-width:540px;margin:0 auto 2.5rem;line-height:1.7;}
+.home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:1rem;}
+.home-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;padding:1.4rem;
+  cursor:pointer;transition:all 0.25s;
+  text-align:left;position:relative;overflow:hidden;
+}
+.home-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 60%,rgba(0,245,255,0.04));
+  opacity:0;transition:opacity 0.3s;
+}
+.home-card:hover{border-color:var(--c1);transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,245,255,0.12);}
+.home-card:hover::before{opacity:1;}
+.home-card:active{transform:translateY(-1px);}
+.hc-icon{font-size:2.2rem;margin-bottom:0.8rem;display:block;filter:drop-shadow(0 0 8px rgba(0,245,255,0.4));}
+.hc-title{font-family:'Orbitron',monospace;font-size:0.88rem;font-weight:700;color:var(--c1);margin-bottom:0.4rem;letter-spacing:0.5px;}
+.hc-desc{font-size:0.8rem;color:var(--text2);line-height:1.6;}
+.hc-arrow{position:absolute;bottom:1rem;right:1rem;color:var(--text3);font-size:1.2rem;transition:all 0.2s;}
+.home-card:hover .hc-arrow{color:var(--c1);transform:translateX(3px);}
+/* Color variants */
+.home-card.v2:hover{border-color:var(--c2);box-shadow:0 8px 30px rgba(180,79,255,0.12);}
+.home-card.v2:hover .hc-title{color:var(--c2);}
+.home-card.v2:hover .hc-arrow{color:var(--c2);}
+.home-card.v3:hover{border-color:var(--c3);box-shadow:0 8px 30px rgba(0,255,136,0.1);}
+.home-card.v3:hover .hc-title{color:var(--c3);}
+.home-card.v3:hover .hc-arrow{color:var(--c3);}
+.home-card.v4:hover{border-color:var(--c4);box-shadow:0 8px 30px rgba(255,170,0,0.1);}
+.home-card.v4:hover .hc-title{color:var(--c4);}
+.home-card.v4:hover .hc-arrow{color:var(--c4);}
 
-/* TYPING GAME */
-.game-area{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;}
-.game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:gap;}
-.game-stats{display:flex;gap:1.5rem;flex-wrap:wrap;}
-.stat-box{text-align:center;}
-.stat-box .val{font-size:1.8rem;font-weight:700;color:var(--accent);font-family:'Fira Code',monospace;}
-.stat-box .lbl{font-size:0.72rem;color:var(--text3);}
-.difficulty-btns{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap;}
-.diff-btn{padding:0.4rem 1.1rem;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-size:0.82rem;transition:all 0.2s;}
-.diff-btn.easy.active{background:#10b981;color:#fff;border-color:#10b981;}
-.diff-btn.med.active{background:#f59e0b;color:#000;border-color:#f59e0b;}
-.diff-btn.hard.active{background:#ef4444;color:#fff;border-color:#ef4444;}
-.prompt-box{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin-bottom:1rem;font-family:'Fira Code',monospace;font-size:0.95rem;line-height:1.8;min-height:60px;}
-.prompt-box .char{transition:color 0.05s;}
-.prompt-box .char.correct{color:var(--accent3);}
-.prompt-box .char.wrong{color:var(--red);text-decoration:underline;}
-.prompt-box .char.current{color:var(--accent);background:rgba(0,212,255,0.2);border-radius:2px;}
-.prompt-box .char.pending{color:var(--text3);}
-#typing-input{width:100%;background:var(--bg2);border:2px solid var(--border);border-radius:10px;padding:0.8rem 1rem;font-family:'Fira Code',monospace;font-size:0.95rem;color:var(--text);outline:none;transition:border-color 0.2s;}
-#typing-input:focus{border-color:var(--accent);}
-.game-controls{display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap;}
-.btn{padding:0.55rem 1.4rem;border-radius:8px;border:none;cursor:pointer;font-family:'Sarabun',sans-serif;font-size:0.9rem;font-weight:600;transition:all 0.2s;}
-.btn-primary{background:var(--accent2);color:#fff;}
-.btn-primary:hover{background:#6d28d9;transform:translateY(-1px);}
-.btn-secondary{background:var(--card);color:var(--text2);border:1px solid var(--border);}
-.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
-.btn-success{background:var(--accent3);color:#fff;}
-.btn-danger{background:var(--red);color:#fff;}
-.timer-bar{height:4px;background:var(--border);border-radius:2px;margin-bottom:1rem;overflow:hidden;}
-.timer-fill{height:100%;background:linear-gradient(90deg,var(--accent3),var(--accent));border-radius:2px;transition:width 0.5s linear;}
-
-/* QUIZ */
-.quiz-question{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1rem;}
-.quiz-q-text{font-size:1rem;font-weight:600;margin-bottom:1rem;line-height:1.7;}
-.quiz-q-code{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.7rem;font-family:'Fira Code',monospace;font-size:0.82rem;color:#a5f3fc;margin-bottom:1rem;}
-.quiz-options{display:grid;gap:0.6rem;}
-.quiz-opt{padding:0.7rem 1rem;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;font-size:0.88rem;transition:all 0.2s;text-align:left;}
-.quiz-opt:hover:not(:disabled){border-color:var(--accent);background:rgba(0,212,255,0.05);}
-.quiz-opt.correct{background:rgba(16,185,129,0.15);border-color:var(--accent3);color:var(--accent3);}
-.quiz-opt.wrong{background:rgba(239,68,68,0.15);border-color:var(--red);color:var(--red);}
-.quiz-opt:disabled{cursor:default;}
-.quiz-feedback{margin-top:0.8rem;padding:0.7rem;border-radius:8px;font-size:0.85rem;display:none;}
-.quiz-feedback.show{display:block;}
-.quiz-feedback.correct{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:var(--accent3);}
-.quiz-feedback.wrong{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red);}
-.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;flex-wrap:wrap;gap:1rem;}
-.quiz-progress{display:flex;gap:4px;flex-wrap:wrap;}
-.q-dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:all 0.3s;}
-.q-dot.done-correct{background:var(--accent3);}
-.q-dot.done-wrong{background:var(--red);}
-.q-dot.current{background:var(--accent);}
-.score-display{font-size:1.1rem;font-weight:700;color:var(--accent);}
-
-/* WRITTEN EXAM */
-.exam-question{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.2rem;}
-.exam-q-num{font-size:0.78rem;color:var(--text3);margin-bottom:0.5rem;font-family:'Fira Code',monospace;}
-.exam-q-text{font-size:0.95rem;font-weight:600;margin-bottom:0.8rem;line-height:1.7;}
-.exam-q-code{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.7rem;font-family:'Fira Code',monospace;font-size:0.8rem;color:#a5f3fc;margin-bottom:0.8rem;}
-.exam-answer{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:0.8rem;font-family:'Fira Code',monospace;font-size:0.85rem;color:var(--text);outline:none;resize:vertical;min-height:80px;transition:border-color 0.2s;}
-.exam-answer:focus{border-color:var(--accent);}
-.exam-hint{margin-top:0.5rem;font-size:0.78rem;color:var(--text3);cursor:pointer;text-decoration:underline;}
-.exam-hint-text{display:none;margin-top:0.4rem;padding:0.5rem;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);border-radius:6px;font-size:0.8rem;color:var(--accent2);}
-.exam-answer-show{display:none;margin-top:0.5rem;padding:0.6rem;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:6px;}
-.exam-answer-show pre{font-family:'Fira Code',monospace;font-size:0.8rem;color:var(--accent3);white-space:pre-wrap;}
-.exam-submit-area{text-align:center;padding:2rem;background:var(--card);border-radius:12px;border:1px solid var(--border);}
-
-/* RESULT MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:center;justify-content:center;}
-.modal-overlay.show{display:flex;}
-.modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:2rem;max-width:450px;width:90%;text-align:center;}
-.modal h2{font-size:1.8rem;margin-bottom:0.5rem;}
-.modal .big-score{font-size:4rem;font-weight:800;font-family:'Fira Code',monospace;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.modal p{color:var(--text2);margin:0.5rem 0;}
-
-/* TABLE */
-table{width:100%;border-collapse:collapse;font-size:0.85rem;}
-thead tr{background:var(--bg3);}
-th,td{padding:0.7rem 1rem;border:1px solid var(--border);text-align:left;}
-th{color:var(--accent);font-weight:600;}
-td code{font-family:'Fira Code',monospace;font-size:0.8rem;color:#a5f3fc;background:var(--bg);padding:0.15rem 0.4rem;border-radius:3px;}
-tr:hover{background:rgba(255,255,255,0.02);}
-
-/* CHEATSHEET */
-.cheat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;}
-.cheat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem;}
-.cheat-card h4{color:var(--accent4);font-size:0.88rem;margin-bottom:0.6rem;font-family:'Fira Code',monospace;}
-.cheat-card p{font-size:0.8rem;color:var(--text2);margin-bottom:0.4rem;line-height:1.6;}
-.cheat-card code{display:block;background:var(--bg);border-radius:4px;padding:0.5rem;font-family:'Fira Code',monospace;font-size:0.78rem;color:#a5f3fc;margin-top:0.4rem;border:1px solid var(--border);}
-
-/* RESPONSIVE */
-@media(max-width:600px){
-.hero h1{font-size:1.8rem;}
-.cmd-grid{grid-template-columns:1fr;}
-.page{padding:1rem;}
+/* ========== LEARN PAGE ========== */
+.filter-row{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.ftab{
+  padding:0.35rem 0.8rem;border-radius:20px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--text3);cursor:pointer;
+  font-family:'Chakra Petch',sans-serif;
+  font-size:0.75rem;font-weight:600;
+  transition:all 0.2s;letter-spacing:0.3px;
+}
+.ftab:hover{border-color:var(--c1);color:var(--c1);}
+.ftab.active{background:rgba(0,245,255,0.12);border-color:var(--c1);color:var(--c1);}
+.cmd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:1rem;}
+.cmd-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:1.1rem;
+  transition:all 0.2s;
+}
+.cmd-card:hover{border-color:var(--border2);background:var(--card2);}
+.cmd-card-head{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;}
+.cmd-tag{
+  font-size:0.65rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:3px;
+  font-family:'Fira Code',monospace;letter-spacing:0.5px;
+}
+.cmd-title{font-size:0.88rem;font-weight:700;color:var(--c1);}
+.cmd-desc{font-size:0.78rem;color:var(--text2);margin-bottom:0.7rem;line-height:1.6;}
+.code-block{
+  background:var(--bg1);border:1px solid var(--border);
+  border-radius:8px;padding:0.75rem;
+  font-family:'Fira Code',monospace;
+  font-size:0.76rem;color:#7dd3fc;
+  overflow-x:auto;white-space:pre;
+  position:relative;
+}
+.code-block .kw{color:#f0abfc;}
+.code-block .str{color:#86efac;}
+.code-block .fn{color:#fbbf24;}
+.result-pill{
+  display:inline-flex;align-items:center;gap:0.35rem;
+  margin-top:0.5rem;padding:0.3rem 0.7rem;
+  background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.2);
+  border-radius:6px;font-size:0.74rem;color:var(--c3);
+  font-family:'Fira Code',monospace;
 }
 
-/* ANIMATIONS */
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-.page.active{animation:fadeIn 0.3s ease;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
-.pulse{animation:pulse 1s infinite;}
+/* ========== CHEATSHEET ========== */
+.cheat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:0.8rem;}
+.cheat-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:0.9rem;
+  transition:border-color 0.2s;
+}
+.cheat-card:hover{border-color:var(--c4);}
+.cheat-code{
+  font-family:'Fira Code',monospace;
+  font-size:0.76rem;color:var(--c4);
+  margin-bottom:0.4rem;font-weight:600;
+}
+.cheat-desc{font-size:0.77rem;color:var(--text2);}
+
+/* ========== GAME PAGE ========== */
+.game-wrap{max-width:800px;margin:0 auto;}
+.game-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:1.5rem;
+  position:relative;overflow:hidden;
+}
+.game-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--c1),var(--c2),transparent);
+  animation:scanline 3s linear infinite;
+}
+@keyframes scanline{0%{opacity:1;}50%{opacity:0.3;}100%{opacity:1;}}
+
+.stats-row{display:flex;justify-content:space-around;margin-bottom:1.2rem;gap:0.5rem;flex-wrap:wrap;}
+.stat-pill{
+  display:flex;flex-direction:column;align-items:center;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:0.6rem 1.2rem;
+  min-width:70px;
+}
+.stat-val{
+  font-family:'Orbitron',monospace;
+  font-size:1.6rem;font-weight:700;
+  color:var(--c1);line-height:1;
+}
+.stat-val.wpm{color:var(--c2);}
+.stat-val.acc{color:var(--c3);}
+.stat-val.sc{color:var(--c4);}
+.stat-lbl{font-size:0.65rem;color:var(--text3);margin-top:0.2rem;letter-spacing:0.5px;font-weight:600;}
+
+.timer-track{height:6px;background:var(--bg);border-radius:3px;margin-bottom:1rem;overflow:hidden;}
+.timer-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--c3),var(--c1),var(--c2));
+  transition:width 0.8s linear;
+}
+.diff-row{display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;}
+.diff-btn{
+  padding:0.4rem 1rem;border-radius:8px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;
+  font-family:'Chakra Petch',sans-serif;
+  font-size:0.8rem;font-weight:700;
+  transition:all 0.2s;
+}
+.diff-btn.d-easy.on{background:rgba(0,255,136,0.15);border-color:var(--c3);color:var(--c3);}
+.diff-btn.d-med.on{background:rgba(255,170,0,0.15);border-color:var(--c4);color:var(--c4);}
+.diff-btn.d-hard.on{background:rgba(255,68,102,0.15);border-color:var(--c5);color:var(--c5);}
+
+.prompt-label{font-size:0.78rem;color:var(--text3);margin-bottom:0.4rem;}
+.prompt-label span{color:var(--c4);font-weight:700;}
+.prompt-display{
+  background:var(--bg1);border:1px solid var(--border);
+  border-radius:10px;padding:1rem 1.2rem;
+  font-family:'Fira Code',monospace;
+  font-size:clamp(0.82rem,2.2vw,1rem);
+  line-height:1.9;margin-bottom:0.8rem;
+  min-height:58px;word-break:break-all;
+  letter-spacing:0.5px;
+}
+.ch{transition:color 0.05s,background 0.05s;}
+.ch.ok{color:var(--c3);}
+.ch.bad{color:var(--c5);text-decoration:underline wavy var(--c5);}
+.ch.cur{color:var(--bg);background:var(--c1);border-radius:2px;animation:blink 0.8s step-end infinite;}
+.ch.nd{color:var(--text3);}
+@keyframes blink{50%{background:transparent;color:var(--c1);}}
+
+#typing-input{
+  width:100%;background:var(--bg2);
+  border:2px solid var(--border);border-radius:10px;
+  padding:0.85rem 1rem;
+  font-family:'Fira Code',monospace;
+  font-size:0.9rem;color:var(--text);
+  outline:none;transition:border-color 0.2s;
+  caret-color:var(--c1);
+}
+#typing-input:focus{border-color:var(--c1);box-shadow:0 0 0 3px rgba(0,245,255,0.08);}
+#typing-input::placeholder{color:var(--text3);}
+.game-btns{display:flex;gap:0.6rem;margin-top:0.8rem;flex-wrap:wrap;}
+
+.result-banner{
+  display:none;margin-top:1rem;
+  padding:1rem;border-radius:10px;
+  background:rgba(0,245,255,0.06);
+  border:1px solid rgba(0,245,255,0.25);
+  text-align:center;
+}
+.result-banner h3{font-family:'Orbitron',monospace;color:var(--c1);margin-bottom:0.3rem;}
+.result-banner p{color:var(--text2);font-size:0.85rem;}
+
+/* ========== MCQ PAGE ========== */
+.mcq-wrap{max-width:780px;margin:0 auto;}
+.mcq-progress-bar{height:4px;background:var(--bg2);border-radius:2px;margin-bottom:1.5rem;overflow:hidden;}
+.mcq-fill{height:100%;background:linear-gradient(90deg,var(--c2),var(--c1));border-radius:2px;transition:width 0.4s ease;}
+
+.mcq-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:1.5rem;
+}
+.mcq-num{font-size:0.72rem;color:var(--text3);font-family:'Fira Code',monospace;margin-bottom:0.6rem;letter-spacing:1px;}
+.mcq-q{font-size:0.97rem;font-weight:600;line-height:1.7;margin-bottom:1rem;color:var(--text);}
+.mcq-qcode{
+  background:var(--bg1);border:1px solid var(--border);
+  border-radius:8px;padding:0.7rem;
+  font-family:'Fira Code',monospace;font-size:0.8rem;
+  color:#7dd3fc;margin-bottom:1rem;overflow-x:auto;
+}
+.mcq-opts{display:grid;gap:0.5rem;}
+.mcq-opt{
+  padding:0.75rem 1rem;border-radius:8px;
+  border:1px solid var(--border);background:var(--bg2);
+  cursor:pointer;font-size:0.87rem;
+  transition:all 0.18s;text-align:left;
+  font-family:'Chakra Petch',sans-serif;
+  display:flex;align-items:flex-start;gap:0.6rem;
+}
+.mcq-opt:hover:not(:disabled){border-color:var(--c2);background:rgba(180,79,255,0.07);color:var(--text);}
+.mcq-opt:active:not(:disabled){transform:scale(0.99);}
+.mcq-opt .opt-lbl{
+  font-family:'Orbitron',monospace;font-size:0.7rem;font-weight:700;
+  min-width:18px;color:var(--text3);margin-top:2px;
+}
+.mcq-opt .opt-txt{flex:1;line-height:1.5;}
+.mcq-opt.ok{background:rgba(0,255,136,0.1);border-color:var(--c3);color:var(--c3);}
+.mcq-opt.ok .opt-lbl{color:var(--c3);}
+.mcq-opt.ng{background:rgba(255,68,102,0.1);border-color:var(--c5);color:var(--c5);}
+.mcq-opt.ng .opt-lbl{color:var(--c5);}
+.mcq-opt:disabled{cursor:default;}
+.mcq-fb{
+  display:none;margin-top:0.8rem;padding:0.75rem;
+  border-radius:8px;font-size:0.82rem;line-height:1.6;
+}
+.mcq-fb.show{display:block;}
+.mcq-fb.ok{background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.25);color:var(--c3);}
+.mcq-fb.ng{background:rgba(255,68,102,0.07);border:1px solid rgba(255,68,102,0.25);color:var(--c5);}
+.mcq-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.2rem;flex-wrap:wrap;gap:0.8rem;}
+.mcq-nav-btns{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.q-dots{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;flex:1;padding:0 0.5rem;}
+.q-dot{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--border);cursor:pointer;
+  transition:all 0.2s;
+}
+.q-dot.cur{background:var(--c1);box-shadow:0 0 6px var(--c1);}
+.q-dot.c-ok{background:var(--c3);}
+.q-dot.c-ng{background:var(--c5);}
+.mcq-score-txt{font-family:'Orbitron',monospace;font-size:0.85rem;color:var(--c1);white-space:nowrap;}
+
+/* ========== WRITTEN PAGE ========== */
+.written-wrap{max-width:800px;margin:0 auto;}
+.exam-q{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:1.3rem;
+  margin-bottom:1rem;transition:border-color 0.2s;
+}
+.exam-q.graded-ok{border-color:var(--c3);}
+.exam-q.graded-ng{border-color:var(--c5);}
+.eq-num{font-size:0.68rem;color:var(--text3);font-family:'Fira Code',monospace;margin-bottom:0.4rem;letter-spacing:1px;}
+.eq-q{font-size:0.93rem;font-weight:600;margin-bottom:0.7rem;line-height:1.7;}
+.eq-input{
+  width:100%;background:var(--bg2);
+  border:1px solid var(--border);border-radius:8px;
+  padding:0.7rem;
+  font-family:'Fira Code',monospace;font-size:0.82rem;
+  color:var(--text);outline:none;resize:vertical;
+  min-height:72px;transition:border-color 0.2s;
+  caret-color:var(--c1);
+}
+.eq-input:focus{border-color:var(--c1);box-shadow:0 0 0 2px rgba(0,245,255,0.07);}
+.exam-q.graded-ok .eq-input{border-color:var(--c3);}
+.exam-q.graded-ng .eq-input{border-color:var(--c5);}
+.eq-hint-btn{
+  font-size:0.75rem;color:var(--text3);cursor:pointer;
+  margin-top:0.4rem;display:inline-flex;align-items:center;gap:0.3rem;
+  background:none;border:none;font-family:'Chakra Petch',sans-serif;
+  transition:color 0.2s;
+}
+.eq-hint-btn:hover{color:var(--c4);}
+.eq-hint{
+  display:none;margin-top:0.4rem;padding:0.5rem 0.7rem;
+  background:rgba(255,170,0,0.07);border:1px solid rgba(255,170,0,0.2);
+  border-radius:6px;font-size:0.78rem;color:var(--c4);
+}
+.eq-ans{
+  display:none;margin-top:0.5rem;padding:0.6rem 0.8rem;
+  background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.2);
+  border-radius:6px;
+}
+.eq-ans-lbl{font-size:0.7rem;color:var(--c3);font-weight:700;margin-bottom:0.3rem;letter-spacing:0.5px;}
+.eq-ans pre{font-family:'Fira Code',monospace;font-size:0.78rem;color:var(--c3);white-space:pre-wrap;}
+.written-footer{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:1.5rem;
+  text-align:center;margin-top:0.5rem;
+  display:flex;flex-wrap:wrap;gap:0.8rem;justify-content:center;
+}
+
+/* ========== MODAL ========== */
+.modal-ov{
+  display:none;position:fixed;inset:0;
+  background:rgba(4,7,15,0.88);
+  backdrop-filter:blur(12px);
+  z-index:999;align-items:center;justify-content:center;padding:1rem;
+}
+.modal-ov.open{display:flex;}
+.modal-box{
+  background:var(--bg2);border:1px solid var(--c1);
+  border-radius:20px;padding:2rem;
+  max-width:420px;width:100%;text-align:center;
+  box-shadow:0 0 60px rgba(0,245,255,0.15);
+  animation:modalIn 0.3s ease;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
+.modal-emoji{font-size:3.5rem;margin-bottom:0.8rem;display:block;}
+.modal-title{font-family:'Orbitron',monospace;font-size:1.2rem;color:var(--c1);margin-bottom:0.3rem;}
+.modal-score{
+  font-family:'Orbitron',monospace;
+  font-size:3.5rem;font-weight:900;
+  background:linear-gradient(135deg,var(--c1),var(--c2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin:0.3rem 0;
+}
+.modal-pct{color:var(--text2);font-size:0.9rem;}
+.modal-grade{
+  font-family:'Orbitron',monospace;
+  font-size:1rem;font-weight:700;
+  margin:0.8rem 0;
+}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:768px){
+  .topnav{display:none;}
+  .bottomnav{display:block;}
+  .main{padding:1rem;padding-bottom:80px;}
+  .hero{padding:1.5rem 0.5rem 1rem;}
+  .stats-row{gap:0.3rem;}
+  .stat-pill{padding:0.5rem 0.8rem;min-width:60px;}
+  .stat-val{font-size:1.3rem;}
+  .game-card{padding:1rem;}
+  .mcq-card{padding:1.1rem;}
+  .exam-q{padding:1rem;}
+  .sec-hdr h2{font-size:0.95rem;}
+}
+@media(max-width:480px){
+  .home-grid{grid-template-columns:1fr 1fr;}
+  .home-card{padding:1rem;}
+  .hc-icon{font-size:1.8rem;}
+  .hc-title{font-size:0.78rem;}
+  .hc-desc{display:none;}
+  .hc-arrow{display:none;}
+  .stats-row{justify-content:space-between;}
+  .stat-pill{min-width:50px;padding:0.4rem 0.5rem;}
+  .stat-val{font-size:1.1rem;}
+  .cmd-grid{grid-template-columns:1fr;}
+  .cheat-grid{grid-template-columns:1fr 1fr;}
+  .written-footer .btn{flex:1;}
+}
+@media(max-width:350px){
+  .home-grid{grid-template-columns:1fr;}
+  .cheat-grid{grid-template-columns:1fr;}
+}
+
+/* ========== GLOW TEXT UTIL ========== */
+.glow-c1{text-shadow:0 0 12px rgba(0,245,255,0.6);}
+.glow-c2{text-shadow:0 0 12px rgba(180,79,255,0.6);}
 </style>
 </head>
 <body>
+<div class="app">
 
-<nav>
-  <div class="nav-logo">SQL<span>.</span>master</div>
-  <button class="nav-btn active" onclick="showPage('home')">🏠 หน้าหลัก</button>
-  <button class="nav-btn" onclick="showPage('learn')">📚 เรียน SQL</button>
-  <button class="nav-btn" onclick="showPage('cheat')">📋 Cheatsheet</button>
-  <button class="nav-btn" onclick="showPage('game')">⌨️ เกมพิมพ์</button>
-  <button class="nav-btn" onclick="showPage('mcq')">✅ ข้อสอบปรนัย</button>
-  <button class="nav-btn" onclick="showPage('written')">✏️ ข้อสอบอัตนัย</button>
+<!-- TOP NAV (Desktop) -->
+<nav class="topnav">
+  <div class="logo">SQL<span>▸</span>MASTER</div>
+  <div class="navlinks">
+    <button class="navlink active" onclick="goPage('home',this)"><span class="ni">🏠</span>หน้าหลัก</button>
+    <button class="navlink" onclick="goPage('learn',this)"><span class="ni">📚</span>เรียน SQL</button>
+    <button class="navlink" onclick="goPage('cheat',this)"><span class="ni">📋</span>Cheatsheet</button>
+    <button class="navlink" onclick="goPage('game',this)"><span class="ni">⌨️</span>เกมพิมพ์</button>
+    <button class="navlink" onclick="goPage('mcq',this)"><span class="ni">✅</span>ปรนัย</button>
+    <button class="navlink" onclick="goPage('written',this)"><span class="ni">✏️</span>อัตนัย</button>
+  </div>
 </nav>
 
-<!-- HOME -->
-<div id="page-home" class="page active">
-  <div class="hero">
-    <h1>เรียน SQL<br>แบบ Pro 🚀</h1>
-    <p>ครบจบในที่เดียว — เรียนรู้คำสั่ง SQL, เล่นเกมฝึกพิมพ์, ทดสอบความรู้ด้วยข้อสอบ</p>
-    <div class="hero-cards">
-      <div class="hero-card" onclick="showPage('learn')">
-        <div class="icon">📚</div>
-        <h3>เรียน SQL Command</h3>
-        <p>คำสั่งพื้นฐานถึงขั้นสูง พร้อมตัวอย่างและผลลัพธ์</p>
-      </div>
-      <div class="hero-card" onclick="showPage('cheat')">
-        <div class="icon">📋</div>
-        <h3>Cheatsheet</h3>
-        <p>สรุปคำสั่งทั้งหมดไว้ในหน้าเดียว ดูง่ายก่อนสอบ</p>
-      </div>
-      <div class="hero-card" onclick="showPage('game')">
-        <div class="icon">⌨️</div>
-        <h3>เกมพิมพ์ SQL</h3>
-        <p>ฝึกพิมพ์คำสั่ง SQL พร้อมจับเวลา เลือกระดับความยาก</p>
-      </div>
-      <div class="hero-card" onclick="showPage('mcq')">
-        <div class="icon">✅</div>
-        <h3>ข้อสอบปรนัย</h3>
-        <p>30 ข้อ 4 ตัวเลือก พร้อมเฉลยและคำอธิบาย</p>
-      </div>
-      <div class="hero-card" onclick="showPage('written')">
-        <div class="icon">✏️</div>
-        <h3>ข้อสอบอัตนัย</h3>
-        <p>โจทย์เขียนคำสั่ง SQL พร้อมเฉลย ฝึกก่อนสอบจริง</p>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- MAIN -->
+<div class="main">
 
-<!-- LEARN -->
-<div id="page-learn" class="page">
-  <div class="section-title">📚 คำสั่ง SQL ทั้งหมด</div>
-  <div class="filter-tabs" id="learn-tabs">
-    <button class="ftab active" onclick="filterCmds('all',this)">ทั้งหมด</button>
-    <button class="ftab" onclick="filterCmds('ddl',this)">DDL (สร้าง/ลบ)</button>
-    <button class="ftab" onclick="filterCmds('dml',this)">DML (เพิ่ม/แก้/ลบ)</button>
-    <button class="ftab" onclick="filterCmds('dql',this)">DQL (ค้นหา)</button>
-    <button class="ftab" onclick="filterCmds('join',this)">JOIN</button>
-    <button class="ftab" onclick="filterCmds('func',this)">Functions</button>
-    <button class="ftab" onclick="filterCmds('adv',this)">Advanced</button>
-  </div>
-  <div class="cmd-grid" id="cmd-grid"></div>
-</div>
-
-<!-- CHEATSHEET -->
-<div id="page-cheat" class="page">
-  <div class="section-title">📋 SQL Cheatsheet — สรุปทุกคำสั่ง</div>
-  <div class="cheat-grid" id="cheat-grid"></div>
-</div>
-
-<!-- GAME -->
-<div id="page-game" class="page">
-  <div class="section-title">⌨️ เกมพิมพ์ SQL</div>
-  <div class="game-area">
-    <div class="game-header">
-      <div class="game-stats">
-        <div class="stat-box"><div class="val" id="g-wpm">0</div><div class="lbl">WPM</div></div>
-        <div class="stat-box"><div class="val" id="g-acc">100</div><div class="lbl">% ถูก</div></div>
-        <div class="stat-box"><div class="val" id="g-time">60</div><div class="lbl">วินาที</div></div>
-        <div class="stat-box"><div class="val" id="g-score">0</div><div class="lbl">คะแนน</div></div>
+  <!-- HOME -->
+  <div class="page active" id="pg-home">
+    <div class="hero">
+      <div class="hero-title">SQL MASTER</div>
+      <p class="hero-sub">เรียนรู้ SQL ตั้งแต่พื้นฐานถึงขั้นสูง · เล่นเกมฝึกพิมพ์ · ทดสอบด้วยข้อสอบจริง</p>
+      <div class="home-grid">
+        <div class="home-card" onclick="goPageId('learn')">
+          <span class="hc-icon">📚</span>
+          <div class="hc-title">เรียน SQL</div>
+          <p class="hc-desc">คำสั่ง 40+ ข้อ ครบทุกหมวด DDL DML DQL JOIN Functions</p>
+          <span class="hc-arrow">→</span>
+        </div>
+        <div class="home-card v2" onclick="goPageId('cheat')">
+          <span class="hc-icon">📋</span>
+          <div class="hc-title">Cheatsheet</div>
+          <p class="hc-desc">สรุปทุกคำสั่งในหน้าเดียว ดูก่อนสอบ</p>
+          <span class="hc-arrow">→</span>
+        </div>
+        <div class="home-card v3" onclick="goPageId('game')">
+          <span class="hc-icon">⌨️</span>
+          <div class="hc-title">เกมพิมพ์</div>
+          <p class="hc-desc">จับเวลา วัด WPM ง่าย–ปานกลาง–ยาก</p>
+          <span class="hc-arrow">→</span>
+        </div>
+        <div class="home-card v4" onclick="goPageId('mcq')">
+          <span class="hc-icon">✅</span>
+          <div class="hc-title">ข้อสอบปรนัย</div>
+          <p class="hc-desc">30 ข้อ 4 ตัวเลือก พร้อมเฉลยและอธิบาย</p>
+          <span class="hc-arrow">→</span>
+        </div>
+        <div class="home-card" onclick="goPageId('written')">
+          <span class="hc-icon">✏️</span>
+          <div class="hc-title">ข้อสอบอัตนัย</div>
+          <p class="hc-desc">20 ข้อเขียนคำสั่ง SQL ตรวจเฉลยได้ทันที</p>
+          <span class="hc-arrow">→</span>
+        </div>
       </div>
     </div>
-    <div class="timer-bar"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
-    <div style="margin-bottom:1rem;">
-      <span style="font-size:0.85rem;color:var(--text2);margin-right:0.5rem;">ระดับ:</span>
-      <div class="difficulty-btns">
-        <button class="diff-btn easy active" onclick="setDiff('easy',this)">🟢 ง่าย</button>
-        <button class="diff-btn med" onclick="setDiff('med',this)">🟡 ปานกลาง</button>
-        <button class="diff-btn hard" onclick="setDiff('hard',this)">🔴 ยาก</button>
+  </div>
+
+  <!-- LEARN -->
+  <div class="page" id="pg-learn">
+    <div class="sec-hdr"><h2>📚 SQL COMMANDS</h2><span class="badge badge-c1">40+ คำสั่ง</span></div>
+    <div class="filter-row" id="filter-row">
+      <button class="ftab active" onclick="filterCmd('all',this)">ทั้งหมด</button>
+      <button class="ftab" onclick="filterCmd('ddl',this)">DDL</button>
+      <button class="ftab" onclick="filterCmd('dml',this)">DML</button>
+      <button class="ftab" onclick="filterCmd('dql',this)">DQL</button>
+      <button class="ftab" onclick="filterCmd('join',this)">JOIN</button>
+      <button class="ftab" onclick="filterCmd('fn',this)">Functions</button>
+      <button class="ftab" onclick="filterCmd('adv',this)">Advanced</button>
+    </div>
+    <div class="cmd-grid" id="cmd-grid"></div>
+  </div>
+
+  <!-- CHEATSHEET -->
+  <div class="page" id="pg-cheat">
+    <div class="sec-hdr"><h2>📋 CHEATSHEET</h2><span class="badge badge-c4">34 คำสั่ง</span></div>
+    <div class="cheat-grid" id="cheat-grid"></div>
+  </div>
+
+  <!-- GAME -->
+  <div class="page" id="pg-game">
+    <div class="sec-hdr"><h2>⌨️ TYPING GAME</h2><span class="badge badge-c3">จับเวลา 60 วิ</span></div>
+    <div class="game-wrap">
+      <div class="game-card">
+        <div class="stats-row">
+          <div class="stat-pill"><div class="stat-val wpm" id="g-wpm">0</div><div class="stat-lbl">WPM</div></div>
+          <div class="stat-pill"><div class="stat-val acc" id="g-acc">100</div><div class="stat-lbl">% ถูก</div></div>
+          <div class="stat-pill"><div class="stat-val" id="g-time">60</div><div class="stat-lbl">วินาที</div></div>
+          <div class="stat-pill"><div class="stat-val sc" id="g-score">0</div><div class="stat-lbl">คะแนน</div></div>
+        </div>
+        <div class="timer-track"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
+        <div class="diff-row">
+          <span style="font-size:0.78rem;color:var(--text3);align-self:center;">ระดับ:</span>
+          <button class="diff-btn d-easy on" onclick="setDiff('easy',this)">🟢 ง่าย</button>
+          <button class="diff-btn d-med" onclick="setDiff('med',this)">🟡 กลาง</button>
+          <button class="diff-btn d-hard" onclick="setDiff('hard',this)">🔴 ยาก</button>
+        </div>
+        <div class="prompt-label">โจทย์: <span id="g-desc">—</span></div>
+        <div class="prompt-display" id="prompt-disp"></div>
+        <input type="text" id="typing-input" placeholder="⌨️ พิมพ์คำสั่ง SQL ที่นี่..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="onType()" disabled>
+        <div class="game-btns">
+          <button class="btn btn-c3 btn-lg" onclick="startGame()">▶ เริ่มเกม</button>
+          <button class="btn btn-c1 btn-sm" onclick="nextP()">⏭ โจทย์ใหม่</button>
+          <button class="btn btn-c5 btn-sm" onclick="resetGame()">↺ รีเซ็ต</button>
+        </div>
+        <div class="result-banner" id="game-result">
+          <h3>🎉 หมดเวลา!</h3>
+          <p id="game-result-text"></p>
+        </div>
       </div>
     </div>
-    <div style="margin-bottom:0.5rem;font-size:0.82rem;color:var(--text2);">📝 โจทย์: <span id="g-desc" style="color:var(--accent4)"></span></div>
-    <div class="prompt-box" id="prompt-display"></div>
-    <input type="text" id="typing-input" placeholder="พิมพ์คำสั่ง SQL ที่นี่..." autocomplete="off" autocorrect="off" spellcheck="false" oninput="handleTyping()" disabled>
-    <div class="game-controls">
-      <button class="btn btn-primary" onclick="startGame()">▶ เริ่มเกม</button>
-      <button class="btn btn-secondary" onclick="nextPrompt()">⏭ โจทย์ใหม่</button>
-      <button class="btn btn-secondary" onclick="resetGame()">↺ รีเซ็ต</button>
-    </div>
-    <div id="game-result" style="display:none;margin-top:1rem;padding:1rem;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:8px;text-align:center;">
-      <div style="font-size:1.2rem;font-weight:700;color:var(--accent)">🎉 เยี่ยมมาก!</div>
-      <div id="game-result-text" style="color:var(--text2);margin-top:0.4rem;font-size:0.9rem;"></div>
-    </div>
   </div>
-</div>
 
-<!-- MCQ -->
-<div id="page-mcq" class="page">
-  <div class="section-title">✅ ข้อสอบปรนัย <span class="badge">30 ข้อ</span></div>
-  <div id="mcq-container"></div>
-  <div class="quiz-nav">
-    <div>
-      <button class="btn btn-secondary" onclick="prevQ()" id="btn-prev">◀ ก่อนหน้า</button>
-      <button class="btn btn-primary" onclick="nextQ()" id="btn-next" style="margin-left:0.5rem;">ถัดไป ▶</button>
+  <!-- MCQ -->
+  <div class="page" id="pg-mcq">
+    <div class="sec-hdr"><h2>✅ ข้อสอบปรนัย</h2><span class="badge badge-c2">30 ข้อ</span></div>
+    <div class="mcq-wrap">
+      <div class="mcq-progress-bar"><div class="mcq-fill" id="mcq-fill" style="width:3.33%"></div></div>
+      <div id="mcq-box"></div>
+      <div class="mcq-nav">
+        <div class="mcq-nav-btns">
+          <button class="btn btn-c1 btn-sm" onclick="prevQ()">◀ ก่อนหน้า</button>
+          <button class="btn btn-c2 btn-sm" onclick="nextQ()">ถัดไป ▶</button>
+        </div>
+        <div class="q-dots" id="q-dots"></div>
+        <div class="mcq-score-txt"><span id="mcq-sc">0</span>/30</div>
+      </div>
+      <div style="text-align:center;margin-top:1.2rem;display:flex;gap:0.6rem;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-c3" onclick="showResult()">📊 ดูผลคะแนน</button>
+        <button class="btn btn-c5 btn-sm" onclick="resetMCQ()">↺ เริ่มใหม่</button>
+      </div>
     </div>
-    <div class="quiz-progress" id="q-dots"></div>
-    <div class="score-display">คะแนน: <span id="mcq-score">0</span> / <span id="mcq-total">30</span></div>
   </div>
-  <div style="text-align:center;margin-top:1.5rem;">
-    <button class="btn btn-success" onclick="showMCQResult()">📊 ดูผลคะแนน</button>
-    <button class="btn btn-secondary" onclick="resetMCQ()" style="margin-left:0.5rem;">↺ เริ่มใหม่</button>
-  </div>
-</div>
 
-<!-- WRITTEN -->
-<div id="page-written" class="page">
-  <div class="section-title">✏️ ข้อสอบอัตนัย <span class="badge yellow">20 ข้อ</span></div>
-  <div id="written-container"></div>
-  <div class="exam-submit-area">
-    <button class="btn btn-primary" onclick="checkWritten()" style="font-size:1rem;padding:0.7rem 2rem;">📝 ตรวจคำตอบ</button>
-    <button class="btn btn-secondary" onclick="resetWritten()" style="margin-left:1rem;">↺ ล้างคำตอบ</button>
+  <!-- WRITTEN -->
+  <div class="page" id="pg-written">
+    <div class="sec-hdr"><h2>✏️ ข้อสอบอัตนัย</h2><span class="badge badge-c4">20 ข้อ</span></div>
+    <div class="written-wrap">
+      <div id="written-box"></div>
+      <div class="written-footer">
+        <button class="btn btn-c3 btn-lg" onclick="checkWritten()">📝 ตรวจคำตอบ</button>
+        <button class="btn btn-c2" onclick="showAllAns()">👁 ดูเฉลยทั้งหมด</button>
+        <button class="btn btn-c5 btn-sm" onclick="resetWritten()">↺ ล้างคำตอบ</button>
+      </div>
+    </div>
   </div>
-</div>
+
+</div><!-- /main -->
+
+<!-- BOTTOM NAV (Mobile) -->
+<nav class="bottomnav">
+  <div class="bottomnav-inner">
+    <button class="bnav-btn active" onclick="goPageMob('home',this)"><span class="bi">🏠</span><span class="bl">หน้าหลัก</span></button>
+    <button class="bnav-btn" onclick="goPageMob('learn',this)"><span class="bi">📚</span><span class="bl">เรียน</span></button>
+    <button class="bnav-btn" onclick="goPageMob('cheat',this)"><span class="bi">📋</span><span class="bl">Cheat</span></button>
+    <button class="bnav-btn" onclick="goPageMob('game',this)"><span class="bi">⌨️</span><span class="bl">เกม</span></button>
+    <button class="bnav-btn" onclick="goPageMob('mcq',this)"><span class="bi">✅</span><span class="bl">ปรนัย</span></button>
+    <button class="bnav-btn" onclick="goPageMob('written',this)"><span class="bi">✏️</span><span class="bl">อัตนัย</span></button>
+  </div>
+</nav>
+
+</div><!-- /app -->
 
 <!-- MODAL -->
-<div class="modal-overlay" id="result-modal">
-  <div class="modal">
-    <div id="modal-emoji" style="font-size:3rem;margin-bottom:0.5rem;"></div>
-    <h2 id="modal-title"></h2>
-    <div class="big-score" id="modal-score"></div>
-    <p id="modal-desc"></p>
-    <p id="modal-grade" style="font-size:1.1rem;font-weight:700;margin:0.8rem 0;"></p>
-    <button class="btn btn-primary" onclick="closeModal()" style="margin-top:1rem;">ปิด</button>
+<div class="modal-ov" id="modal">
+  <div class="modal-box">
+    <span class="modal-emoji" id="m-emoji"></span>
+    <div class="modal-title" id="m-title"></div>
+    <div class="modal-score" id="m-score"></div>
+    <div class="modal-pct" id="m-pct"></div>
+    <div class="modal-grade" id="m-grade"></div>
+    <button class="btn btn-c1" onclick="closeModal()" style="margin-top:1.2rem;">ปิด</button>
   </div>
 </div>
 
 <script>
-// ==================== DATA ====================
+// ===================== DATA =====================
 
-const sqlCommands = [
+const cmds=[
   // DDL
-  {cat:'ddl',title:'CREATE DATABASE',desc:'สร้างฐานข้อมูลใหม่ในระบบ',
-   code:'CREATE DATABASE school;',result:'Query OK, 1 row affected'},
-  {cat:'ddl',title:'DROP DATABASE',desc:'ลบฐานข้อมูลออกจากระบบ (ระวัง! ข้อมูลหายถาวร)',
-   code:'DROP DATABASE school;',result:'Query OK, 0 rows affected'},
-  {cat:'ddl',title:'USE',desc:'เลือกฐานข้อมูลที่ต้องการใช้งาน',
-   code:'USE school;',result:'Database changed'},
-  {cat:'ddl',title:'SHOW DATABASES',desc:'แสดงรายชื่อฐานข้อมูลทั้งหมดในระบบ',
-   code:'SHOW DATABASES;',result:'herb | mysql | test | test1 ...'},
-  {cat:'ddl',title:'CREATE TABLE',desc:'สร้างตารางใหม่พร้อมกำหนดคอลัมน์และชนิดข้อมูล',
-   code:`CREATE TABLE student(\n  id INT(3) PRIMARY KEY,\n  name VARCHAR(15),\n  address VARCHAR(20),\n  iddpm INT(1)\n);`,result:'Query OK, 0 rows affected'},
-  {cat:'ddl',title:'CREATE TABLE + FOREIGN KEY',desc:'สร้างตารางพร้อมกำหนด FOREIGN KEY เชื่อมตารางอื่น',
-   code:`CREATE TABLE student(\n  id INT(3) PRIMARY KEY,\n  name VARCHAR(15),\n  iddpm INT(1),\n  CONSTRAINT fk_iddpm\n  FOREIGN KEY(iddpm)\n  REFERENCES department(iddpm)\n  ON UPDATE CASCADE\n);`,result:'Query OK, 0 rows affected'},
-  {cat:'ddl',title:'DROP TABLE',desc:'ลบตารางออกจากฐานข้อมูล',
-   code:'DROP TABLE student;',result:'Query OK, 0 rows affected'},
-  {cat:'ddl',title:'ALTER TABLE ADD',desc:'เพิ่มคอลัมน์ใหม่ในตารางที่มีอยู่แล้ว',
-   code:'ALTER TABLE student ADD email VARCHAR(30);',result:'Query OK, 0 rows affected'},
-  {cat:'ddl',title:'ALTER TABLE MODIFY',desc:'แก้ไขชนิดข้อมูลของคอลัมน์',
-   code:'ALTER TABLE student MODIFY name VARCHAR(25);',result:'Query OK, 0 rows affected'},
-  {cat:'ddl',title:'ALTER TABLE DROP COLUMN',desc:'ลบคอลัมน์ออกจากตาราง',
-   code:'ALTER TABLE student DROP COLUMN email;',result:'Query OK, 0 rows affected'},
-  {cat:'ddl',title:'DESCRIBE',desc:'แสดงโครงสร้างของตาราง (ชื่อคอลัมน์, ชนิดข้อมูล, Key)',
-   code:'DESCRIBE student;\n-- หรือ DESC student;',result:'id | int(3) | NO | PRI\nname | varchar(15) | YES'},
-  {cat:'ddl',title:'SHOW TABLES',desc:'แสดงรายชื่อตารางทั้งหมดในฐานข้อมูลปัจจุบัน',
-   code:'SHOW TABLES;',result:'department | student'},
+  {c:'ddl',t:'CREATE DATABASE',tag:'DDL',d:'สร้างฐานข้อมูลใหม่ในระบบ',sql:'CREATE DATABASE school;',r:'Query OK, 1 row affected'},
+  {c:'ddl',t:'DROP DATABASE',tag:'DDL',d:'ลบฐานข้อมูล (ข้อมูลหายถาวร!)',sql:'DROP DATABASE school;',r:'Query OK, 0 rows affected'},
+  {c:'ddl',t:'USE',tag:'DDL',d:'เลือกฐานข้อมูลที่ต้องการใช้งาน',sql:'USE school;',r:'Database changed'},
+  {c:'ddl',t:'SHOW DATABASES',tag:'DDL',d:'แสดงรายชื่อฐานข้อมูลทั้งหมดในระบบ',sql:'SHOW DATABASES;',r:'herb | mysql | test | test1 ...'},
+  {c:'ddl',t:'SHOW TABLES',tag:'DDL',d:'แสดงรายชื่อตารางทั้งหมดในฐานข้อมูล',sql:'SHOW TABLES;',r:'department | student'},
+  {c:'ddl',t:'CREATE TABLE',tag:'DDL',d:'สร้างตารางใหม่พร้อมกำหนดคอลัมน์',sql:'CREATE TABLE student(\n  id INT(3) PRIMARY KEY,\n  name VARCHAR(15),\n  address VARCHAR(20),\n  iddpm INT(1)\n);',r:'Query OK, 0 rows affected'},
+  {c:'ddl',t:'FOREIGN KEY',tag:'DDL',d:'สร้างตารางพร้อม FOREIGN KEY เชื่อมตารางอื่น',sql:'CREATE TABLE student(\n  id INT(3) PRIMARY KEY,\n  name VARCHAR(15),\n  iddpm INT(1),\n  CONSTRAINT fk_iddpm\n  FOREIGN KEY(iddpm)\n  REFERENCES department(iddpm)\n  ON UPDATE CASCADE\n);',r:'Query OK, 0 rows affected'},
+  {c:'ddl',t:'DROP TABLE',tag:'DDL',d:'ลบตารางออกจากฐานข้อมูล',sql:'DROP TABLE student;',r:'Query OK, 0 rows affected'},
+  {c:'ddl',t:'ALTER TABLE ADD',tag:'DDL',d:'เพิ่มคอลัมน์ใหม่ในตาราง',sql:'ALTER TABLE student\n  ADD email VARCHAR(30);',r:'Query OK, 0 rows affected'},
+  {c:'ddl',t:'ALTER TABLE MODIFY',tag:'DDL',d:'แก้ไขชนิดข้อมูลของคอลัมน์',sql:'ALTER TABLE student\n  MODIFY name VARCHAR(25);',r:'Query OK, 0 rows affected'},
+  {c:'ddl',t:'ALTER TABLE DROP',tag:'DDL',d:'ลบคอลัมน์ออกจากตาราง',sql:'ALTER TABLE student\n  DROP COLUMN email;',r:'Query OK, 0 rows affected'},
+  {c:'ddl',t:'DESCRIBE',tag:'DDL',d:'แสดงโครงสร้างของตาราง',sql:'DESCRIBE student;\n-- หรือ DESC student;',r:'id | int(3) | PRI\nname | varchar(15)'},
 
   // DML
-  {cat:'dml',title:'INSERT INTO (ทุกคอลัมน์)',desc:'เพิ่มข้อมูลแถวใหม่ลงในตาราง (ใส่ค่าทุกคอลัมน์)',
-   code:`INSERT INTO department VALUES('1','Electrical');`,result:'Query OK, 1 row affected'},
-  {cat:'dml',title:'INSERT INTO (เลือกคอลัมน์)',desc:'เพิ่มข้อมูลโดยระบุชื่อคอลัมน์ที่ต้องการ',
-   code:`INSERT INTO student(id,name)\nVALUES('104','Somchai');`,result:'Query OK, 1 row affected'},
-  {cat:'dml',title:'UPDATE SET',desc:'แก้ไขข้อมูลที่มีอยู่แล้วในตาราง',
-   code:`UPDATE student SET address='Bangkok'\nWHERE id=100;`,result:'Query OK, 1 row affected'},
-  {cat:'dml',title:'DELETE FROM',desc:'ลบข้อมูลในตารางตามเงื่อนไข',
-   code:`DELETE FROM student WHERE id=100;`,result:'Query OK, 1 row affected'},
-  {cat:'dml',title:'DELETE ALL',desc:'ลบข้อมูลทุกแถวในตาราง (ตารางยังอยู่)',
-   code:`DELETE FROM student;`,result:'Query OK, 4 rows affected'},
-  {cat:'dml',title:'TRUNCATE TABLE',desc:'ล้างข้อมูลทั้งหมดในตาราง (เร็วกว่า DELETE)',
-   code:`TRUNCATE TABLE student;`,result:'Query OK, 0 rows affected'},
+  {c:'dml',t:'INSERT (ทุกคอลัมน์)',tag:'DML',d:'เพิ่มข้อมูลแถวใหม่ลงในตาราง',sql:"INSERT INTO department\n  VALUES('1','Electrical');",r:'Query OK, 1 row affected'},
+  {c:'dml',t:'INSERT (เลือกคอลัมน์)',tag:'DML',d:'เพิ่มข้อมูลโดยระบุชื่อคอลัมน์',sql:"INSERT INTO student(id,name)\n  VALUES('104','Somchai');",r:'Query OK, 1 row affected'},
+  {c:'dml',t:'UPDATE SET',tag:'DML',d:'แก้ไขข้อมูลที่มีอยู่แล้วในตาราง',sql:"UPDATE student\n  SET address='Bangkok'\n  WHERE id=100;",r:'Query OK, 1 row affected'},
+  {c:'dml',t:'DELETE FROM',tag:'DML',d:'ลบข้อมูลในตารางตามเงื่อนไข',sql:"DELETE FROM student\n  WHERE id=100;",r:'Query OK, 1 row affected'},
+  {c:'dml',t:'TRUNCATE TABLE',tag:'DML',d:'ล้างข้อมูลทั้งหมดในตาราง (ตารางยังอยู่)',sql:'TRUNCATE TABLE student;',r:'Query OK, 0 rows affected'},
 
   // DQL
-  {cat:'dql',title:'SELECT * (ทั้งหมด)',desc:'แสดงข้อมูลทุกคอลัมน์จากตาราง',
-   code:'SELECT * FROM student;',result:'100 | Anun | Phangkhon | 2\n101 | Buncha | ...'},
-  {cat:'dql',title:'SELECT คอลัมน์ที่เลือก',desc:'แสดงเฉพาะคอลัมน์ที่ระบุ',
-   code:'SELECT id, name FROM student;',result:'100 | Anun\n101 | Buncha\n...'},
-  {cat:'dql',title:'WHERE = (เท่ากับ)',desc:'กรองข้อมูลที่มีค่าเท่ากับที่กำหนด',
-   code:`SELECT * FROM student\nWHERE address='Phangkhon';`,result:'100 | Anun | Phangkhon\n101 | Buncha | Phangkhon'},
-  {cat:'dql',title:'WHERE LIKE (ค้นหา)',desc:'ค้นหาข้อมูลที่มีรูปแบบตรงกัน % แทนอักขระใดก็ได้',
-   code:`SELECT * FROM student\nWHERE name LIKE 'p%';`,result:'103 | Piti | Waritchaphum | 2'},
-  {cat:'dql',title:'WHERE AND / OR',desc:'กำหนดเงื่อนไขหลายข้อพร้อมกัน',
-   code:`SELECT * FROM student\nWHERE address='Phangkhon'\nAND iddpm=1;`,result:'101 | Buncha | Phangkhon | 1'},
-  {cat:'dql',title:'WHERE BETWEEN',desc:'กรองข้อมูลในช่วงค่าที่กำหนด',
-   code:`SELECT * FROM student\nWHERE id BETWEEN 100 AND 102;`,result:'100 | 101 | 102 ...'},
-  {cat:'dql',title:'WHERE IN',desc:'กรองข้อมูลที่ตรงกับค่าในรายการ',
-   code:`SELECT * FROM student\nWHERE iddpm IN (1, 2);`,result:'100 | Anun\n101 | Buncha\n103 | Piti'},
-  {cat:'dql',title:'ORDER BY (เรียงลำดับ)',desc:'เรียงลำดับผลลัพธ์ ASC=น้อยไปมาก, DESC=มากไปน้อย',
-   code:`SELECT id, name FROM student\nORDER BY name ASC;`,result:'Anun | Buncha | Darunee | Piti'},
-  {cat:'dql',title:'LIMIT (จำกัดจำนวน)',desc:'จำกัดจำนวนแถวที่แสดง',
-   code:`SELECT * FROM student\nLIMIT 2;`,result:'แสดงแค่ 2 แถวแรก'},
-  {cat:'dql',title:'DISTINCT (ไม่ซ้ำ)',desc:'แสดงค่าที่ไม่ซ้ำกัน',
-   code:`SELECT DISTINCT address FROM student;`,result:'Phangkhon | Waritchaphum'},
+  {c:'dql',t:'SELECT * (ทั้งหมด)',tag:'DQL',d:'แสดงข้อมูลทุกคอลัมน์จากตาราง',sql:'SELECT * FROM student;',r:'100 | Anun | Phangkhon | 2\n101 | Buncha | ...'},
+  {c:'dql',t:'SELECT คอลัมน์เลือก',tag:'DQL',d:'แสดงเฉพาะคอลัมน์ที่ระบุ',sql:'SELECT id, name FROM student;',r:'100 | Anun\n101 | Buncha'},
+  {c:'dql',t:'WHERE = เท่ากับ',tag:'DQL',d:'กรองข้อมูลที่มีค่าเท่ากับที่กำหนด',sql:"SELECT * FROM student\n  WHERE address='Phangkhon';",r:'Anun | Buncha'},
+  {c:'dql',t:'WHERE LIKE ค้นหา',tag:'DQL',d:"ค้นหารูปแบบข้อความ % แทนอักขระใดก็ได้",sql:"SELECT * FROM student\n  WHERE name LIKE 'p%';",r:'Piti'},
+  {c:'dql',t:'WHERE AND / OR',tag:'DQL',d:'กำหนดเงื่อนไขหลายข้อ',sql:"SELECT * FROM student\n  WHERE address='Phangkhon'\n  AND iddpm=1;",r:'101 | Buncha'},
+  {c:'dql',t:'WHERE BETWEEN',tag:'DQL',d:'กรองข้อมูลในช่วงค่า',sql:'SELECT * FROM student\n  WHERE id BETWEEN 100 AND 102;',r:'100 | 101 | 102'},
+  {c:'dql',t:'WHERE IN',tag:'DQL',d:'กรองค่าตรงกับรายการที่กำหนด',sql:'SELECT * FROM student\n  WHERE iddpm IN (1, 2);',r:'Anun | Buncha | Piti'},
+  {c:'dql',t:'ORDER BY',tag:'DQL',d:'เรียงลำดับ ASC=น้อยไปมาก DESC=มากไปน้อย',sql:'SELECT id, name FROM student\n  ORDER BY name ASC;',r:'Anun → Buncha → Darunee → Piti'},
+  {c:'dql',t:'LIMIT',tag:'DQL',d:'จำกัดจำนวนแถวที่แสดง',sql:'SELECT * FROM student LIMIT 2;',r:'แสดงแค่ 2 แถวแรก'},
+  {c:'dql',t:'DISTINCT',tag:'DQL',d:'แสดงค่าที่ไม่ซ้ำกัน',sql:'SELECT DISTINCT address\n  FROM student;',r:'Phangkhon | Waritchaphum'},
 
   // JOIN
-  {cat:'join',title:'INNER JOIN',desc:'รวมข้อมูลจาก 2 ตาราง เฉพาะแถวที่มีค่าตรงกัน',
-   code:`SELECT student.id, student.name,\n  department.dpm_name\nFROM student\nINNER JOIN department\nON student.iddpm=department.iddpm;`,result:'100 | Anun | Electronic\n101 | Buncha | Electrical...'},
-  {cat:'join',title:'INNER JOIN + WHERE',desc:'รวม 2 ตาราง พร้อมกรองเงื่อนไข',
-   code:`SELECT student.id, student.name,\n  department.dpm_name\nFROM student\nINNER JOIN department\nON student.iddpm=department.iddpm\nWHERE dpm_name='Electronic';`,result:'100 | Anun | Electronic\n103 | Piti | Electronic'},
-  {cat:'join',title:'LEFT JOIN',desc:'รวมข้อมูล แสดงทุกแถวจากตารางซ้าย แม้ไม่มีข้อมูลตรงกัน',
-   code:`SELECT s.name, d.dpm_name\nFROM student s\nLEFT JOIN department d\nON s.iddpm=d.iddpm;`,result:'แสดงทุก student แม้ไม่มี department'},
-  {cat:'join',title:'RIGHT JOIN',desc:'รวมข้อมูล แสดงทุกแถวจากตารางขวา',
-   code:`SELECT s.name, d.dpm_name\nFROM student s\nRIGHT JOIN department d\nON s.iddpm=d.iddpm;`,result:'แสดงทุก department แม้ไม่มี student'},
+  {c:'join',t:'INNER JOIN',tag:'JOIN',d:'รวมข้อมูลจาก 2 ตาราง เฉพาะแถวที่ตรงกัน',sql:'SELECT student.id, student.name,\n  department.dpm_name\nFROM student\nINNER JOIN department\nON student.iddpm=department.iddpm;',r:'100|Anun|Electronic\n101|Buncha|Electrical'},
+  {c:'join',t:'INNER JOIN + WHERE',tag:'JOIN',d:'รวม 2 ตาราง พร้อมกรองเงื่อนไข',sql:"SELECT student.id, student.name,\n  department.dpm_name\nFROM student\nINNER JOIN department\nON student.iddpm=department.iddpm\nWHERE dpm_name='Electronic';",r:'100|Anun|Electronic\n103|Piti|Electronic'},
+  {c:'join',t:'LEFT JOIN',tag:'JOIN',d:'แสดงทุกแถวจากตารางซ้าย แม้ไม่มีคู่',sql:'SELECT s.name, d.dpm_name\nFROM student s\nLEFT JOIN department d\nON s.iddpm=d.iddpm;',r:'ทุก student แม้ไม่มี dept'},
+  {c:'join',t:'RIGHT JOIN',tag:'JOIN',d:'แสดงทุกแถวจากตารางขวา',sql:'SELECT s.name, d.dpm_name\nFROM student s\nRIGHT JOIN department d\nON s.iddpm=d.iddpm;',r:'ทุก dept แม้ไม่มี student'},
 
   // FUNCTIONS
-  {cat:'func',title:'COUNT() นับจำนวน',desc:'นับจำนวนแถวในตาราง',
-   code:'SELECT COUNT(id) FROM student;',result:'4'},
-  {cat:'func',title:'SUM() ผลรวม',desc:'หาผลรวมของค่าตัวเลขในคอลัมน์',
-   code:'SELECT SUM(score) FROM result;',result:'350'},
-  {cat:'func',title:'AVG() ค่าเฉลี่ย',desc:'หาค่าเฉลี่ยของตัวเลขในคอลัมน์',
-   code:'SELECT AVG(score) FROM result;',result:'87.5'},
-  {cat:'func',title:'MAX() / MIN()',desc:'หาค่าสูงสุด/ต่ำสุดในคอลัมน์',
-   code:'SELECT MAX(score), MIN(score)\nFROM result;',result:'100 | 75'},
-  {cat:'func',title:'GROUP BY',desc:'จัดกลุ่มข้อมูล มักใช้คู่กับ COUNT, SUM, AVG',
-   code:`SELECT dpm_name, COUNT(student.id)\nFROM student\nINNER JOIN department\nON student.iddpm=department.iddpm\nGROUP BY dpm_name;`,result:'Electronic | 2\nElectrical | 1\nComputer | 1'},
-  {cat:'func',title:'HAVING',desc:'กรองข้อมูลหลัง GROUP BY (เหมือน WHERE แต่ใช้กับ aggregate)',
-   code:`SELECT dpm_name, COUNT(*)\nFROM student\nINNER JOIN department\nON student.iddpm=department.iddpm\nGROUP BY dpm_name\nHAVING COUNT(*) > 1;`,result:'Electronic | 2'},
+  {c:'fn',t:'COUNT() นับจำนวน',tag:'FUNC',d:'นับจำนวนแถวในตาราง',sql:'SELECT COUNT(id) FROM student;',r:'4'},
+  {c:'fn',t:'SUM() ผลรวม',tag:'FUNC',d:'หาผลรวมของตัวเลข',sql:'SELECT SUM(score) FROM result;',r:'350'},
+  {c:'fn',t:'AVG() ค่าเฉลี่ย',tag:'FUNC',d:'หาค่าเฉลี่ยของตัวเลข',sql:'SELECT AVG(score) FROM result;',r:'87.5'},
+  {c:'fn',t:'MAX() / MIN()',tag:'FUNC',d:'หาค่าสูงสุด/ต่ำสุด',sql:'SELECT MAX(score), MIN(score)\nFROM result;',r:'100 | 75'},
+  {c:'fn',t:'GROUP BY',tag:'FUNC',d:'จัดกลุ่มข้อมูล ใช้คู่กับ aggregate',sql:'SELECT dpm_name, COUNT(student.id)\nFROM student\nINNER JOIN department\nON student.iddpm=department.iddpm\nGROUP BY dpm_name;',r:'Electronic|2\nElectrical|1\nComputer|1'},
+  {c:'fn',t:'HAVING',tag:'FUNC',d:'กรองหลัง GROUP BY',sql:'SELECT dpm_name, COUNT(*)\nFROM student\nINNER JOIN department\nON student.iddpm=department.iddpm\nGROUP BY dpm_name\nHAVING COUNT(*) > 1;',r:'Electronic | 2'},
 
   // ADVANCED
-  {cat:'adv',title:'SUBQUERY',desc:'คำสั่ง SELECT ซ้อนใน SELECT อีกที',
-   code:`SELECT name FROM student\nWHERE iddpm = (\n  SELECT iddpm FROM department\n  WHERE dpm_name='Electronic'\n);`,result:'Anun | Piti'},
-  {cat:'adv',title:'ALIAS (AS)',desc:'ตั้งชื่อย่อให้ตารางหรือคอลัมน์',
-   code:`SELECT s.id, s.name, d.dpm_name\nFROM student AS s\nINNER JOIN department AS d\nON s.iddpm = d.iddpm;`,result:'100 | Anun | Electronic...'},
-  {cat:'adv',title:'CONCAT() รวมข้อความ',desc:'รวมข้อความหลายคอลัมน์เป็นหนึ่งเดียว',
-   code:`SELECT CONCAT(name,' - ',address)\nAS full_info FROM student;`,result:'Anun - Phangkhon\nBuncha - Phangkhon'},
-  {cat:'adv',title:'UPPER() / LOWER()',desc:'แปลงตัวอักษรเป็นพิมพ์ใหญ่/เล็ก',
-   code:`SELECT UPPER(name) FROM student;`,result:'ANUN | BUNCHA | DARUNEE | PITI'},
-  {cat:'adv',title:'LENGTH() ความยาว',desc:'นับจำนวนตัวอักษรในข้อความ',
-   code:`SELECT name, LENGTH(name)\nFROM student;`,result:'Anun | 4\nBuncha | 6'},
-  {cat:'adv',title:'NOW() / DATE()',desc:'ดึงวันที่และเวลาปัจจุบัน',
-   code:`SELECT NOW();\nSELECT DATE(NOW());`,result:'2025-03-05 14:30:00\n2025-03-05'},
+  {c:'adv',t:'SUBQUERY',tag:'ADV',d:'SELECT ซ้อนใน SELECT',sql:"SELECT name FROM student\nWHERE iddpm = (\n  SELECT iddpm FROM department\n  WHERE dpm_name='Electronic'\n);",r:'Anun | Piti'},
+  {c:'adv',t:'ALIAS (AS)',tag:'ADV',d:'ตั้งชื่อย่อให้ตารางหรือคอลัมน์',sql:'SELECT s.id, s.name, d.dpm_name\nFROM student AS s\nINNER JOIN department AS d\nON s.iddpm = d.iddpm;',r:'ใช้ชื่อย่อแทนตาราง'},
+  {c:'adv',t:'CONCAT()',tag:'ADV',d:'รวมข้อความหลายคอลัมน์',sql:"SELECT CONCAT(name,' - ',address)\n  AS full_info FROM student;",r:"Anun - Phangkhon"},
+  {c:'adv',t:'UPPER() / LOWER()',tag:'ADV',d:'แปลงพิมพ์ใหญ่/เล็ก',sql:'SELECT UPPER(name) FROM student;',r:'ANUN | BUNCHA | DARUNEE | PITI'},
+  {c:'adv',t:'LENGTH()',tag:'ADV',d:'นับจำนวนตัวอักษร',sql:'SELECT name, LENGTH(name)\nFROM student;',r:'Anun|4\nBuncha|6'},
+  {c:'adv',t:'NOW() / DATE()',tag:'ADV',d:'ดึงวันที่และเวลาปัจจุบัน',sql:"SELECT NOW();\nSELECT DATE(NOW());",r:'2025-03-05 14:30:00'},
 ];
 
-// CHEATSHEET DATA
-const cheatData = [
-  {title:'CREATE DATABASE db;',p:'สร้างฐานข้อมูล'},
-  {title:'DROP DATABASE db;',p:'ลบฐานข้อมูล'},
-  {title:'USE db;',p:'เลือกใช้ฐานข้อมูล'},
-  {title:'SHOW DATABASES;',p:'แสดงฐานข้อมูลทั้งหมด'},
-  {title:'SHOW TABLES;',p:'แสดงตารางทั้งหมด'},
-  {title:'DESCRIBE table;',p:'ดูโครงสร้างตาราง'},
-  {title:'CREATE TABLE t(...);',p:'สร้างตาราง'},
-  {title:'DROP TABLE t;',p:'ลบตาราง'},
-  {title:'ALTER TABLE t ADD col TYPE;',p:'เพิ่มคอลัมน์'},
-  {title:'INSERT INTO t VALUES(...);',p:'เพิ่มข้อมูล'},
-  {title:'UPDATE t SET col=val WHERE...;',p:'แก้ไขข้อมูล'},
-  {title:'DELETE FROM t WHERE...;',p:'ลบข้อมูล'},
-  {title:'SELECT * FROM t;',p:'ดูข้อมูลทั้งหมด'},
-  {title:'SELECT col FROM t WHERE...;',p:'ดูข้อมูลแบบกรอง'},
-  {title:'WHERE col LIKE \'p%\';',p:'ค้นหาขึ้นต้นด้วย p'},
-  {title:'ORDER BY col ASC/DESC;',p:'เรียงลำดับ'},
-  {title:'LIMIT n;',p:'จำกัดจำนวนแถว'},
-  {title:'COUNT(col)',p:'นับจำนวน'},
-  {title:'SUM / AVG / MAX / MIN',p:'ฟังก์ชันคำนวณ'},
-  {title:'GROUP BY col;',p:'จัดกลุ่ม'},
-  {title:'HAVING condition;',p:'กรองหลัง GROUP BY'},
-  {title:'INNER JOIN t2 ON ...;',p:'รวมข้อมูล 2 ตาราง'},
-  {title:'LEFT / RIGHT JOIN',p:'รวมข้อมูลแบบซ้าย/ขวา'},
-  {title:'DISTINCT col',p:'แสดงค่าไม่ซ้ำ'},
-  {title:'WHERE col BETWEEN a AND b;',p:'ค่าในช่วง a ถึง b'},
-  {title:'WHERE col IN (a,b,c);',p:'ค่าตรงกับรายการ'},
-  {title:'CONCAT(a,b)',p:'รวมข้อความ'},
-  {title:'UPPER() / LOWER()',p:'แปลงพิมพ์ใหญ่/เล็ก'},
-  {title:'PRIMARY KEY',p:'กุญแจหลัก ห้ามซ้ำ'},
-  {title:'FOREIGN KEY REFERENCES',p:'กุญแจนอก เชื่อมตาราง'},
-  {title:'ON UPDATE CASCADE',p:'อัปเดตอัตโนมัติ'},
-  {title:'NOT NULL',p:'ห้ามค่าว่าง'},
-  {title:'AUTO_INCREMENT',p:'เพิ่มค่าอัตโนมัติ'},
-  {title:'DEFAULT value',p:'ค่าเริ่มต้น'},
+const tagColor={DDL:'c1',DML:'c2',DQL:'c3',JOIN:'c4',FUNC:'c2',ADV:'c5'};
+
+const cheatList=[
+  {c:'CREATE DATABASE db;',d:'สร้างฐานข้อมูล'},
+  {c:'DROP DATABASE db;',d:'ลบฐานข้อมูล'},
+  {c:'USE db;',d:'เลือกฐานข้อมูล'},
+  {c:'SHOW DATABASES;',d:'แสดงฐานข้อมูลทั้งหมด'},
+  {c:'SHOW TABLES;',d:'แสดงตารางทั้งหมด'},
+  {c:'DESCRIBE table;',d:'ดูโครงสร้างตาราง'},
+  {c:'CREATE TABLE t(...);',d:'สร้างตาราง'},
+  {c:'DROP TABLE t;',d:'ลบตาราง'},
+  {c:'ALTER TABLE ADD col TYPE;',d:'เพิ่มคอลัมน์'},
+  {c:'INSERT INTO t VALUES(...);',d:'เพิ่มข้อมูล'},
+  {c:'UPDATE t SET col=val WHERE;',d:'แก้ไขข้อมูล'},
+  {c:'DELETE FROM t WHERE;',d:'ลบข้อมูล'},
+  {c:'TRUNCATE TABLE t;',d:'ล้างข้อมูลทั้งหมด'},
+  {c:'SELECT * FROM t;',d:'ดูข้อมูลทั้งหมด'},
+  {c:"SELECT * FROM t WHERE col='val';",d:'กรองข้อมูล'},
+  {c:"WHERE col LIKE 'p%';",d:'ขึ้นต้นด้วย p'},
+  {c:"WHERE col LIKE '%p';",d:'ลงท้ายด้วย p'},
+  {c:"WHERE col LIKE '%p%';",d:'มี p อยู่ที่ไหนก็ได้'},
+  {c:'ORDER BY col ASC/DESC;',d:'เรียงลำดับ'},
+  {c:'LIMIT n;',d:'จำกัดจำนวนแถว'},
+  {c:'DISTINCT col',d:'ค่าไม่ซ้ำ'},
+  {c:'WHERE BETWEEN a AND b;',d:'ค่าในช่วง a–b'},
+  {c:'WHERE col IN (a,b,c);',d:'ค่าตรงกับรายการ'},
+  {c:'COUNT() SUM() AVG()',d:'ฟังก์ชันคำนวณ'},
+  {c:'MAX() MIN()',d:'สูงสุด / ต่ำสุด'},
+  {c:'GROUP BY col;',d:'จัดกลุ่ม'},
+  {c:'HAVING condition;',d:'กรองหลัง GROUP BY'},
+  {c:'INNER JOIN t2 ON cond;',d:'รวมเฉพาะที่ตรงกัน'},
+  {c:'LEFT JOIN / RIGHT JOIN',d:'รวมแบบซ้าย/ขวา'},
+  {c:'CONCAT(a,b)',d:'รวมข้อความ'},
+  {c:'UPPER() LOWER()',d:'พิมพ์ใหญ่/เล็ก'},
+  {c:'PRIMARY KEY',d:'กุญแจหลัก ห้ามซ้ำ-ว่าง'},
+  {c:'FOREIGN KEY REFERENCES',d:'กุญแจนอก เชื่อมตาราง'},
+  {c:'ON UPDATE CASCADE',d:'อัปเดตอัตโนมัติ'},
 ];
 
-// TYPING GAME DATA
-const gamePrompts = {
-  easy: [
-    {desc:'แสดงฐานข้อมูลทั้งหมด', q:'SHOW DATABASES;'},
-    {desc:'เลือกใช้ฐานข้อมูล test1', q:'USE test1;'},
-    {desc:'แสดงตารางทั้งหมด', q:'SHOW TABLES;'},
-    {desc:'ดูโครงสร้างตาราง student', q:'DESCRIBE student;'},
-    {desc:'แสดงข้อมูลทั้งหมดจากตาราง student', q:'SELECT * FROM student;'},
-    {desc:'แสดง id และ name จากตาราง student', q:'SELECT id, name FROM student;'},
-    {desc:'สร้างฐานข้อมูลชื่อ mydb', q:'CREATE DATABASE mydb;'},
-    {desc:'ลบฐานข้อมูลชื่อ mydb', q:'DROP DATABASE mydb;'},
-    {desc:'นับจำนวนนักศึกษา', q:'SELECT COUNT(id) FROM student;'},
+const gameData={
+  easy:[
+    {d:'แสดงฐานข้อมูลทั้งหมด',q:'SHOW DATABASES;'},
+    {d:'เลือกใช้ฐานข้อมูล test1',q:'USE test1;'},
+    {d:'แสดงตารางทั้งหมด',q:'SHOW TABLES;'},
+    {d:'ดูโครงสร้างตาราง student',q:'DESCRIBE student;'},
+    {d:'แสดงข้อมูลทั้งหมดจาก student',q:'SELECT * FROM student;'},
+    {d:'แสดง id และ name',q:'SELECT id, name FROM student;'},
+    {d:'สร้างฐานข้อมูล mydb',q:'CREATE DATABASE mydb;'},
+    {d:'นับจำนวนนักศึกษา',q:'SELECT COUNT(id) FROM student;'},
   ],
-  med: [
-    {desc:'แสดงนักศึกษาที่อยู่ Phangkhon', q:"SELECT * FROM student WHERE address='Phangkhon';"},
-    {desc:'แสดงนักศึกษาชื่อขึ้นต้นด้วย P', q:"SELECT * FROM student WHERE name LIKE 'p%';"},
-    {desc:'แสดง id, name เรียงตามชื่อ', q:'SELECT id, name FROM student ORDER BY name;'},
-    {desc:'แสดงนักศึกษาสาขา iddpm=2', q:'SELECT id, name FROM student WHERE iddpm=2;'},
-    {desc:'เพิ่มข้อมูลลงตาราง department', q:"INSERT INTO department VALUES('1','Electrical');"},
-    {desc:'เพิ่มข้อมูลนักศึกษา Anun', q:"INSERT INTO student VALUES('100','Anun','Phangkhon','2');"},
-    {desc:'แสดงค่าไม่ซ้ำของที่อยู่', q:'SELECT DISTINCT address FROM student;'},
-    {desc:'แสดง 2 แถวแรก', q:'SELECT * FROM student LIMIT 2;'},
+  med:[
+    {d:'แสดงนักศึกษาที่อยู่ Phangkhon',q:"SELECT * FROM student WHERE address='Phangkhon';"},
+    {d:'ชื่อขึ้นต้นด้วย P',q:"SELECT * FROM student WHERE name LIKE 'p%';"},
+    {d:'เรียงตามชื่อ A→Z',q:'SELECT id, name FROM student ORDER BY name;'},
+    {d:'สังกัด iddpm=2',q:'SELECT id, name FROM student WHERE iddpm=2;'},
+    {d:'เพิ่มข้อมูล department',q:"INSERT INTO department VALUES('1','Electrical');"},
+    {d:'เพิ่มนักศึกษา Anun',q:"INSERT INTO student VALUES('100','Anun','Phangkhon','2');"},
+    {d:'ค่าไม่ซ้ำของที่อยู่',q:'SELECT DISTINCT address FROM student;'},
+    {d:'แสดง 3 แถวแรก',q:'SELECT * FROM student LIMIT 3;'},
   ],
-  hard: [
-    {desc:'สร้างตาราง department', q:"CREATE TABLE department(iddpm INT(1) PRIMARY KEY, dpm_name VARCHAR(15));"},
-    {desc:'รวม 2 ตาราง student และ department', q:'SELECT student.id, student.name, department.dpm_name FROM student INNER JOIN department ON student.iddpm=department.iddpm;'},
-    {desc:'รวม 2 ตาราง เฉพาะ Electronic', q:"SELECT student.id, student.name, department.dpm_name FROM student INNER JOIN department ON student.iddpm=department.iddpm WHERE dpm_name='Electronic';"},
-    {desc:'นับจำนวนนักศึกษาแต่ละสาขา', q:'SELECT department.dpm_name, COUNT(student.id) FROM student INNER JOIN department ON student.iddpm=department.iddpm GROUP BY dpm_name;'},
-    {desc:'แก้ไขที่อยู่นักศึกษา id=100', q:"UPDATE student SET address='Bangkok' WHERE id=100;"},
-    {desc:'ลบนักศึกษา id=103', q:'DELETE FROM student WHERE id=103;'},
+  hard:[
+    {d:'สร้างตาราง department',q:'CREATE TABLE department(iddpm INT(1) PRIMARY KEY, dpm_name VARCHAR(15));'},
+    {d:'INNER JOIN student + department',q:'SELECT student.id, student.name, department.dpm_name FROM student INNER JOIN department ON student.iddpm=department.iddpm;'},
+    {d:'JOIN เฉพาะ Electronic',q:"SELECT student.id, student.name, department.dpm_name FROM student INNER JOIN department ON student.iddpm=department.iddpm WHERE dpm_name='Electronic';"},
+    {d:'นับนักศึกษาแต่ละสาขา',q:'SELECT department.dpm_name, COUNT(student.id) FROM student INNER JOIN department ON student.iddpm=department.iddpm GROUP BY dpm_name;'},
+    {d:'แก้ไขที่อยู่ id=100',q:"UPDATE student SET address='Bangkok' WHERE id=100;"},
+    {d:'ลบนักศึกษา id=103',q:'DELETE FROM student WHERE id=103;'},
   ]
 };
 
-// MCQ DATA (30 ข้อ)
-const mcqData = [
-  {q:'คำสั่งใดใช้สร้างฐานข้อมูลใหม่?',opts:['USE database;','SHOW DATABASES;','CREATE DATABASE database;','DROP DATABASE database;'],ans:2,exp:'CREATE DATABASE ใช้สร้างฐานข้อมูลใหม่'},
-  {q:'คำสั่งใดใช้เลือกใช้งานฐานข้อมูล?',opts:['SELECT database;','USE database;','SHOW database;','OPEN database;'],ans:1,exp:'USE database; ใช้เลือกฐานข้อมูลที่ต้องการใช้'},
-  {q:'คำสั่งใดแสดงฐานข้อมูลทั้งหมดในระบบ?',opts:['SELECT DATABASES;','SHOW DATABASES;','LIST DATABASES;','DESCRIBE DATABASES;'],ans:1,exp:'SHOW DATABASES; แสดงรายการฐานข้อมูลทั้งหมด'},
-  {q:'คำสั่งใดดูโครงสร้างของตาราง?',opts:['SHOW TABLE student;','SELECT * FROM student;','DESCRIBE student;','VIEW student;'],ans:2,exp:'DESCRIBE (หรือ DESC) ใช้ดูโครงสร้างตาราง'},
-  {q:'PRIMARY KEY มีคุณสมบัติอย่างไร?',opts:['ซ้ำกันได้','ว่างได้','ไม่ซ้ำ ไม่ว่าง','ซ้ำได้และว่างได้'],ans:2,exp:'PRIMARY KEY ต้องไม่ซ้ำและไม่ว่าง (NOT NULL + UNIQUE)'},
-  {q:'FOREIGN KEY ใช้ทำอะไร?',opts:['กำหนดค่าเริ่มต้น','เชื่อมความสัมพันธ์ระหว่าง 2 ตาราง','นับจำนวนแถว','เรียงลำดับข้อมูล'],ans:1,exp:'FOREIGN KEY เชื่อมตารางลูกกับตารางแม่'},
-  {q:'คำสั่งใดเพิ่มข้อมูลลงในตาราง?',opts:['INSERT INTO student VALUES(...);','ADD INTO student VALUES(...);','UPDATE student VALUES(...);','PUT INTO student VALUES(...);'],ans:0,exp:'INSERT INTO ใช้เพิ่มข้อมูลลงตาราง'},
-  {q:'คำสั่งใดแสดงข้อมูลทุกคอลัมน์จากตาราง student?',opts:['SELECT student FROM *;','SELECT * FROM student;','SHOW * FROM student;','GET * FROM student;'],ans:1,exp:'SELECT * FROM table ดึงข้อมูลทุกคอลัมน์'},
-  {q:'`WHERE address = \'Phangkhon\'` หมายความว่า?',opts:['เรียงตามที่อยู่','กรองเฉพาะแถวที่ address เป็น Phangkhon','นับคนที่อยู่ Phangkhon','ลบข้อมูล Phangkhon'],ans:1,exp:'WHERE ใช้กรองเงื่อนไข'},
-  {q:'`LIKE \'p%\'` หมายความว่า?',opts:['ลงท้ายด้วย p','มี p อยู่กลาง','ขึ้นต้นด้วย p','ความยาว p ตัว'],ans:2,exp:"LIKE 'p%' หมายถึงขึ้นต้นด้วย p"},
-  {q:'คำสั่งใดนับจำนวนแถว?',opts:['SELECT SUM(id) FROM student;','SELECT COUNT(id) FROM student;','SELECT TOTAL(id) FROM student;','SELECT NUMBER(id) FROM student;'],ans:1,exp:'COUNT() ใช้นับจำนวนแถว'},
-  {q:'`ORDER BY name` เรียงลำดับแบบใด?',opts:['Z → A','A → Z','สุ่ม','ไม่มีการเรียง'],ans:1,exp:'ORDER BY ค่าเริ่มต้นคือ ASC (A→Z, น้อยไปมาก)'},
-  {q:'INNER JOIN ใช้ทำอะไร?',opts:['ลบข้อมูลจาก 2 ตาราง','รวมข้อมูลจาก 2 ตารางที่มีค่าตรงกัน','คัดลอกตาราง','สร้างตารางใหม่'],ans:1,exp:'INNER JOIN รวมข้อมูลเฉพาะแถวที่ตรงกันทั้ง 2 ตาราง'},
-  {q:'ON UPDATE CASCADE หมายความว่า?',opts:['ลบอัตโนมัติเมื่อแม่ถูกลบ','อัปเดตตารางลูกอัตโนมัติเมื่อแม่แก้ไข','ป้องกันการแก้ไข','สร้างสำเนา'],ans:1,exp:'CASCADE ทำให้การเปลี่ยนแปลงใน PK ส่งผลถึง FK ด้วย'},
-  {q:'VARCHAR(15) คืออะไร?',opts:['ตัวเลขสูงสุด 15','ข้อความสูงสุด 15 ตัวอักษร','ทศนิยม 15 หลัก','วันที่ 15 หลัก'],ans:1,exp:'VARCHAR คือชนิดข้อมูลข้อความ ตัวเลขในวงเล็บคือความยาวสูงสุด'},
-  {q:'คำสั่งใดแก้ไขข้อมูลในตาราง?',opts:['MODIFY student SET...','EDIT student SET...','UPDATE student SET...','CHANGE student SET...'],ans:2,exp:'UPDATE...SET...WHERE ใช้แก้ไขข้อมูล'},
-  {q:'คำสั่งใดลบข้อมูลในตาราง?',opts:['REMOVE FROM student WHERE...','DELETE FROM student WHERE...','DROP FROM student WHERE...','ERASE FROM student WHERE...'],ans:1,exp:'DELETE FROM ใช้ลบข้อมูล'},
-  {q:'GROUP BY ใช้ทำอะไร?',opts:['เรียงลำดับข้อมูล','จัดกลุ่มข้อมูล','กรองข้อมูล','รวมตาราง'],ans:1,exp:'GROUP BY จัดกลุ่มข้อมูลเพื่อใช้กับ aggregate functions'},
-  {q:'AVG() ใช้ทำอะไร?',opts:['หาค่าสูงสุด','หาค่าต่ำสุด','หาค่าเฉลี่ย','หาผลรวม'],ans:2,exp:'AVG() คำนวณค่าเฉลี่ย'},
-  {q:'DISTINCT ใช้ทำอะไร?',opts:['เรียงลำดับ','แสดงค่าที่ไม่ซ้ำกัน','นับจำนวน','กรองข้อมูล'],ans:1,exp:'DISTINCT กรองให้แสดงค่าที่ไม่ซ้ำ'},
-  {q:'LEFT JOIN แตกต่างจาก INNER JOIN อย่างไร?',opts:['LEFT JOIN แสดงเฉพาะแถวที่ตรงกัน','LEFT JOIN แสดงทุกแถวจากตารางซ้ายแม้ไม่มีคู่','LEFT JOIN ลบข้อมูล','LEFT JOIN เร็วกว่า'],ans:1,exp:'LEFT JOIN แสดงทุกแถวจากตารางซ้ายโดยไม่สนว่าตารางขวาจะมีหรือไม่'},
-  {q:'LIMIT 3 หมายความว่า?',opts:['แสดงทุกแถว','ข้ามแถวที่ 3','แสดงแค่ 3 แถวแรก','ลบ 3 แถวแรก'],ans:2,exp:'LIMIT จำกัดจำนวนแถวที่แสดงผล'},
-  {q:'คำสั่งสร้างตารางที่ถูกต้องคือ?',opts:['CREATE table(id INT);','CREATE TABLE t(id INT PRIMARY KEY);','MAKE TABLE t(id INT);','BUILD TABLE t(id INT);'],ans:1,exp:'CREATE TABLE ชื่อตาราง(คอลัมน์ ชนิด constraint)'},
-  {q:'ALTER TABLE ใช้ทำอะไร?',opts:['ลบตาราง','แก้ไขโครงสร้างตาราง','สร้างตารางใหม่','คัดลอกตาราง'],ans:1,exp:'ALTER TABLE ใช้แก้ไขโครงสร้าง เช่น เพิ่ม/ลบ/แก้ไขคอลัมน์'},
-  {q:'BETWEEN ใช้ทำอะไร?',opts:['เชื่อมข้อความ','กรองข้อมูลในช่วงค่าที่กำหนด','เรียงลำดับ','จัดกลุ่ม'],ans:1,exp:"WHERE id BETWEEN 100 AND 103 กรองค่า 100, 101, 102, 103"},
-  {q:'CONCAT() ใช้ทำอะไร?',opts:['นับตัวอักษร','รวมข้อความหลาย ๆ ส่วนเข้าด้วยกัน','แปลงตัวพิมพ์','หาความยาว'],ans:1,exp:"CONCAT(a,' ',b) รวมข้อความ a และ b"},
-  {q:'HAVING แตกต่างจาก WHERE อย่างไร?',opts:['HAVING ใช้ก่อน GROUP BY','HAVING ใช้หลัง GROUP BY กับ aggregate functions','ไม่แตกต่างกัน','HAVING เร็วกว่า'],ans:1,exp:'HAVING กรองผลลัพธ์ที่ผ่าน GROUP BY แล้ว'},
-  {q:'DROP TABLE และ TRUNCATE TABLE ต่างกันอย่างไร?',opts:['ไม่ต่างกัน','DROP ลบตาราง, TRUNCATE ล้างข้อมูลแต่ตารางยังอยู่','TRUNCATE ลบตาราง, DROP ล้างข้อมูล','DROP เร็วกว่า'],ans:1,exp:'DROP TABLE ลบทั้งตาราง, TRUNCATE ล้างแค่ข้อมูล'},
-  {q:'INT(3) หมายความว่า?',opts:['ตัวเลขสูงสุด 3','ข้อความ 3 ตัวอักษร','ตัวเลขจำนวนเต็ม แสดงกว้าง 3 หลัก','ทศนิยม 3 ตำแหน่ง'],ans:2,exp:'INT คือตัวเลขจำนวนเต็ม (3) คือความกว้างในการแสดงผล'},
-  {q:'ผลลัพธ์ของ `SELECT COUNT(id) FROM student;` เมื่อมีนักศึกษา 4 คน คือ?',opts:['student','id','100','4'],ans:3,exp:'COUNT() นับจำนวนแถวที่ไม่ใช่ NULL'},
+const mcqData=[
+  {q:'คำสั่งใดใช้สร้างฐานข้อมูลใหม่?',o:['USE database;','SHOW DATABASES;','CREATE DATABASE database;','DROP DATABASE database;'],a:2,e:'CREATE DATABASE ใช้สร้างฐานข้อมูลใหม่'},
+  {q:'คำสั่งใดใช้เลือกใช้งานฐานข้อมูล?',o:['SELECT database;','USE database;','SHOW database;','OPEN database;'],a:1,e:'USE database; เลือกฐานข้อมูลที่ต้องการ'},
+  {q:'คำสั่งใดแสดงฐานข้อมูลทั้งหมด?',o:['SELECT DATABASES;','SHOW DATABASES;','LIST DATABASES;','DESCRIBE DATABASES;'],a:1,e:'SHOW DATABASES; แสดงรายการทั้งหมด'},
+  {q:'คำสั่งใดดูโครงสร้างของตาราง?',o:['SHOW TABLE student;','SELECT * FROM student;','DESCRIBE student;','VIEW student;'],a:2,e:'DESCRIBE (หรือ DESC) แสดงโครงสร้าง'},
+  {q:'PRIMARY KEY มีคุณสมบัติอย่างไร?',o:['ซ้ำได้','ว่างได้','ไม่ซ้ำ ไม่ว่าง','ซ้ำได้และว่างได้'],a:2,e:'PRIMARY KEY ต้องไม่ซ้ำ (UNIQUE) และไม่ว่าง (NOT NULL)'},
+  {q:'FOREIGN KEY ใช้ทำอะไร?',o:['กำหนดค่าเริ่มต้น','เชื่อมความสัมพันธ์ระหว่าง 2 ตาราง','นับจำนวนแถว','เรียงลำดับข้อมูล'],a:1,e:'FOREIGN KEY อ้างอิง PRIMARY KEY ของตารางอื่น'},
+  {q:'คำสั่งใดเพิ่มข้อมูลลงตาราง?',o:['INSERT INTO student VALUES(...);','ADD INTO student VALUES(...);','UPDATE student VALUES(...);','PUT INTO student VALUES(...);'],a:0,e:'INSERT INTO ใช้เพิ่มข้อมูล'},
+  {q:'SELECT * FROM student; หมายความว่า?',o:['ดึงเฉพาะคอลัมน์ *','ดึงข้อมูลทุกคอลัมน์จาก student','ลบข้อมูลใน student','นับข้อมูลใน student'],a:1,e:'* คือทุกคอลัมน์'},
+  {q:"WHERE address = 'Phangkhon' หมายความว่า?",o:['เรียงตามที่อยู่','กรองเฉพาะ address เป็น Phangkhon','นับคนที่อยู่ Phangkhon','ลบข้อมูล Phangkhon'],a:1,e:'WHERE กรองเงื่อนไข'},
+  {q:"LIKE 'p%' หมายความว่า?",o:['ลงท้ายด้วย p','มี p ตรงกลาง','ขึ้นต้นด้วย p','ความยาวเท่า p'],a:2,e:"p% = ขึ้นต้นด้วย p"},
+  {q:'COUNT() ใช้ทำอะไร?',o:['หาผลรวม','หาค่าเฉลี่ย','นับจำนวนแถว','หาค่าสูงสุด'],a:2,e:'COUNT() นับจำนวน rows'},
+  {q:'ORDER BY name คือ?',o:['Z→A','A→Z (ค่าเริ่มต้น)','สุ่ม','เรียงตาม id'],a:1,e:'ORDER BY ค่าเริ่มต้น ASC (น้อยไปมาก)'},
+  {q:'INNER JOIN ทำอะไร?',o:['ลบข้อมูลจาก 2 ตาราง','รวมข้อมูลที่มีค่าตรงกัน','คัดลอกตาราง','สร้างตารางใหม่'],a:1,e:'INNER JOIN รวมเฉพาะแถวที่ตรงกันทั้ง 2 ตาราง'},
+  {q:'ON UPDATE CASCADE หมายความว่า?',o:['ลบอัตโนมัติ','อัปเดตตารางลูกอัตโนมัติเมื่อแม่เปลี่ยน','ป้องกันการแก้ไข','สร้างสำเนา'],a:1,e:'CASCADE ส่งผลการเปลี่ยนแปลงไปยัง FK'},
+  {q:'VARCHAR(15) หมายความว่า?',o:['ตัวเลขสูงสุด 15','ข้อความสูงสุด 15 ตัวอักษร','ทศนิยม 15 หลัก','วันที่ 15 หลัก'],a:1,e:'VARCHAR คือข้อความ ตัวเลขคือความยาวสูงสุด'},
+  {q:'UPDATE...SET...WHERE ใช้ทำอะไร?',o:['เพิ่มข้อมูล','ลบข้อมูล','แก้ไขข้อมูล','ค้นหาข้อมูล'],a:2,e:'UPDATE ใช้แก้ไขข้อมูลที่มีอยู่'},
+  {q:'DELETE FROM student WHERE id=103; ทำอะไร?',o:['ลบตาราง student','ลบนักศึกษา id=103','แก้ไขนักศึกษา id=103','ค้นหา id=103'],a:1,e:'DELETE FROM ลบข้อมูลตามเงื่อนไข WHERE'},
+  {q:'GROUP BY ใช้ทำอะไร?',o:['เรียงลำดับ','จัดกลุ่มข้อมูล','กรองข้อมูล','รวมตาราง'],a:1,e:'GROUP BY จัดกลุ่มเพื่อใช้กับ aggregate functions'},
+  {q:'AVG() คืออะไร?',o:['ค่าสูงสุด','ค่าต่ำสุด','ค่าเฉลี่ย','ผลรวม'],a:2,e:'AVG() คำนวณค่าเฉลี่ย'},
+  {q:'DISTINCT ทำอะไร?',o:['เรียงลำดับ','แสดงค่าไม่ซ้ำ','นับจำนวน','กรองข้อมูล'],a:1,e:'DISTINCT กรองให้เหลือค่าที่ไม่ซ้ำกัน'},
+  {q:'LEFT JOIN ต่างจาก INNER JOIN อย่างไร?',o:['LEFT แสดงเฉพาะที่ตรงกัน','LEFT แสดงทุกแถวจากตารางซ้ายแม้ไม่มีคู่','LEFT ลบข้อมูล','LEFT เร็วกว่า'],a:1,e:'LEFT JOIN คืนทุก record จากตารางซ้าย'},
+  {q:'LIMIT 5 คือ?',o:['แสดงทุกแถว','ข้ามแถวที่ 5','แสดงแค่ 5 แถวแรก','ลบ 5 แถวแรก'],a:2,e:'LIMIT จำกัดจำนวนแถวผลลัพธ์'},
+  {q:'คำสั่งสร้างตารางที่ถูก?',o:['CREATE table(id INT);','CREATE TABLE t(id INT PRIMARY KEY);','MAKE TABLE t(id INT);','BUILD TABLE t;'],a:1,e:'CREATE TABLE ชื่อ(column type constraint)'},
+  {q:'ALTER TABLE ทำอะไร?',o:['ลบตาราง','แก้ไขโครงสร้างตาราง','สร้างตารางใหม่','คัดลอกตาราง'],a:1,e:'ALTER TABLE แก้ไข schema เช่น ADD/DROP/MODIFY คอลัมน์'},
+  {q:'WHERE BETWEEN a AND b คือ?',o:['รวมข้อความ','กรองค่าในช่วง a–b','เรียงลำดับ','จัดกลุ่ม'],a:1,e:"BETWEEN กรองค่าที่อยู่ระหว่าง a และ b (รวมขอบ)"},
+  {q:'CONCAT(a,b) ทำอะไร?',o:['นับตัวอักษร','รวมข้อความหลายส่วน','แปลงพิมพ์ใหญ่','หาความยาว'],a:1,e:'CONCAT รวมสตริงหลายค่าเข้าด้วยกัน'},
+  {q:'HAVING ต่างจาก WHERE อย่างไร?',o:['HAVING ใช้ก่อน GROUP BY','HAVING ใช้หลัง GROUP BY กับ aggregate','ไม่ต่าง','HAVING เร็วกว่า'],a:1,e:'HAVING กรองผลลัพธ์หลัง GROUP BY'},
+  {q:'DROP TABLE vs TRUNCATE TABLE?',o:['ไม่ต่าง','DROP ลบตาราง TRUNCATE ล้างข้อมูลแต่ตารางอยู่','TRUNCATE ลบตาราง DROP ล้างข้อมูล','DROP เร็วกว่า'],a:1,e:'DROP ลบทั้งตาราง, TRUNCATE ล้างแค่ข้อมูล'},
+  {q:'INT(3) หมายความว่า?',o:['ค่าสูงสุด 3','ข้อความ 3 ตัว','ตัวเลขจำนวนเต็ม กว้างแสดง 3 หลัก','ทศนิยม 3 ตำแหน่ง'],a:2,e:'INT คือตัวเลขจำนวนเต็ม (3) คือ display width'},
+  {q:'ผลลัพธ์ SELECT COUNT(id) FROM student; (4 คน)?',o:['student','id','100','4'],a:3,e:'COUNT() นับจำนวนแถวที่ไม่ใช่ NULL'},
 ];
 
-// WRITTEN EXAM DATA (20 ข้อ)
-const writtenData = [
-  {q:'จงเขียนคำสั่งแสดงฐานข้อมูลทั้งหมดในระบบ',ans:'SHOW DATABASES;',hint:'ใช้คำสั่ง SHOW'},
-  {q:'จงเขียนคำสั่งสร้างฐานข้อมูลชื่อ school',ans:'CREATE DATABASE school;',hint:'ใช้คำสั่ง CREATE DATABASE'},
-  {q:'จงเขียนคำสั่งเลือกใช้งานฐานข้อมูล school',ans:'USE school;',hint:'ใช้คำสั่ง USE'},
-  {q:'จงเขียนคำสั่งดูโครงสร้างของตาราง student',ans:'DESCRIBE student;',hint:'ใช้ DESCRIBE หรือ DESC'},
-  {q:'จงเขียนคำสั่งแสดงข้อมูลทั้งหมดจากตาราง department',ans:'SELECT * FROM department;',hint:'ใช้ SELECT * FROM'},
-  {q:'จงเขียนคำสั่งแสดงเฉพาะ id และ name จากตาราง student',ans:'SELECT id, name FROM student;',hint:'ระบุชื่อคอลัมน์แทน *'},
-  {q:"จงเขียนคำสั่งแสดงนักศึกษาที่อยู่ที่ 'Phangkhon' (แสดงทุกคอลัมน์)",ans:"SELECT * FROM student WHERE address='Phangkhon';",hint:'ใช้ WHERE กับเครื่องหมาย ='},
-  {q:"จงเขียนคำสั่งแสดงนักศึกษาที่ชื่อขึ้นต้นด้วย 'P'",ans:"SELECT * FROM student WHERE name LIKE 'P%';",hint:"ใช้ LIKE 'P%'"},
-  {q:'จงเขียนคำสั่งแสดงนักศึกษาที่สังกัด iddpm = 2',ans:'SELECT id, name FROM student WHERE iddpm=2;',hint:'ใช้ WHERE iddpm=2'},
-  {q:'จงเขียนคำสั่งนับจำนวนนักศึกษาทั้งหมดในตาราง student',ans:'SELECT COUNT(id) FROM student;',hint:'ใช้ COUNT()'},
-  {q:'จงเขียนคำสั่งแสดง id และ name เรียงตามชื่อจาก A ไป Z',ans:'SELECT id, name FROM student ORDER BY name;',hint:'ใช้ ORDER BY'},
-  {q:"จงเขียนคำสั่งเพิ่มข้อมูลลงตาราง department: iddpm=1, dpm_name='Electrical'",ans:"INSERT INTO department VALUES('1','Electrical');",hint:'ใช้ INSERT INTO VALUES'},
-  {q:"จงเขียนคำสั่งเพิ่มนักศึกษา: id=100, name=Anun, address=Phangkhon, iddpm=2",ans:"INSERT INTO student VALUES('100','Anun','Phangkhon','2');",hint:'ใส่ค่าตามลำดับคอลัมน์'},
-  {q:'จงเขียนคำสั่งแก้ไขที่อยู่ของนักศึกษา id=100 ให้เป็น Bangkok',ans:"UPDATE student SET address='Bangkok' WHERE id=100;",hint:'ใช้ UPDATE...SET...WHERE'},
-  {q:'จงเขียนคำสั่งลบนักศึกษาที่มี id=103 ออกจากตาราง',ans:'DELETE FROM student WHERE id=103;',hint:'ใช้ DELETE FROM...WHERE'},
-  {q:'จงเขียนคำสั่ง INNER JOIN เพื่อแสดง id, name จาก student และ dpm_name จาก department',ans:'SELECT student.id, student.name, department.dpm_name FROM student INNER JOIN department ON student.iddpm=department.iddpm;',hint:'ใช้ INNER JOIN...ON'},
-  {q:"จงเขียนคำสั่ง INNER JOIN แสดงข้อมูลนักศึกษาเฉพาะสาขา 'Electronic'",ans:"SELECT student.id, student.name, department.dpm_name FROM student INNER JOIN department ON student.iddpm=department.iddpm WHERE dpm_name='Electronic';",hint:'ต่อท้ายด้วย WHERE dpm_name'},
-  {q:'จงเขียนคำสั่งแสดงจำนวนนักศึกษาในแต่ละโปรแกรมวิชา',ans:'SELECT department.dpm_name, COUNT(student.id) FROM student INNER JOIN department ON student.iddpm=department.iddpm GROUP BY dpm_name;',hint:'ใช้ GROUP BY กับ COUNT'},
-  {q:'จงเขียนคำสั่งสร้างตาราง department ที่มี iddpm INT(1) PRIMARY KEY และ dpm_name VARCHAR(15)',ans:'CREATE TABLE department(iddpm INT(1) PRIMARY KEY, dpm_name VARCHAR(15));',hint:'ใช้ CREATE TABLE'},
-  {q:'จงเขียนคำสั่งแสดงค่าที่อยู่ (address) ที่ไม่ซ้ำกันจากตาราง student',ans:'SELECT DISTINCT address FROM student;',hint:'ใช้ DISTINCT'},
+const writtenData=[
+  {q:'จงเขียนคำสั่งแสดงฐานข้อมูลทั้งหมดในระบบ',a:'SHOW DATABASES;',h:'ใช้ SHOW'},
+  {q:'จงเขียนคำสั่งสร้างฐานข้อมูลชื่อ school',a:'CREATE DATABASE school;',h:'ใช้ CREATE DATABASE'},
+  {q:'จงเขียนคำสั่งเลือกใช้งานฐานข้อมูล school',a:'USE school;',h:'ใช้ USE'},
+  {q:'จงเขียนคำสั่งดูโครงสร้างของตาราง student',a:'DESCRIBE student;',h:'ใช้ DESCRIBE หรือ DESC'},
+  {q:'จงเขียนคำสั่งแสดงข้อมูลทั้งหมดจากตาราง department',a:'SELECT * FROM department;',h:'ใช้ SELECT * FROM'},
+  {q:'จงเขียนคำสั่งแสดงเฉพาะ id และ name จากตาราง student',a:'SELECT id, name FROM student;',h:'ระบุชื่อคอลัมน์แทน *'},
+  {q:"จงเขียนคำสั่งแสดงนักศึกษาที่อยู่ที่ Phangkhon (ทุกคอลัมน์)",a:"SELECT * FROM student WHERE address='Phangkhon';",h:"WHERE address='Phangkhon'"},
+  {q:"จงเขียนคำสั่งแสดงนักศึกษาที่ชื่อขึ้นต้นด้วย P",a:"SELECT * FROM student WHERE name LIKE 'P%';",h:"LIKE 'P%'"},
+  {q:'จงเขียนคำสั่งแสดงนักศึกษาที่สังกัด iddpm = 2',a:'SELECT id, name FROM student WHERE iddpm=2;',h:'WHERE iddpm=2'},
+  {q:'จงเขียนคำสั่งนับจำนวนนักศึกษาทั้งหมด',a:'SELECT COUNT(id) FROM student;',h:'COUNT()'},
+  {q:'จงเขียนคำสั่งแสดง id, name เรียงตามชื่อ A→Z',a:'SELECT id, name FROM student ORDER BY name;',h:'ORDER BY'},
+  {q:"จงเขียนคำสั่งเพิ่มข้อมูล department: iddpm=1, dpm_name='Electrical'",a:"INSERT INTO department VALUES('1','Electrical');",h:'INSERT INTO VALUES'},
+  {q:"จงเขียนคำสั่งเพิ่มนักศึกษา: id=100, Anun, Phangkhon, iddpm=2",a:"INSERT INTO student VALUES('100','Anun','Phangkhon','2');",h:'ใส่ค่าตามลำดับคอลัมน์'},
+  {q:'จงเขียนคำสั่งแก้ไขที่อยู่นักศึกษา id=100 เป็น Bangkok',a:"UPDATE student SET address='Bangkok' WHERE id=100;",h:'UPDATE...SET...WHERE'},
+  {q:'จงเขียนคำสั่งลบนักศึกษา id=103',a:'DELETE FROM student WHERE id=103;',h:'DELETE FROM...WHERE'},
+  {q:'จงเขียน INNER JOIN แสดง id, name, dpm_name จาก 2 ตาราง',a:'SELECT student.id, student.name, department.dpm_name FROM student INNER JOIN department ON student.iddpm=department.iddpm;',h:'INNER JOIN...ON'},
+  {q:"จงเขียน INNER JOIN เฉพาะสาขา Electronic",a:"SELECT student.id, student.name, department.dpm_name FROM student INNER JOIN department ON student.iddpm=department.iddpm WHERE dpm_name='Electronic';",h:'ต่อท้าย WHERE dpm_name'},
+  {q:'จงเขียนคำสั่งนับนักศึกษาแต่ละโปรแกรมวิชา',a:'SELECT department.dpm_name, COUNT(student.id) FROM student INNER JOIN department ON student.iddpm=department.iddpm GROUP BY dpm_name;',h:'GROUP BY + COUNT'},
+  {q:'จงเขียนสร้างตาราง department (iddpm INT PK, dpm_name VARCHAR)',a:'CREATE TABLE department(iddpm INT(1) PRIMARY KEY, dpm_name VARCHAR(15));',h:'CREATE TABLE'},
+  {q:'จงเขียนคำสั่งแสดง address ที่ไม่ซ้ำกัน',a:'SELECT DISTINCT address FROM student;',h:'DISTINCT'},
 ];
 
-// ==================== RENDER ====================
-
+// ===================== RENDER LEARN =====================
 function renderLearn(){
-  const grid = document.getElementById('cmd-grid');
-  grid.innerHTML = sqlCommands.map(c=>`
-    <div class="cmd-card" data-cat="${c.cat}">
-      <h4>⚡ ${c.title}</h4>
-      <div class="desc">${c.desc}</div>
-      <pre>${c.code}</pre>
-      <div class="result">→ ${c.result}</div>
+  document.getElementById('cmd-grid').innerHTML=cmds.map(c=>`
+    <div class="cmd-card" data-c="${c.c}">
+      <div class="cmd-card-head">
+        <span class="cmd-tag badge-${tagColor[c.tag]}" style="background:rgba(var(--${tagColor[c.tag]}-rgb,0,245,255),0.12);color:var(--${tagColor[c.tag]});border:1px solid rgba(0,245,255,0.2);border-radius:4px;padding:2px 8px;font-size:0.65rem;font-family:'Fira Code';font-weight:700;">${c.tag}</span>
+        <span class="cmd-title">${c.t}</span>
+      </div>
+      <div class="cmd-desc">${c.d}</div>
+      <div class="code-block">${c.sql}</div>
+      <div class="result-pill">→ ${c.r}</div>
     </div>`).join('');
 }
 
-function filterCmds(cat,btn){
+function filterCmd(cat,btn){
   document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.querySelectorAll('.cmd-card').forEach(c=>{
-    c.style.display=(cat==='all'||c.dataset.cat===cat)?'block':'none';
+  document.querySelectorAll('.cmd-card').forEach(el=>{
+    el.style.display=(cat==='all'||el.dataset.c===cat)?'':'none';
   });
 }
 
+// ===================== RENDER CHEAT =====================
 function renderCheat(){
-  const g = document.getElementById('cheat-grid');
-  g.innerHTML = cheatData.map(c=>`
+  document.getElementById('cheat-grid').innerHTML=cheatList.map(c=>`
     <div class="cheat-card">
-      <h4>${c.title}</h4>
-      <p>${c.p}</p>
+      <div class="cheat-code">${c.c}</div>
+      <div class="cheat-desc">${c.d}</div>
     </div>`).join('');
 }
 
-// ==================== TYPING GAME ====================
-let gameState = {running:false,diff:'easy',promptIdx:0,timer:null,timeLeft:60,correct:0,total:0,startTime:null};
+// ===================== TYPING GAME =====================
+let G={run:false,diff:'easy',idx:0,timer:null,left:60,correct:0,total:0,t0:null};
 
 function setDiff(d,btn){
-  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  gameState.diff=d;
-  gameState.promptIdx=0;
-  loadPrompt();
+  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  G.diff=d;G.idx=0;loadPrompt();
 }
 
 function loadPrompt(){
-  const prompts = gamePrompts[gameState.diff];
-  const p = prompts[gameState.promptIdx % prompts.length];
-  document.getElementById('g-desc').textContent = p.desc;
-  const disp = document.getElementById('prompt-display');
-  disp.innerHTML = p.q.split('').map((c,i)=>`<span class="char ${i===0?'current':'pending'}" data-i="${i}">${c==' '?'&nbsp;':c}</span>`).join('');
+  const arr=gameData[G.diff];
+  const p=arr[G.idx%arr.length];
+  document.getElementById('g-desc').textContent=p.d;
+  const disp=document.getElementById('prompt-disp');
+  disp.innerHTML=p.q.split('').map((c,i)=>`<span class="ch ${i===0?'cur':'nd'}" data-i="${i}">${c===' '?'&nbsp;':c}</span>`).join('');
   document.getElementById('typing-input').value='';
 }
 
 function startGame(){
   resetGame();
-  gameState.running=true;
-  gameState.timeLeft=60;
-  gameState.correct=0;
-  gameState.total=0;
-  gameState.startTime=Date.now();
-  document.getElementById('typing-input').disabled=false;
-  document.getElementById('typing-input').focus();
+  G.run=true;G.left=60;G.correct=0;G.total=0;G.t0=Date.now();
+  const inp=document.getElementById('typing-input');
+  inp.disabled=false;inp.focus();
   document.getElementById('game-result').style.display='none';
   loadPrompt();
-  gameState.timer=setInterval(()=>{
-    gameState.timeLeft--;
-    document.getElementById('g-time').textContent=gameState.timeLeft;
-    document.getElementById('timer-fill').style.width=(gameState.timeLeft/60*100)+'%';
-    if(gameState.timeLeft<=0){endGame();}
+  G.timer=setInterval(()=>{
+    G.left--;
+    document.getElementById('g-time').textContent=G.left;
+    document.getElementById('timer-fill').style.width=(G.left/60*100)+'%';
+    if(G.left<=0)endGame();
   },1000);
 }
 
 function endGame(){
-  clearInterval(gameState.timer);
-  gameState.running=false;
+  clearInterval(G.timer);G.run=false;
   document.getElementById('typing-input').disabled=true;
-  const elapsed=(Date.now()-gameState.startTime)/1000/60;
-  const wpm=Math.round(gameState.correct/5/Math.max(elapsed,0.01));
-  document.getElementById('g-wpm').textContent=wpm;
-  document.getElementById('game-result').style.display='block';
-  document.getElementById('game-result-text').textContent=`พิมพ์ถูก ${gameState.correct} ตัวอักษร | WPM: ${wpm} | คะแนน: ${gameState.correct}`;
-  document.getElementById('g-score').textContent=gameState.correct;
+  const min=(Date.now()-G.t0)/60000;
+  const wpm=Math.round(G.correct/5/Math.max(min,0.001));
+  document.getElementById('g-wpm').textContent=isFinite(wpm)?wpm:0;
+  const rb=document.getElementById('game-result');
+  rb.style.display='block';
+  document.getElementById('game-result-text').textContent=`พิมพ์ถูก ${G.correct} ตัวอักษร · WPM: ${isFinite(wpm)?wpm:0} · คะแนน: ${G.correct}`;
 }
 
 function resetGame(){
-  clearInterval(gameState.timer);
-  gameState.running=false;
-  gameState.timeLeft=60;
-  gameState.correct=0;
-  gameState.total=0;
-  document.getElementById('g-time').textContent='60';
-  document.getElementById('g-wpm').textContent='0';
-  document.getElementById('g-acc').textContent='100';
-  document.getElementById('g-score').textContent='0';
+  clearInterval(G.timer);G.run=false;G.left=60;G.correct=0;G.total=0;
+  ['g-time','g-wpm','g-acc','g-score'].forEach((id,i)=>document.getElementById(id).textContent=[60,0,100,0][i]);
   document.getElementById('timer-fill').style.width='100%';
   document.getElementById('typing-input').disabled=true;
   document.getElementById('typing-input').value='';
@@ -652,182 +1004,200 @@ function resetGame(){
   loadPrompt();
 }
 
-function nextPrompt(){
-  if(!gameState.running) return;
-  gameState.promptIdx++;
-  loadPrompt();
-}
+function nextP(){if(!G.run)return;G.idx++;loadPrompt();}
 
-function handleTyping(){
-  if(!gameState.running) return;
-  const input = document.getElementById('typing-input').value;
-  const prompts = gamePrompts[gameState.diff];
-  const target = prompts[gameState.promptIdx % prompts.length].q;
-  const chars = document.querySelectorAll('.char');
-  let correct=0;
-  chars.forEach((c,i)=>{
-    c.className='char';
-    if(i<input.length){
-      if(input[i]===target[i]){c.classList.add('correct');correct++;}
-      else{c.classList.add('wrong');}
-    } else if(i===input.length){
-      c.classList.add('current');
-    } else {
-      c.classList.add('pending');
-    }
+function onType(){
+  if(!G.run)return;
+  const inp=document.getElementById('typing-input').value;
+  const arr=gameData[G.diff];
+  const target=arr[G.idx%arr.length].q;
+  const spans=document.querySelectorAll('.ch');
+  let ok=0;
+  spans.forEach((s,i)=>{
+    s.className='ch';
+    if(i<inp.length){if(inp[i]===target[i]){s.classList.add('ok');ok++;}else s.classList.add('bad');}
+    else if(i===inp.length)s.classList.add('cur');
+    else s.classList.add('nd');
   });
-  gameState.correct+=correct>gameState.total?correct-gameState.total:0;
-  gameState.total=Math.max(gameState.total,correct);
-  const acc = input.length>0?Math.round(correct/input.length*100):100;
+  const delta=ok-G.total;if(delta>0){G.correct+=delta;G.total=ok;}
+  const acc=inp.length?Math.round(ok/inp.length*100):100;
   document.getElementById('g-acc').textContent=acc;
-  document.getElementById('g-score').textContent=gameState.correct;
-  const elapsed=(Date.now()-gameState.startTime)/1000/60;
-  const wpm=Math.round(gameState.correct/5/Math.max(elapsed,0.001));
+  document.getElementById('g-score').textContent=G.correct;
+  const min=(Date.now()-G.t0)/60000;
+  const wpm=Math.round(G.correct/5/Math.max(min,0.001));
   document.getElementById('g-wpm').textContent=isFinite(wpm)?wpm:0;
-  if(input===target){
-    gameState.promptIdx++;
-    setTimeout(()=>{loadPrompt();},200);
-  }
+  if(inp===target){G.idx++;G.total=0;setTimeout(loadPrompt,180);}
 }
 
-// ==================== MCQ ====================
-let mcqState = {current:0, answers:Array(30).fill(null), score:0};
+// ===================== MCQ =====================
+let M={cur:0,ans:Array(30).fill(null),score:0};
 
 function renderMCQ(){
-  const c = mcqData[mcqState.current];
-  const answered = mcqState.answers[mcqState.current];
-  document.getElementById('mcq-container').innerHTML = `
-    <div class="quiz-question">
-      <div style="font-size:0.78rem;color:var(--text3);margin-bottom:0.5rem;font-family:'Fira Code',monospace">ข้อ ${mcqState.current+1} จาก ${mcqData.length}</div>
-      <div class="quiz-q-text">${c.q}</div>
-      <div class="quiz-options">
-        ${c.opts.map((o,i)=>`
-          <button class="quiz-opt ${answered!==null?(i===c.ans?'correct':(i===answered&&answered!==c.ans?'wrong':'')):''}
-          " onclick="answerMCQ(${i})" ${answered!==null?'disabled':''}>${['ก','ข','ค','ง'][i]}. ${o}</button>
-        `).join('')}
+  const q=mcqData[M.cur];
+  const picked=M.ans[M.cur];
+  document.getElementById('mcq-box').innerHTML=`
+    <div class="mcq-card">
+      <div class="mcq-num">ข้อ ${M.cur+1} / ${mcqData.length}</div>
+      <div class="mcq-q">${q.q}</div>
+      <div class="mcq-opts">
+        ${q.o.map((o,i)=>`
+          <button class="mcq-opt ${picked!==null?(i===q.a?'ok':(i===picked&&picked!==q.a?'ng':'')):''}
+          " onclick="pickMCQ(${i})" ${picked!==null?'disabled':''}>
+            <span class="opt-lbl">${['ก','ข','ค','ง'][i]}</span>
+            <span class="opt-txt">${o}</span>
+          </button>`).join('')}
       </div>
-      <div class="quiz-feedback ${answered!==null?'show':''} ${answered!==null?(answered===c.ans?'correct':'wrong'):''}">
-        ${answered!==null?(answered===c.ans?'✅ ถูกต้อง! ':' ❌ ผิด! คำตอบที่ถูกคือ: '+c.opts[c.ans]+'<br>')+c.exp:''}
+      <div class="mcq-fb ${picked!==null?'show':''} ${picked!==null?(picked===q.a?'ok':'ng'):''}">
+        ${picked!==null?(picked===q.a?'✅ ถูกต้อง! ':'❌ ผิด! เฉลย: <b>'+q.o[q.a]+'</b><br>')+q.e:''}
       </div>
     </div>`;
+  document.getElementById('mcq-fill').style.width=((M.cur+1)/mcqData.length*100)+'%';
+  document.getElementById('mcq-sc').textContent=M.score;
   renderDots();
-  document.getElementById('mcq-score').textContent = mcqState.score;
 }
 
-function answerMCQ(i){
-  if(mcqState.answers[mcqState.current]!==null)return;
-  mcqState.answers[mcqState.current]=i;
-  if(i===mcqData[mcqState.current].ans) mcqState.score++;
+function pickMCQ(i){
+  if(M.ans[M.cur]!==null)return;
+  M.ans[M.cur]=i;
+  if(i===mcqData[M.cur].a)M.score++;
   renderMCQ();
 }
-
-function nextQ(){if(mcqState.current<mcqData.length-1){mcqState.current++;renderMCQ();}}
-function prevQ(){if(mcqState.current>0){mcqState.current--;renderMCQ();}}
+function nextQ(){if(M.cur<mcqData.length-1){M.cur++;renderMCQ();}}
+function prevQ(){if(M.cur>0){M.cur--;renderMCQ();}}
 
 function renderDots(){
-  const d=document.getElementById('q-dots');
-  d.innerHTML=mcqData.map((_,i)=>{
+  document.getElementById('q-dots').innerHTML=mcqData.map((_,i)=>{
     let cls='q-dot';
-    if(i===mcqState.current)cls+=' current';
-    else if(mcqState.answers[i]!==null)cls+=mcqState.answers[i]===mcqData[i].ans?' done-correct':' done-wrong';
+    if(i===M.cur)cls+=' cur';
+    else if(M.ans[i]!==null)cls+=M.ans[i]===mcqData[i].a?' c-ok':' c-ng';
     return `<div class="${cls}" onclick="gotoQ(${i})"></div>`;
   }).join('');
 }
+function gotoQ(i){M.cur=i;renderMCQ();}
 
-function gotoQ(i){mcqState.current=i;renderMCQ();}
-
-function showMCQResult(){
-  const score=mcqState.score;
-  const total=mcqData.length;
-  const pct=Math.round(score/total*100);
-  let emoji='😊',grade='ผ่าน';
-  if(pct>=90){emoji='🏆';grade='ดีเยี่ยม!';}
-  else if(pct>=75){emoji='🎉';grade='ดีมาก!';}
-  else if(pct>=50){emoji='😊';grade='ผ่าน';}
-  else{emoji='📚';grade='ต้องฝึกเพิ่ม';}
-  document.getElementById('modal-emoji').textContent=emoji;
-  document.getElementById('modal-title').textContent='ผลการสอบ';
-  document.getElementById('modal-score').textContent=`${score}/${total}`;
-  document.getElementById('modal-desc').textContent=`คิดเป็น ${pct}%`;
-  document.getElementById('modal-grade').textContent=grade;
-  document.getElementById('result-modal').classList.add('show');
+function showResult(){
+  const s=M.score,t=mcqData.length,p=Math.round(s/t*100);
+  let emoji='📚',grade='ต้องฝึกเพิ่ม',gc='var(--c5)';
+  if(p>=90){emoji='🏆';grade='ดีเยี่ยม!';gc='var(--c3)';}
+  else if(p>=75){emoji='🎉';grade='ดีมาก!';gc='var(--c1)';}
+  else if(p>=50){emoji='😊';grade='ผ่าน';gc='var(--c4)';}
+  document.getElementById('m-emoji').textContent=emoji;
+  document.getElementById('m-title').textContent='ผลการสอบปรนัย';
+  document.getElementById('m-score').textContent=`${s}/${t}`;
+  document.getElementById('m-pct').textContent=`คิดเป็น ${p}%`;
+  document.getElementById('m-grade').textContent=grade;
+  document.getElementById('m-grade').style.color=gc;
+  document.getElementById('modal').classList.add('open');
 }
 
-function resetMCQ(){
-  mcqState={current:0,answers:Array(30).fill(null),score:0};
-  renderMCQ();
-}
+function resetMCQ(){M={cur:0,ans:Array(30).fill(null),score:0};renderMCQ();}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
 
-function closeModal(){document.getElementById('result-modal').classList.remove('show');}
-
-// ==================== WRITTEN ====================
+// ===================== WRITTEN =====================
 function renderWritten(){
-  document.getElementById('written-container').innerHTML = writtenData.map((w,i)=>`
-    <div class="exam-question">
-      <div class="exam-q-num">ข้อ ${i+1}</div>
-      <div class="exam-q-text">${w.q}</div>
-      <textarea class="exam-answer" id="wa-${i}" placeholder="เขียนคำสั่ง SQL ที่นี่..."></textarea>
-      <div class="exam-hint" onclick="toggleHint(${i})">💡 ดูคำใบ้</div>
-      <div class="exam-hint-text" id="hint-${i}">${w.hint}</div>
-      <div class="exam-answer-show" id="ans-${i}">
-        <div style="font-size:0.78rem;color:var(--accent3);margin-bottom:0.3rem;font-weight:600;">✅ เฉลย:</div>
-        <pre>${w.ans}</pre>
+  document.getElementById('written-box').innerHTML=writtenData.map((w,i)=>`
+    <div class="exam-q" id="eq-${i}">
+      <div class="eq-num">ข้อ ${i+1} / ${writtenData.length}</div>
+      <div class="eq-q">${w.q}</div>
+      <textarea class="eq-input" id="ei-${i}" placeholder="เขียนคำสั่ง SQL..."></textarea>
+      <button class="eq-hint-btn" onclick="toggleHint(${i})">💡 คำใบ้</button>
+      <div class="eq-hint" id="eh-${i}">${w.h}</div>
+      <div class="eq-ans" id="ea-${i}">
+        <div class="eq-ans-lbl">✅ เฉลย</div>
+        <pre>${w.a}</pre>
       </div>
     </div>`).join('');
 }
 
 function toggleHint(i){
-  const h=document.getElementById('hint-'+i);
+  const h=document.getElementById('eh-'+i);
   h.style.display=h.style.display==='block'?'none':'block';
 }
 
 function checkWritten(){
   let score=0;
   writtenData.forEach((w,i)=>{
-    const el=document.getElementById('wa-'+i);
-    const ans=document.getElementById('ans-'+i);
-    const ua=el.value.trim().toUpperCase().replace(/\s+/g,' ');
-    const ca=w.ans.trim().toUpperCase().replace(/\s+/g,' ');
-    ans.style.display='block';
-    if(ua===ca){
-      score++;
-      el.style.borderColor='var(--accent3)';
-    } else {
-      el.style.borderColor='var(--red)';
-    }
+    const inp=document.getElementById('ei-'+i);
+    const ea=document.getElementById('ea-'+i);
+    const eq=document.getElementById('eq-'+i);
+    ea.style.display='block';
+    const ua=inp.value.trim().toUpperCase().replace(/\s+/g,' ');
+    const ca=w.a.trim().toUpperCase().replace(/\s+/g,' ');
+    eq.classList.remove('graded-ok','graded-ng');
+    if(ua===ca){score++;eq.classList.add('graded-ok');}
+    else eq.classList.add('graded-ng');
   });
-  const total=writtenData.length;
-  const pct=Math.round(score/total*100);
-  let emoji='📚',grade='ต้องฝึกเพิ่ม';
-  if(pct>=90){emoji='🏆';grade='ดีเยี่ยม!';}
-  else if(pct>=75){emoji='🎉';grade='ดีมาก!';}
-  else if(pct>=50){emoji='😊';grade='ผ่าน';}
-  document.getElementById('modal-emoji').textContent=emoji;
-  document.getElementById('modal-title').textContent='ผลการสอบอัตนัย';
-  document.getElementById('modal-score').textContent=`${score}/${total}`;
-  document.getElementById('modal-desc').textContent=`คิดเป็น ${pct}%`;
-  document.getElementById('modal-grade').textContent=grade;
-  document.getElementById('result-modal').classList.add('show');
+  const t=writtenData.length,p=Math.round(score/t*100);
+  let emoji='📚',grade='ต้องฝึกเพิ่ม',gc='var(--c5)';
+  if(p>=90){emoji='🏆';grade='ดีเยี่ยม!';gc='var(--c3)';}
+  else if(p>=75){emoji='🎉';grade='ดีมาก!';gc='var(--c1)';}
+  else if(p>=50){emoji='😊';grade='ผ่าน';gc='var(--c4)';}
+  document.getElementById('m-emoji').textContent=emoji;
+  document.getElementById('m-title').textContent='ผลการสอบอัตนัย';
+  document.getElementById('m-score').textContent=`${score}/${t}`;
+  document.getElementById('m-pct').textContent=`คิดเป็น ${p}%`;
+  document.getElementById('m-grade').textContent=grade;
+  document.getElementById('m-grade').style.color=gc;
+  document.getElementById('modal').classList.add('open');
+}
+
+function showAllAns(){
+  writtenData.forEach((_,i)=>{document.getElementById('ea-'+i).style.display='block';});
 }
 
 function resetWritten(){
   writtenData.forEach((_,i)=>{
-    document.getElementById('wa-'+i).value='';
-    document.getElementById('wa-'+i).style.borderColor='';
-    document.getElementById('ans-'+i).style.display='none';
-    document.getElementById('hint-'+i).style.display='none';
+    document.getElementById('ei-'+i).value='';
+    document.getElementById('ea-'+i).style.display='none';
+    document.getElementById('eh-'+i).style.display='none';
+    const eq=document.getElementById('eq-'+i);
+    eq.classList.remove('graded-ok','graded-ng');
   });
 }
 
-// ==================== NAV ====================
-function showPage(id){
+// ===================== NAVIGATION =====================
+function goPage(id, btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  event.target.classList.add('active');
+  document.querySelectorAll('.navlink').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  // sync bottom nav
+  document.querySelectorAll('.bnav-btn').forEach((b,i)=>{
+    const ids=['home','learn','cheat','game','mcq','written'];
+    b.classList.toggle('active',ids[i]===id);
+  });
+  window.scrollTo(0,0);
 }
 
-// ==================== INIT ====================
+function goPageMob(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.navlink').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  btn.classList.add('active');
+  // sync top nav
+  document.querySelectorAll('.navlink').forEach(b=>{
+    if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+id+"'"))b.classList.add('active');
+  });
+  window.scrollTo(0,0);
+}
+
+function goPageId(id){
+  // called from home cards
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.navlink,.bnav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  document.querySelectorAll('.navlink').forEach(b=>{
+    if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+id+"'"))b.classList.add('active');
+  });
+  document.querySelectorAll('.bnav-btn').forEach((b,i)=>{
+    const ids=['home','learn','cheat','game','mcq','written'];
+    b.classList.toggle('active',ids[i]===id);
+  });
+  window.scrollTo(0,0);
+}
+
+// ===================== INIT =====================
 renderLearn();
 renderCheat();
 renderMCQ();
