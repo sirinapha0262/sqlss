@@ -2,1207 +2,1728 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>SQL MASTER — เรียน SQL แบบโปร</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Chakra+Petch:wght@300;400;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL LEARN — เรียนรู้ SQL ครบจบ</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Sarabun:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-/* ========== RESET & ROOT ========== */
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-:root{
-  --bg:#04070f;
-  --bg1:#070d1a;
-  --bg2:#0b1323;
-  --bg3:#101d35;
-  --card:#0e1a2e;
-  --card2:#121f36;
-  --border:#1e3050;
-  --border2:#243660;
-  --c1:#00f5ff;
-  --c2:#b44fff;
-  --c3:#00ff88;
-  --c4:#ffaa00;
-  --c5:#ff4466;
-  --text:#dce8ff;
-  --text2:#7a9cc4;
-  --text3:#3a5878;
-  --glow1:0 0 20px rgba(0,245,255,0.4);
-  --glow2:0 0 20px rgba(180,79,255,0.4);
-  --glow3:0 0 20px rgba(0,255,136,0.3);
-}
-html{scroll-behavior:smooth;}
-body{
-  font-family:'Chakra Petch',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  overflow-x:hidden;
-}
-/* Animated BG */
-body::before{
-  content:'';
-  position:fixed;inset:0;
-  background:
-    radial-gradient(ellipse 80% 50% at 20% 20%,rgba(0,245,255,0.04) 0%,transparent 60%),
-    radial-gradient(ellipse 60% 60% at 80% 80%,rgba(180,79,255,0.05) 0%,transparent 60%),
-    radial-gradient(ellipse 40% 40% at 50% 50%,rgba(0,255,136,0.02) 0%,transparent 70%);
-  pointer-events:none;z-index:0;
-}
-/* Grid overlay */
-body::after{
-  content:'';
-  position:fixed;inset:0;
-  background-image:
-    linear-gradient(rgba(0,245,255,0.015) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,245,255,0.015) 1px,transparent 1px);
-  background-size:40px 40px;
-  pointer-events:none;z-index:0;
-}
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #30363d;
+    --green: #3fb950;
+    --green-dim: #1a4226;
+    --blue: #58a6ff;
+    --blue-dim: #0d2a4a;
+    --yellow: #d29922;
+    --yellow-dim: #3d2e00;
+    --red: #f85149;
+    --red-dim: #3d1a1a;
+    --purple: #bc8cff;
+    --purple-dim: #2d1f4a;
+    --cyan: #39d353;
+    --orange: #f0883e;
+    --orange-dim: #3d2200;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+  }
 
-/* Scrollbar */
-::-webkit-scrollbar{width:4px;height:4px;}
-::-webkit-scrollbar-track{background:var(--bg1);}
-::-webkit-scrollbar-thumb{background:var(--c2);border-radius:2px;}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
 
-/* ========== LAYOUT ========== */
-.app{display:flex;flex-direction:column;min-height:100vh;position:relative;z-index:1;}
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-/* ========== TOP NAV (Desktop) ========== */
-.topnav{
-  display:flex;align-items:center;gap:0;
-  background:rgba(4,7,15,0.92);
-  backdrop-filter:blur(24px);
-  border-bottom:1px solid var(--border);
-  height:56px;padding:0 1.5rem;
-  position:sticky;top:0;z-index:100;
-  overflow-x:auto;
-}
-.topnav::-webkit-scrollbar{height:0;}
-.logo{
-  font-family:'Orbitron',monospace;
-  font-size:1.1rem;font-weight:900;
-  background:linear-gradient(135deg,var(--c1),var(--c2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  white-space:nowrap;margin-right:2rem;letter-spacing:2px;
-  flex-shrink:0;
-}
-.logo span{color:var(--c4);-webkit-text-fill-color:var(--c4);}
-.navlinks{display:flex;gap:2px;flex:1;}
-.navlink{
-  padding:0.4rem 0.85rem;border-radius:6px;
-  background:transparent;border:none;
-  color:var(--text2);cursor:pointer;
-  font-family:'Chakra Petch',sans-serif;
-  font-size:0.8rem;font-weight:600;
-  transition:all 0.2s;white-space:nowrap;
-  letter-spacing:0.5px;
-  position:relative;
-}
-.navlink:hover{color:var(--c1);}
-.navlink.active{
-  color:var(--c1);
-  background:rgba(0,245,255,0.08);
-}
-.navlink.active::after{
-  content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--c1),transparent);
-}
-.navlink .ni{margin-right:0.35rem;font-size:0.9rem;}
+  /* GRID BG */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(63,185,80,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(63,185,80,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-/* ========== BOTTOM NAV (Mobile) ========== */
-.bottomnav{
-  display:none;
-  position:fixed;bottom:0;left:0;right:0;
-  background:rgba(4,7,15,0.97);
-  backdrop-filter:blur(24px);
-  border-top:1px solid var(--border);
-  z-index:100;
-  padding:0.3rem 0 max(0.3rem, env(safe-area-inset-bottom));
-}
-.bottomnav-inner{display:flex;justify-content:space-around;}
-.bnav-btn{
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-  background:none;border:none;cursor:pointer;
-  padding:0.4rem 0.6rem;border-radius:10px;
-  transition:all 0.2s;min-width:56px;
-}
-.bnav-btn .bi{font-size:1.4rem;line-height:1;}
-.bnav-btn .bl{font-size:0.58rem;color:var(--text3);font-family:'Chakra Petch',sans-serif;font-weight:600;}
-.bnav-btn.active .bi{filter:drop-shadow(0 0 6px var(--c1));}
-.bnav-btn.active .bl{color:var(--c1);}
+  .wrap { position: relative; z-index: 1; }
 
-/* ========== MAIN CONTENT ========== */
-.main{flex:1;padding:1.5rem;max-width:1280px;margin:0 auto;width:100%;}
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 36px 20px 24px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(63,185,80,0.07) 0%, transparent 100%);
+  }
+  header h1 {
+    font-family: 'Fira Code', monospace;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    font-weight: 700;
+    color: var(--green);
+    text-shadow: 0 0 40px rgba(63,185,80,0.4);
+    letter-spacing: 2px;
+  }
+  header h1 span { color: var(--text-dim); }
+  header p { margin-top: 8px; color: var(--text-dim); font-size: 1rem; }
 
-/* ========== PAGE TRANSITIONS ========== */
-.page{display:none;animation:pgIn 0.35s ease;}
-.page.active{display:block;}
-@keyframes pgIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  /* ── NAV TABS BAR ── */
+  .nav-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .nav-bar::-webkit-scrollbar { display: none; }
 
-/* ========== SECTION HEADER ========== */
-.sec-hdr{
-  display:flex;align-items:center;gap:1rem;
-  margin-bottom:1.5rem;
-}
-.sec-hdr h2{
-  font-family:'Orbitron',monospace;
-  font-size:1.1rem;font-weight:700;
-  color:var(--c1);letter-spacing:1px;
-  white-space:nowrap;
-}
-.sec-hdr::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent);}
+  .nav-tab {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 13px 18px;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+    user-select: none;
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .nav-tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .nav-tab.active { color: var(--green); border-bottom-color: var(--green); background: rgba(63,185,80,0.05); }
+  .nav-tab .tab-dot {
+    display: inline-block; width: 6px; height: 6px;
+    border-radius: 50%; margin-right: 6px; vertical-align: middle;
+  }
 
-/* ========== BADGES ========== */
-.badge{
-  display:inline-flex;align-items:center;
-  padding:0.18rem 0.6rem;border-radius:4px;
-  font-size:0.7rem;font-weight:700;letter-spacing:0.5px;
-}
-.badge-c1{background:rgba(0,245,255,0.15);color:var(--c1);border:1px solid rgba(0,245,255,0.3);}
-.badge-c2{background:rgba(180,79,255,0.15);color:var(--c2);border:1px solid rgba(180,79,255,0.3);}
-.badge-c3{background:rgba(0,255,136,0.12);color:var(--c3);border:1px solid rgba(0,255,136,0.3);}
-.badge-c4{background:rgba(255,170,0,0.12);color:var(--c4);border:1px solid rgba(255,170,0,0.3);}
+  /* ── PROGRESS BAR (thin under nav) ── */
+  .progress-thin {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 46px;
+    z-index: 49;
+  }
+  .progress-thin-inner {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--cyan));
+    transition: width 0.4s ease;
+  }
 
-/* ========== BUTTONS ========== */
-.btn{
-  display:inline-flex;align-items:center;gap:0.4rem;
-  padding:0.55rem 1.3rem;border-radius:8px;
-  border:none;cursor:pointer;
-  font-family:'Chakra Petch',sans-serif;
-  font-size:0.85rem;font-weight:600;
-  transition:all 0.2s;letter-spacing:0.3px;
-}
-.btn:active{transform:scale(0.97);}
-.btn-c1{background:rgba(0,245,255,0.12);color:var(--c1);border:1px solid rgba(0,245,255,0.4);}
-.btn-c1:hover{background:rgba(0,245,255,0.22);box-shadow:var(--glow1);}
-.btn-c2{background:rgba(180,79,255,0.15);color:var(--c2);border:1px solid rgba(180,79,255,0.4);}
-.btn-c2:hover{background:rgba(180,79,255,0.25);box-shadow:var(--glow2);}
-.btn-c3{background:rgba(0,255,136,0.12);color:var(--c3);border:1px solid rgba(0,255,136,0.35);}
-.btn-c3:hover{background:rgba(0,255,136,0.22);box-shadow:var(--glow3);}
-.btn-c5{background:rgba(255,68,102,0.12);color:var(--c5);border:1px solid rgba(255,68,102,0.35);}
-.btn-c5:hover{background:rgba(255,68,102,0.22);}
-.btn-sm{padding:0.35rem 0.85rem;font-size:0.78rem;}
-.btn-lg{padding:0.75rem 2rem;font-size:0.95rem;}
+  /* ── MAIN ── */
+  main { max-width: 900px; margin: 0 auto; padding: 28px 20px 80px; }
 
-/* ========== HOME PAGE ========== */
-.hero{text-align:center;padding:2.5rem 1rem 2rem;}
-.hero-title{
-  font-family:'Orbitron',monospace;
-  font-size:clamp(1.8rem,5vw,3.5rem);
-  font-weight:900;letter-spacing:2px;
-  background:linear-gradient(135deg,var(--c1) 0%,var(--c2) 50%,var(--c1) 100%);
-  background-size:200% auto;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  animation:shimmer 4s linear infinite;
-  line-height:1.15;margin-bottom:0.8rem;
-}
-@keyframes shimmer{to{background-position:200% center;}}
-.hero-sub{color:var(--text2);font-size:clamp(0.85rem,2vw,1.05rem);max-width:540px;margin:0 auto 2.5rem;line-height:1.7;}
-.home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:1rem;}
-.home-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;padding:1.4rem;
-  cursor:pointer;transition:all 0.25s;
-  text-align:left;position:relative;overflow:hidden;
-}
-.home-card::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,transparent 60%,rgba(0,245,255,0.04));
-  opacity:0;transition:opacity 0.3s;
-}
-.home-card:hover{border-color:var(--c1);transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,245,255,0.12);}
-.home-card:hover::before{opacity:1;}
-.home-card:active{transform:translateY(-1px);}
-.hc-icon{font-size:2.2rem;margin-bottom:0.8rem;display:block;filter:drop-shadow(0 0 8px rgba(0,245,255,0.4));}
-.hc-title{font-family:'Orbitron',monospace;font-size:0.88rem;font-weight:700;color:var(--c1);margin-bottom:0.4rem;letter-spacing:0.5px;}
-.hc-desc{font-size:0.8rem;color:var(--text2);line-height:1.6;}
-.hc-arrow{position:absolute;bottom:1rem;right:1rem;color:var(--text3);font-size:1.2rem;transition:all 0.2s;}
-.home-card:hover .hc-arrow{color:var(--c1);transform:translateX(3px);}
-/* Color variants */
-.home-card.v2:hover{border-color:var(--c2);box-shadow:0 8px 30px rgba(180,79,255,0.12);}
-.home-card.v2:hover .hc-title{color:var(--c2);}
-.home-card.v2:hover .hc-arrow{color:var(--c2);}
-.home-card.v3:hover{border-color:var(--c3);box-shadow:0 8px 30px rgba(0,255,136,0.1);}
-.home-card.v3:hover .hc-title{color:var(--c3);}
-.home-card.v3:hover .hc-arrow{color:var(--c3);}
-.home-card.v4:hover{border-color:var(--c4);box-shadow:0 8px 30px rgba(255,170,0,0.1);}
-.home-card.v4:hover .hc-title{color:var(--c4);}
-.home-card.v4:hover .hc-arrow{color:var(--c4);}
+  /* SCREENS */
+  .screen { display: none; animation: fadeIn 0.25s ease; }
+  .screen.active { display: block; }
 
-/* ========== LEARN PAGE ========== */
-.filter-row{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.5rem;}
-.ftab{
-  padding:0.35rem 0.8rem;border-radius:20px;
-  background:transparent;border:1px solid var(--border);
-  color:var(--text3);cursor:pointer;
-  font-family:'Chakra Petch',sans-serif;
-  font-size:0.75rem;font-weight:600;
-  transition:all 0.2s;letter-spacing:0.3px;
-}
-.ftab:hover{border-color:var(--c1);color:var(--c1);}
-.ftab.active{background:rgba(0,245,255,0.12);border-color:var(--c1);color:var(--c1);}
-.cmd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:1rem;}
-.cmd-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:12px;padding:1.1rem;
-  transition:all 0.2s;
-}
-.cmd-card:hover{border-color:var(--border2);background:var(--card2);}
-.cmd-card-head{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;}
-.cmd-tag{
-  font-size:0.65rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:3px;
-  font-family:'Fira Code',monospace;letter-spacing:0.5px;
-}
-.cmd-title{font-size:0.88rem;font-weight:700;color:var(--c1);}
-.cmd-desc{font-size:0.78rem;color:var(--text2);margin-bottom:0.7rem;line-height:1.6;}
-.code-block{
-  background:var(--bg1);border:1px solid var(--border);
-  border-radius:8px;padding:0.75rem;
-  font-family:'Fira Code',monospace;
-  font-size:0.76rem;color:#7dd3fc;
-  overflow-x:auto;white-space:pre;
-  position:relative;
-}
-.code-block .kw{color:#f0abfc;}
-.code-block .str{color:#86efac;}
-.code-block .fn{color:#fbbf24;}
-.result-pill{
-  display:inline-flex;align-items:center;gap:0.35rem;
-  margin-top:0.5rem;padding:0.3rem 0.7rem;
-  background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.2);
-  border-radius:6px;font-size:0.74rem;color:var(--c3);
-  font-family:'Fira Code',monospace;
-}
+  /* ── SECTION LABEL ── */
+  .section-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-left: 2px;
+  }
 
-/* ========== CHEATSHEET ========== */
-.cheat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:0.8rem;}
-.cheat-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:10px;padding:0.9rem;
-  transition:border-color 0.2s;
-}
-.cheat-card:hover{border-color:var(--c4);}
-.cheat-code{
-  font-family:'Fira Code',monospace;
-  font-size:0.76rem;color:var(--c4);
-  margin-bottom:0.4rem;font-weight:600;
-}
-.cheat-desc{font-size:0.77rem;color:var(--text2);}
+  /* ── CONTENT CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  .card-top-bar {
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .card-head {
+    padding: 16px 20px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .card-head:hover { background: rgba(255,255,255,0.025); }
+  .card-head.open { border-bottom-color: var(--border); }
 
-/* ========== GAME PAGE ========== */
-.game-wrap{max-width:800px;margin:0 auto;}
-.game-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:16px;padding:1.5rem;
-  position:relative;overflow:hidden;
-}
-.game-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--c1),var(--c2),transparent);
-  animation:scanline 3s linear infinite;
-}
-@keyframes scanline{0%{opacity:1;}50%{opacity:0.3;}100%{opacity:1;}}
+  .card-num {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    background: var(--surface2);
+    padding: 3px 9px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .card-title {
+    font-weight: 700;
+    font-size: 1rem;
+    flex: 1;
+    font-family: 'Sarabun', sans-serif;
+  }
+  .card-tag {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.68rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .card-arrow {
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    transition: transform 0.2s;
+    font-family: 'Fira Code', monospace;
+  }
+  .card-head.open .card-arrow { transform: rotate(90deg); }
 
-.stats-row{display:flex;justify-content:space-around;margin-bottom:1.2rem;gap:0.5rem;flex-wrap:wrap;}
-.stat-pill{
-  display:flex;flex-direction:column;align-items:center;
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:10px;padding:0.6rem 1.2rem;
-  min-width:70px;
-}
-.stat-val{
-  font-family:'Orbitron',monospace;
-  font-size:1.6rem;font-weight:700;
-  color:var(--c1);line-height:1;
-}
-.stat-val.wpm{color:var(--c2);}
-.stat-val.acc{color:var(--c3);}
-.stat-val.sc{color:var(--c4);}
-.stat-lbl{font-size:0.65rem;color:var(--text3);margin-top:0.2rem;letter-spacing:0.5px;font-weight:600;}
+  .card-body { padding: 22px 20px; display: none; }
+  .card-body.open { display: block; }
 
-.timer-track{height:6px;background:var(--bg);border-radius:3px;margin-bottom:1rem;overflow:hidden;}
-.timer-fill{
-  height:100%;border-radius:3px;
-  background:linear-gradient(90deg,var(--c3),var(--c1),var(--c2));
-  transition:width 0.8s linear;
-}
-.diff-row{display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;}
-.diff-btn{
-  padding:0.4rem 1rem;border-radius:8px;
-  background:transparent;border:1px solid var(--border);
-  color:var(--text2);cursor:pointer;
-  font-family:'Chakra Petch',sans-serif;
-  font-size:0.8rem;font-weight:700;
-  transition:all 0.2s;
-}
-.diff-btn.d-easy.on{background:rgba(0,255,136,0.15);border-color:var(--c3);color:var(--c3);}
-.diff-btn.d-med.on{background:rgba(255,170,0,0.15);border-color:var(--c4);color:var(--c4);}
-.diff-btn.d-hard.on{background:rgba(255,68,102,0.15);border-color:var(--c5);color:var(--c5);}
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: #080c14;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 12px 0;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.83rem;
+  }
+  .code-head {
+    background: var(--surface2);
+    padding: 7px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.7rem; color: var(--text-dim);
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .dot-r { background: #ff5f56; } .dot-y { background: #ffbd2e; } .dot-g { background: #27c93f; }
+  .code-body {
+    padding: 16px;
+    line-height: 1.9;
+    overflow-x: auto;
+    color: var(--text);
+  }
+  /* SQL syntax colors */
+  .kw  { color: var(--blue); font-weight: 600; }
+  .fn  { color: #79c0ff; }
+  .tb  { color: var(--orange); }
+  .str { color: var(--green); }
+  .val { color: var(--yellow); }
+  .num { color: #f2a65a; }
+  .cmt { color: var(--text-dim); font-style: italic; }
+  .tp  { color: #ffa657; }
+  .op  { color: var(--purple); }
 
-.prompt-label{font-size:0.78rem;color:var(--text3);margin-bottom:0.4rem;}
-.prompt-label span{color:var(--c4);font-weight:700;}
-.prompt-display{
-  background:var(--bg1);border:1px solid var(--border);
-  border-radius:10px;padding:1rem 1.2rem;
-  font-family:'Fira Code',monospace;
-  font-size:clamp(0.82rem,2.2vw,1rem);
-  line-height:1.9;margin-bottom:0.8rem;
-  min-height:58px;word-break:break-all;
-  letter-spacing:0.5px;
-}
-.ch{transition:color 0.05s,background 0.05s;}
-.ch.ok{color:var(--c3);}
-.ch.bad{color:var(--c5);text-decoration:underline wavy var(--c5);}
-.ch.cur{color:var(--bg);background:var(--c1);border-radius:2px;animation:blink 0.8s step-end infinite;}
-.ch.nd{color:var(--text3);}
-@keyframes blink{50%{background:transparent;color:var(--c1);}}
+  /* ── RESULT TABLE ── */
+  .tbl-wrap { overflow-x: auto; margin: 12px 0; }
+  .result-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.82rem;
+    background: #080c14;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .result-tbl .tbl-label {
+    padding: 7px 14px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    color: var(--blue);
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+  .result-tbl th {
+    padding: 8px 14px;
+    text-align: left;
+    color: var(--text-dim);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.76rem;
+    background: var(--surface2);
+  }
+  .result-tbl td {
+    padding: 7px 14px;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    color: var(--text);
+  }
+  .result-tbl tr:last-child td { border-bottom: none; }
+  .result-tbl tr:hover td { background: rgba(255,255,255,0.02); }
 
-#typing-input{
-  width:100%;background:var(--bg2);
-  border:2px solid var(--border);border-radius:10px;
-  padding:0.85rem 1rem;
-  font-family:'Fira Code',monospace;
-  font-size:0.9rem;color:var(--text);
-  outline:none;transition:border-color 0.2s;
-  caret-color:var(--c1);
-}
-#typing-input:focus{border-color:var(--c1);box-shadow:0 0 0 3px rgba(0,245,255,0.08);}
-#typing-input::placeholder{color:var(--text3);}
-.game-btns{display:flex;gap:0.6rem;margin-top:0.8rem;flex-wrap:wrap;}
+  /* ── INFO BOX ── */
+  .info-box {
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .ib-ico { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+  .ib-txt { flex: 1; }
+  .ib-txt strong { display: block; margin-bottom: 2px; font-size: 0.9rem; }
+  .ib-green { background: rgba(63,185,80,0.08); border: 1px solid rgba(63,185,80,0.25); color: #7ee89a; }
+  .ib-blue  { background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.25); color: #90c4ff; }
+  .ib-yellow{ background: rgba(210,153,34,0.1);  border: 1px solid rgba(210,153,34,0.3);  color: #e8c060; }
+  .ib-red   { background: rgba(248,81,73,0.08);  border: 1px solid rgba(248,81,73,0.25);  color: #ff9090; }
 
-.result-banner{
-  display:none;margin-top:1rem;
-  padding:1rem;border-radius:10px;
-  background:rgba(0,245,255,0.06);
-  border:1px solid rgba(0,245,255,0.25);
-  text-align:center;
-}
-.result-banner h3{font-family:'Orbitron',monospace;color:var(--c1);margin-bottom:0.3rem;}
-.result-banner p{color:var(--text2);font-size:0.85rem;}
+  /* ── SUB TITLE ── */
+  .sub-h {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.82rem;
+    color: var(--green);
+    font-weight: 600;
+    margin: 18px 0 10px;
+    display: flex; align-items: center; gap: 8px;
+    letter-spacing: 0.5px;
+  }
+  .sub-h::before {
+    content: '//';
+    color: var(--text-dim);
+    font-weight: 400;
+  }
 
-/* ========== MCQ PAGE ========== */
-.mcq-wrap{max-width:780px;margin:0 auto;}
-.mcq-progress-bar{height:4px;background:var(--bg2);border-radius:2px;margin-bottom:1.5rem;overflow:hidden;}
-.mcq-fill{height:100%;background:linear-gradient(90deg,var(--c2),var(--c1));border-radius:2px;transition:width 0.4s ease;}
+  /* ── CONCEPT TEXT ── */
+  .concept {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 10px 0;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+  .concept strong { color: var(--text); }
+  .concept .hl { color: var(--green); font-family: 'Fira Code', monospace; }
+  .concept .hl-b { color: var(--blue); }
+  .concept .hl-y { color: var(--yellow); }
+  .concept .hl-o { color: var(--orange); }
 
-.mcq-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:14px;padding:1.5rem;
-}
-.mcq-num{font-size:0.72rem;color:var(--text3);font-family:'Fira Code',monospace;margin-bottom:0.6rem;letter-spacing:1px;}
-.mcq-q{font-size:0.97rem;font-weight:600;line-height:1.7;margin-bottom:1rem;color:var(--text);}
-.mcq-qcode{
-  background:var(--bg1);border:1px solid var(--border);
-  border-radius:8px;padding:0.7rem;
-  font-family:'Fira Code',monospace;font-size:0.8rem;
-  color:#7dd3fc;margin-bottom:1rem;overflow-x:auto;
-}
-.mcq-opts{display:grid;gap:0.5rem;}
-.mcq-opt{
-  padding:0.75rem 1rem;border-radius:8px;
-  border:1px solid var(--border);background:var(--bg2);
-  cursor:pointer;font-size:0.87rem;
-  transition:all 0.18s;text-align:left;
-  font-family:'Chakra Petch',sans-serif;
-  display:flex;align-items:flex-start;gap:0.6rem;
-}
-.mcq-opt:hover:not(:disabled){border-color:var(--c2);background:rgba(180,79,255,0.07);color:var(--text);}
-.mcq-opt:active:not(:disabled){transform:scale(0.99);}
-.mcq-opt .opt-lbl{
-  font-family:'Orbitron',monospace;font-size:0.7rem;font-weight:700;
-  min-width:18px;color:var(--text3);margin-top:2px;
-}
-.mcq-opt .opt-txt{flex:1;line-height:1.5;}
-.mcq-opt.ok{background:rgba(0,255,136,0.1);border-color:var(--c3);color:var(--c3);}
-.mcq-opt.ok .opt-lbl{color:var(--c3);}
-.mcq-opt.ng{background:rgba(255,68,102,0.1);border-color:var(--c5);color:var(--c5);}
-.mcq-opt.ng .opt-lbl{color:var(--c5);}
-.mcq-opt:disabled{cursor:default;}
-.mcq-fb{
-  display:none;margin-top:0.8rem;padding:0.75rem;
-  border-radius:8px;font-size:0.82rem;line-height:1.6;
-}
-.mcq-fb.show{display:block;}
-.mcq-fb.ok{background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.25);color:var(--c3);}
-.mcq-fb.ng{background:rgba(255,68,102,0.07);border:1px solid rgba(255,68,102,0.25);color:var(--c5);}
-.mcq-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.2rem;flex-wrap:wrap;gap:0.8rem;}
-.mcq-nav-btns{display:flex;gap:0.5rem;flex-wrap:wrap;}
-.q-dots{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;flex:1;padding:0 0.5rem;}
-.q-dot{
-  width:9px;height:9px;border-radius:50%;
-  background:var(--border);cursor:pointer;
-  transition:all 0.2s;
-}
-.q-dot.cur{background:var(--c1);box-shadow:0 0 6px var(--c1);}
-.q-dot.c-ok{background:var(--c3);}
-.q-dot.c-ng{background:var(--c5);}
-.mcq-score-txt{font-family:'Orbitron',monospace;font-size:0.85rem;color:var(--c1);white-space:nowrap;}
+  /* ── COMPARE TABLE ── */
+  .cmp-wrap { overflow-x: auto; margin: 12px 0; }
+  .cmp-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .cmp-tbl th {
+    background: var(--surface2);
+    padding: 9px 14px;
+    text-align: left;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .cmp-tbl td {
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(48,54,61,0.4);
+    vertical-align: top;
+  }
+  .cmp-tbl tr:last-child td { border-bottom: none; }
+  .cmp-tbl tr:hover td { background: rgba(255,255,255,0.018); }
+  .c-kw { font-family: 'Fira Code', monospace; color: var(--blue); font-weight: 600; font-size: 0.83rem; }
+  .c-desc { color: var(--text-dim); font-size: 0.83rem; line-height: 1.5; }
+  .c-eg { font-family: 'Fira Code', monospace; color: var(--green); font-size: 0.76rem; }
 
-/* ========== WRITTEN PAGE ========== */
-.written-wrap{max-width:800px;margin:0 auto;}
-.exam-q{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:12px;padding:1.3rem;
-  margin-bottom:1rem;transition:border-color 0.2s;
-}
-.exam-q.graded-ok{border-color:var(--c3);}
-.exam-q.graded-ng{border-color:var(--c5);}
-.eq-num{font-size:0.68rem;color:var(--text3);font-family:'Fira Code',monospace;margin-bottom:0.4rem;letter-spacing:1px;}
-.eq-q{font-size:0.93rem;font-weight:600;margin-bottom:0.7rem;line-height:1.7;}
-.eq-input{
-  width:100%;background:var(--bg2);
-  border:1px solid var(--border);border-radius:8px;
-  padding:0.7rem;
-  font-family:'Fira Code',monospace;font-size:0.82rem;
-  color:var(--text);outline:none;resize:vertical;
-  min-height:72px;transition:border-color 0.2s;
-  caret-color:var(--c1);
-}
-.eq-input:focus{border-color:var(--c1);box-shadow:0 0 0 2px rgba(0,245,255,0.07);}
-.exam-q.graded-ok .eq-input{border-color:var(--c3);}
-.exam-q.graded-ng .eq-input{border-color:var(--c5);}
-.eq-hint-btn{
-  font-size:0.75rem;color:var(--text3);cursor:pointer;
-  margin-top:0.4rem;display:inline-flex;align-items:center;gap:0.3rem;
-  background:none;border:none;font-family:'Chakra Petch',sans-serif;
-  transition:color 0.2s;
-}
-.eq-hint-btn:hover{color:var(--c4);}
-.eq-hint{
-  display:none;margin-top:0.4rem;padding:0.5rem 0.7rem;
-  background:rgba(255,170,0,0.07);border:1px solid rgba(255,170,0,0.2);
-  border-radius:6px;font-size:0.78rem;color:var(--c4);
-}
-.eq-ans{
-  display:none;margin-top:0.5rem;padding:0.6rem 0.8rem;
-  background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.2);
-  border-radius:6px;
-}
-.eq-ans-lbl{font-size:0.7rem;color:var(--c3);font-weight:700;margin-bottom:0.3rem;letter-spacing:0.5px;}
-.eq-ans pre{font-family:'Fira Code',monospace;font-size:0.78rem;color:var(--c3);white-space:pre-wrap;}
-.written-footer{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:12px;padding:1.5rem;
-  text-align:center;margin-top:0.5rem;
-  display:flex;flex-wrap:wrap;gap:0.8rem;justify-content:center;
-}
+  /* ── GRID 2 ── */
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0; }
+  .g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 12px 0; }
+  @media(max-width: 640px) { .g2, .g3 { grid-template-columns: 1fr; } }
 
-/* ========== MODAL ========== */
-.modal-ov{
-  display:none;position:fixed;inset:0;
-  background:rgba(4,7,15,0.88);
-  backdrop-filter:blur(12px);
-  z-index:999;align-items:center;justify-content:center;padding:1rem;
-}
-.modal-ov.open{display:flex;}
-.modal-box{
-  background:var(--bg2);border:1px solid var(--c1);
-  border-radius:20px;padding:2rem;
-  max-width:420px;width:100%;text-align:center;
-  box-shadow:0 0 60px rgba(0,245,255,0.15);
-  animation:modalIn 0.3s ease;
-}
-@keyframes modalIn{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
-.modal-emoji{font-size:3.5rem;margin-bottom:0.8rem;display:block;}
-.modal-title{font-family:'Orbitron',monospace;font-size:1.2rem;color:var(--c1);margin-bottom:0.3rem;}
-.modal-score{
-  font-family:'Orbitron',monospace;
-  font-size:3.5rem;font-weight:900;
-  background:linear-gradient(135deg,var(--c1),var(--c2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  margin:0.3rem 0;
-}
-.modal-pct{color:var(--text2);font-size:0.9rem;}
-.modal-grade{
-  font-family:'Orbitron',monospace;
-  font-size:1rem;font-weight:700;
-  margin:0.8rem 0;
-}
+  /* ── MINI CARD ── */
+  .m-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .m-card .mc-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .m-card .mc-val {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.82rem;
+    color: var(--text);
+    line-height: 1.9;
+  }
 
-/* ========== RESPONSIVE ========== */
-@media(max-width:768px){
-  .topnav{display:none;}
-  .bottomnav{display:block;}
-  .main{padding:1rem;padding-bottom:80px;}
-  .hero{padding:1.5rem 0.5rem 1rem;}
-  .stats-row{gap:0.3rem;}
-  .stat-pill{padding:0.5rem 0.8rem;min-width:60px;}
-  .stat-val{font-size:1.3rem;}
-  .game-card{padding:1rem;}
-  .mcq-card{padding:1.1rem;}
-  .exam-q{padding:1rem;}
-  .sec-hdr h2{font-size:0.95rem;}
-}
-@media(max-width:480px){
-  .home-grid{grid-template-columns:1fr 1fr;}
-  .home-card{padding:1rem;}
-  .hc-icon{font-size:1.8rem;}
-  .hc-title{font-size:0.78rem;}
-  .hc-desc{display:none;}
-  .hc-arrow{display:none;}
-  .stats-row{justify-content:space-between;}
-  .stat-pill{min-width:50px;padding:0.4rem 0.5rem;}
-  .stat-val{font-size:1.1rem;}
-  .cmd-grid{grid-template-columns:1fr;}
-  .cheat-grid{grid-template-columns:1fr 1fr;}
-  .written-footer .btn{flex:1;}
-}
-@media(max-width:350px){
-  .home-grid{grid-template-columns:1fr;}
-  .cheat-grid{grid-template-columns:1fr;}
-}
+  /* ── TAG PILLS ── */
+  .tag {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.68rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    margin: 2px;
+  }
+  .t-green  { background: rgba(63,185,80,0.15);  color: var(--green); }
+  .t-blue   { background: rgba(88,166,255,0.15); color: var(--blue); }
+  .t-yellow { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .t-orange { background: rgba(240,136,62,0.15); color: var(--orange); }
+  .t-red    { background: rgba(248,81,73,0.15);  color: var(--red); }
+  .t-purple { background: rgba(188,140,255,0.15);color: var(--purple); }
+  .t-cyan   { background: rgba(57,211,83,0.15);  color: var(--cyan); }
 
-/* ========== GLOW TEXT UTIL ========== */
-.glow-c1{text-shadow:0 0 12px rgba(0,245,255,0.6);}
-.glow-c2{text-shadow:0 0 12px rgba(180,79,255,0.6);}
+  /* ── HOME CARDS ── */
+  .home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .home-card {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+  }
+  .home-card:hover {
+    border-color: var(--green);
+    background: rgba(63,185,80,0.07);
+    transform: translateY(-2px);
+  }
+  .home-card .hc-icon { font-size: 1.8rem; margin-bottom: 10px; display: block; }
+  .home-card .hc-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    color: var(--green);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .home-card .hc-sub { font-size: 0.78rem; color: var(--text-dim); line-height: 1.4; }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 32px 20px 24px;
+  }
+  .hero .big-icon { font-size: 4rem; margin-bottom: 12px; display: block; animation: pulse 2s ease-in-out infinite; }
+  .hero h2 {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.8rem;
+    color: var(--green);
+    margin-bottom: 8px;
+    text-shadow: 0 0 30px rgba(63,185,80,0.3);
+  }
+  .hero p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.7; margin-bottom: 28px; }
+
+  /* ── STEPS ── */
+  .steps { counter-reset: step-c; }
+  .step {
+    display: flex; gap: 14px; margin-bottom: 14px; align-items: flex-start;
+  }
+  .step-n {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--green); color: #000;
+    font-family: 'Fira Code', monospace; font-size: 0.76rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .step-c { flex: 1; font-size: 0.9rem; color: var(--text-dim); line-height: 1.7; }
+  .step-c strong { color: var(--text); }
+
+  /* ── KEYWORD HIGHLIGHT (inline) ── */
+  code {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.83rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 7px;
+    color: var(--green);
+  }
+
+  /* ── SECTION HEADER ── */
+  .sec-hdr {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sec-hdr .eyebrow {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .sec-hdr h2 {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .sec-hdr h2 .acc { color: var(--green); }
+  .sec-hdr p { color: var(--text-dim); font-size: 0.9rem; margin-top: 6px; }
+
+  /* ── CHEATSHEET GRID ── */
+  .cs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .cs-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .cs-hdr {
+    padding: 9px 14px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.73rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cs-body {
+    padding: 12px 14px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.76rem;
+    color: var(--text-dim);
+    line-height: 2;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes pulse { 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.05); } }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 </style>
 </head>
 <body>
-<div class="app">
+<div class="wrap">
 
-<!-- TOP NAV (Desktop) -->
-<nav class="topnav">
-  <div class="logo">SQL<span>▸</span>MASTER</div>
-  <div class="navlinks">
-    <button class="navlink active" onclick="goPage('home',this)"><span class="ni">🏠</span>หน้าหลัก</button>
-    <button class="navlink" onclick="goPage('learn',this)"><span class="ni">📚</span>เรียน SQL</button>
-    <button class="navlink" onclick="goPage('cheat',this)"><span class="ni">📋</span>Cheatsheet</button>
-    <button class="navlink" onclick="goPage('game',this)"><span class="ni">⌨️</span>เกมพิมพ์</button>
-    <button class="navlink" onclick="goPage('mcq',this)"><span class="ni">✅</span>ปรนัย</button>
-    <button class="navlink" onclick="goPage('written',this)"><span class="ni">✏️</span>อัตนัย</button>
+<!-- ═══ HEADER ═══ -->
+<header>
+  <h1>&gt; SQL<span>_</span>LEARN</h1>
+  <p>เรียนรู้ SQL ครบจบที่เดียว · DDL · SELECT · INSERT · UPDATE · DELETE · JOIN · Aggregate</p>
+</header>
+
+<!-- ═══ NAV TABS ═══ -->
+<div class="nav-bar" id="nav-bar">
+  <div class="nav-tab active" onclick="go('home')"><span class="tab-dot" style="background:#3fb950"></span>HOME</div>
+  <div class="nav-tab" onclick="go('intro')"><span class="tab-dot" style="background:#58a6ff"></span>SQL คืออะไร</div>
+  <div class="nav-tab" onclick="go('setup')"><span class="tab-dot" style="background:#8b949e"></span>ติดตั้ง</div>
+  <div class="nav-tab" onclick="go('datatypes')"><span class="tab-dot" style="background:#bc8cff"></span>Data Types</div>
+  <div class="nav-tab" onclick="go('ddl')"><span class="tab-dot" style="background:#bc8cff"></span>DDL</div>
+  <div class="nav-tab" onclick="go('select')"><span class="tab-dot" style="background:#3fb950"></span>SELECT</div>
+  <div class="nav-tab" onclick="go('insert')"><span class="tab-dot" style="background:#58a6ff"></span>INSERT</div>
+  <div class="nav-tab" onclick="go('update')"><span class="tab-dot" style="background:#f0883e"></span>UPDATE</div>
+  <div class="nav-tab" onclick="go('delete')"><span class="tab-dot" style="background:#f85149"></span>DELETE</div>
+  <div class="nav-tab" onclick="go('where')"><span class="tab-dot" style="background:#d29922"></span>WHERE</div>
+  <div class="nav-tab" onclick="go('join')"><span class="tab-dot" style="background:#39d353"></span>JOIN</div>
+  <div class="nav-tab" onclick="go('aggregate')"><span class="tab-dot" style="background:#d29922"></span>Aggregate</div>
+  <div class="nav-tab" onclick="go('groupby')"><span class="tab-dot" style="background:#f0883e"></span>GROUP BY</div>
+  <div class="nav-tab" onclick="go('constraints')"><span class="tab-dot" style="background:#bc8cff"></span>Constraints</div>
+  <div class="nav-tab" onclick="go('cheatsheet')"><span class="tab-dot" style="background:#3fb950"></span>CHEAT SHEET</div>
+  <div class="nav-tab" onclick="go('example')"><span class="tab-dot" style="background:#58a6ff"></span>ตัวอย่างสไลด์</div>
+</div>
+<div class="progress-thin"><div class="progress-thin-inner" id="prog-bar" style="width:6.25%"></div></div>
+
+<main>
+
+<!-- ════════════════════════════════ HOME ════════════════════════════════ -->
+<div id="sc-home" class="screen active">
+  <div class="hero">
+    <span class="big-icon">🗄️</span>
+    <h2>SQL_LEARN</h2>
+    <p>เรียนรู้คำสั่ง SQL ตั้งแต่พื้นฐานถึง Advanced<br>เนื้อหาครบตามสไลด์อาจารย์ + เพิ่มเติมมาตรฐาน SQL</p>
   </div>
-</nav>
+  <div class="section-title">เลือกหัวข้อที่ต้องการเรียน</div>
+  <div class="home-grid">
+    <button class="home-card" onclick="go('intro')">
+      <span class="hc-icon">📖</span>
+      <div class="hc-title">SQL คืออะไร?</div>
+      <div class="hc-sub">ความหมาย · ประเภทคำสั่ง · โครงสร้าง DB</div>
+    </button>
+    <button class="home-card" onclick="go('datatypes')">
+      <span class="hc-icon">🗂️</span>
+      <div class="hc-title">Data Types</div>
+      <div class="hc-sub">INT · VARCHAR · DATE · DECIMAL</div>
+    </button>
+    <button class="home-card" onclick="go('ddl')">
+      <span class="hc-icon">🏗️</span>
+      <div class="hc-title">DDL Commands</div>
+      <div class="hc-sub">CREATE · ALTER · DROP · TRUNCATE</div>
+    </button>
+    <button class="home-card" onclick="go('select')">
+      <span class="hc-icon">🔍</span>
+      <div class="hc-title">SELECT</div>
+      <div class="hc-sub">ดึงข้อมูล · WHERE · ORDER BY · LIMIT</div>
+    </button>
+    <button class="home-card" onclick="go('insert')">
+      <span class="hc-icon">➕</span>
+      <div class="hc-title">INSERT</div>
+      <div class="hc-sub">เพิ่มข้อมูลลงตาราง</div>
+    </button>
+    <button class="home-card" onclick="go('update')">
+      <span class="hc-icon">✏️</span>
+      <div class="hc-title">UPDATE</div>
+      <div class="hc-sub">แก้ไขข้อมูล · SET · WHERE</div>
+    </button>
+    <button class="home-card" onclick="go('delete')">
+      <span class="hc-icon">🗑️</span>
+      <div class="hc-title">DELETE</div>
+      <div class="hc-sub">ลบข้อมูล · TRUNCATE</div>
+    </button>
+    <button class="home-card" onclick="go('join')">
+      <span class="hc-icon">🔗</span>
+      <div class="hc-title">JOIN</div>
+      <div class="hc-sub">INNER · LEFT · RIGHT JOIN</div>
+    </button>
+    <button class="home-card" onclick="go('aggregate')">
+      <span class="hc-icon">📊</span>
+      <div class="hc-title">Aggregate</div>
+      <div class="hc-sub">COUNT · SUM · AVG · MAX · MIN</div>
+    </button>
+    <button class="home-card" onclick="go('cheatsheet')">
+      <span class="hc-icon">📋</span>
+      <div class="hc-title">Cheat Sheet</div>
+      <div class="hc-sub">สรุปทุกคำสั่งในหน้าเดียว</div>
+    </button>
+  </div>
 
-<!-- MAIN -->
-<div class="main">
-
-  <!-- HOME -->
-  <div class="page active" id="pg-home">
-    <div class="hero">
-      <div class="hero-title">SQL MASTER</div>
-      <p class="hero-sub">เรียนรู้ SQL ตั้งแต่พื้นฐานถึงขั้นสูง · เล่นเกมฝึกพิมพ์ · ทดสอบด้วยข้อสอบจริง</p>
-      <div class="home-grid">
-        <div class="home-card" onclick="goPageId('learn')">
-          <span class="hc-icon">📚</span>
-          <div class="hc-title">เรียน SQL</div>
-          <p class="hc-desc">คำสั่ง 40+ ข้อ ครบทุกหมวด DDL DML DQL JOIN Functions</p>
-          <span class="hc-arrow">→</span>
-        </div>
-        <div class="home-card v2" onclick="goPageId('cheat')">
-          <span class="hc-icon">📋</span>
-          <div class="hc-title">Cheatsheet</div>
-          <p class="hc-desc">สรุปทุกคำสั่งในหน้าเดียว ดูก่อนสอบ</p>
-          <span class="hc-arrow">→</span>
-        </div>
-        <div class="home-card v3" onclick="goPageId('game')">
-          <span class="hc-icon">⌨️</span>
-          <div class="hc-title">เกมพิมพ์</div>
-          <p class="hc-desc">จับเวลา วัด WPM ง่าย–ปานกลาง–ยาก</p>
-          <span class="hc-arrow">→</span>
-        </div>
-        <div class="home-card v4" onclick="goPageId('mcq')">
-          <span class="hc-icon">✅</span>
-          <div class="hc-title">ข้อสอบปรนัย</div>
-          <p class="hc-desc">30 ข้อ 4 ตัวเลือก พร้อมเฉลยและอธิบาย</p>
-          <span class="hc-arrow">→</span>
-        </div>
-        <div class="home-card" onclick="goPageId('written')">
-          <span class="hc-icon">✏️</span>
-          <div class="hc-title">ข้อสอบอัตนัย</div>
-          <p class="hc-desc">20 ข้อเขียนคำสั่ง SQL ตรวจเฉลยได้ทันที</p>
-          <span class="hc-arrow">→</span>
-        </div>
+  <!-- QUICK CHEAT ON HOME -->
+  <div class="section-title" style="margin-top:32px">quick reference</div>
+  <div class="cs-grid">
+    <div class="cs-card">
+      <div class="cs-hdr" style="background:rgba(63,185,80,0.1);color:var(--green)">SELECT</div>
+      <div class="cs-body">
+        <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">table</span>;<br>
+        <span class="kw">SELECT</span> col1,col2 <span class="kw">FROM</span> <span class="tb">t</span>;<br>
+        <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">t</span> <span class="kw">WHERE</span> c=<span class="val">'v'</span>;<br>
+        <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">t</span> <span class="kw">ORDER BY</span> c;<br>
+        <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">t</span> <span class="kw">LIMIT</span> <span class="num">5</span>;
       </div>
     </div>
-  </div>
-
-  <!-- LEARN -->
-  <div class="page" id="pg-learn">
-    <div class="sec-hdr"><h2>📚 SQL COMMANDS</h2><span class="badge badge-c1">40+ คำสั่ง</span></div>
-    <div class="filter-row" id="filter-row">
-      <button class="ftab active" onclick="filterCmd('all',this)">ทั้งหมด</button>
-      <button class="ftab" onclick="filterCmd('ddl',this)">DDL</button>
-      <button class="ftab" onclick="filterCmd('dml',this)">DML</button>
-      <button class="ftab" onclick="filterCmd('dql',this)">DQL</button>
-      <button class="ftab" onclick="filterCmd('join',this)">JOIN</button>
-      <button class="ftab" onclick="filterCmd('fn',this)">Functions</button>
-      <button class="ftab" onclick="filterCmd('adv',this)">Advanced</button>
-    </div>
-    <div class="cmd-grid" id="cmd-grid"></div>
-  </div>
-
-  <!-- CHEATSHEET -->
-  <div class="page" id="pg-cheat">
-    <div class="sec-hdr"><h2>📋 CHEATSHEET</h2><span class="badge badge-c4">34 คำสั่ง</span></div>
-    <div class="cheat-grid" id="cheat-grid"></div>
-  </div>
-
-  <!-- GAME -->
-  <div class="page" id="pg-game">
-    <div class="sec-hdr"><h2>⌨️ TYPING GAME</h2><span class="badge badge-c3">จับเวลา 60 วิ</span></div>
-    <div class="game-wrap">
-      <div class="game-card">
-        <div class="stats-row">
-          <div class="stat-pill"><div class="stat-val wpm" id="g-wpm">0</div><div class="stat-lbl">WPM</div></div>
-          <div class="stat-pill"><div class="stat-val acc" id="g-acc">100</div><div class="stat-lbl">% ถูก</div></div>
-          <div class="stat-pill"><div class="stat-val" id="g-time">60</div><div class="stat-lbl">วินาที</div></div>
-          <div class="stat-pill"><div class="stat-val sc" id="g-score">0</div><div class="stat-lbl">คะแนน</div></div>
-        </div>
-        <div class="timer-track"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
-        <div class="diff-row">
-          <span style="font-size:0.78rem;color:var(--text3);align-self:center;">ระดับ:</span>
-          <button class="diff-btn d-easy on" onclick="setDiff('easy',this)">🟢 ง่าย</button>
-          <button class="diff-btn d-med" onclick="setDiff('med',this)">🟡 กลาง</button>
-          <button class="diff-btn d-hard" onclick="setDiff('hard',this)">🔴 ยาก</button>
-        </div>
-        <div class="prompt-label">โจทย์: <span id="g-desc">—</span></div>
-        <div class="prompt-display" id="prompt-disp"></div>
-        <input type="text" id="typing-input" placeholder="⌨️ พิมพ์คำสั่ง SQL ที่นี่..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="onType()" disabled>
-        <div class="game-btns">
-          <button class="btn btn-c3 btn-lg" onclick="startGame()">▶ เริ่มเกม</button>
-          <button class="btn btn-c1 btn-sm" onclick="nextP()">⏭ โจทย์ใหม่</button>
-          <button class="btn btn-c5 btn-sm" onclick="resetGame()">↺ รีเซ็ต</button>
-        </div>
-        <div class="result-banner" id="game-result">
-          <h3>🎉 หมดเวลา!</h3>
-          <p id="game-result-text"></p>
-        </div>
+    <div class="cs-card">
+      <div class="cs-hdr" style="background:rgba(88,166,255,0.1);color:var(--blue)">INSERT / UPDATE / DELETE</div>
+      <div class="cs-body">
+        <span class="kw">INSERT INTO</span> <span class="tb">t</span> <span class="kw">VALUES</span>(<span class="val">v1</span>,<span class="val">v2</span>);<br>
+        <span class="kw">UPDATE</span> <span class="tb">t</span> <span class="kw">SET</span> c=<span class="val">v</span> <span class="kw">WHERE</span> id=<span class="num">1</span>;<br>
+        <span class="kw">DELETE FROM</span> <span class="tb">t</span> <span class="kw">WHERE</span> id=<span class="num">1</span>;
       </div>
     </div>
-  </div>
-
-  <!-- MCQ -->
-  <div class="page" id="pg-mcq">
-    <div class="sec-hdr"><h2>✅ ข้อสอบปรนัย</h2><span class="badge badge-c2">30 ข้อ</span></div>
-    <div class="mcq-wrap">
-      <div class="mcq-progress-bar"><div class="mcq-fill" id="mcq-fill" style="width:3.33%"></div></div>
-      <div id="mcq-box"></div>
-      <div class="mcq-nav">
-        <div class="mcq-nav-btns">
-          <button class="btn btn-c1 btn-sm" onclick="prevQ()">◀ ก่อนหน้า</button>
-          <button class="btn btn-c2 btn-sm" onclick="nextQ()">ถัดไป ▶</button>
-        </div>
-        <div class="q-dots" id="q-dots"></div>
-        <div class="mcq-score-txt"><span id="mcq-sc">0</span>/30</div>
-      </div>
-      <div style="text-align:center;margin-top:1.2rem;display:flex;gap:0.6rem;justify-content:center;flex-wrap:wrap;">
-        <button class="btn btn-c3" onclick="showResult()">📊 ดูผลคะแนน</button>
-        <button class="btn btn-c5 btn-sm" onclick="resetMCQ()">↺ เริ่มใหม่</button>
+    <div class="cs-card">
+      <div class="cs-hdr" style="background:rgba(57,211,83,0.1);color:var(--cyan)">JOIN</div>
+      <div class="cs-body">
+        <span class="kw">SELECT</span> … <span class="kw">FROM</span> <span class="tb">a</span><br>
+        <span class="kw">INNER JOIN</span> <span class="tb">b</span> <span class="kw">ON</span> a.id=b.id;<br>
+        <span class="kw">LEFT JOIN</span> <span class="tb">b</span> <span class="kw">ON</span> a.id=b.id;
       </div>
     </div>
-  </div>
-
-  <!-- WRITTEN -->
-  <div class="page" id="pg-written">
-    <div class="sec-hdr"><h2>✏️ ข้อสอบอัตนัย</h2><span class="badge badge-c4">20 ข้อ</span></div>
-    <div class="written-wrap">
-      <div id="written-box"></div>
-      <div class="written-footer">
-        <button class="btn btn-c3 btn-lg" onclick="checkWritten()">📝 ตรวจคำตอบ</button>
-        <button class="btn btn-c2" onclick="showAllAns()">👁 ดูเฉลยทั้งหมด</button>
-        <button class="btn btn-c5 btn-sm" onclick="resetWritten()">↺ ล้างคำตอบ</button>
+    <div class="cs-card">
+      <div class="cs-hdr" style="background:rgba(210,153,34,0.1);color:var(--yellow)">Aggregate</div>
+      <div class="cs-body">
+        <span class="kw">SELECT COUNT</span>(*) <span class="kw">FROM</span> <span class="tb">t</span>;<br>
+        <span class="kw">SELECT SUM</span>(c),<span class="kw">AVG</span>(c) <span class="kw">FROM</span> <span class="tb">t</span>;<br>
+        <span class="kw">SELECT</span> c,<span class="kw">COUNT</span>(*) <span class="kw">FROM</span> <span class="tb">t</span><br>
+        <span class="kw">GROUP BY</span> c <span class="kw">HAVING COUNT</span>(*)><span class="num">1</span>;
       </div>
     </div>
-  </div>
-
-</div><!-- /main -->
-
-<!-- BOTTOM NAV (Mobile) -->
-<nav class="bottomnav">
-  <div class="bottomnav-inner">
-    <button class="bnav-btn active" onclick="goPageMob('home',this)"><span class="bi">🏠</span><span class="bl">หน้าหลัก</span></button>
-    <button class="bnav-btn" onclick="goPageMob('learn',this)"><span class="bi">📚</span><span class="bl">เรียน</span></button>
-    <button class="bnav-btn" onclick="goPageMob('cheat',this)"><span class="bi">📋</span><span class="bl">Cheat</span></button>
-    <button class="bnav-btn" onclick="goPageMob('game',this)"><span class="bi">⌨️</span><span class="bl">เกม</span></button>
-    <button class="bnav-btn" onclick="goPageMob('mcq',this)"><span class="bi">✅</span><span class="bl">ปรนัย</span></button>
-    <button class="bnav-btn" onclick="goPageMob('written',this)"><span class="bi">✏️</span><span class="bl">อัตนัย</span></button>
-  </div>
-</nav>
-
-</div><!-- /app -->
-
-<!-- MODAL -->
-<div class="modal-ov" id="modal">
-  <div class="modal-box">
-    <span class="modal-emoji" id="m-emoji"></span>
-    <div class="modal-title" id="m-title"></div>
-    <div class="modal-score" id="m-score"></div>
-    <div class="modal-pct" id="m-pct"></div>
-    <div class="modal-grade" id="m-grade"></div>
-    <button class="btn btn-c1" onclick="closeModal()" style="margin-top:1.2rem;">ปิด</button>
   </div>
 </div>
 
+<!-- ════════════════════════════════ INTRO ════════════════════════════════ -->
+<div id="sc-intro" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// บทที่ 1</div>
+    <h2>SQL <span class="acc">คืออะไร?</span></h2>
+    <p>ภาษามาตรฐานสำหรับจัดการฐานข้อมูลเชิงสัมพันธ์</p>
+  </div>
+
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--blue),var(--purple))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">1.1</span>
+      <span class="card-title">ความหมายและประวัติ SQL</span>
+      <span class="card-tag t-blue">พื้นฐาน</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+      <div class="concept">
+        <strong>SQL (Structured Query Language)</strong> คือภาษามาตรฐานสำหรับจัดการ <span class="hl">ฐานข้อมูลเชิงสัมพันธ์ (Relational Database)</span> พัฒนาโดย IBM ในปี 1970 เป็นมาตรฐาน ISO/ANSI<br><br>
+        ใช้กับ: <span class="hl-b">MySQL · MariaDB · PostgreSQL · SQLite · Oracle · MS SQL Server</span><br><br>
+        <strong>ในสไลด์</strong>: ใช้ <span class="hl">MariaDB 10.4</span> ผ่าน XAMPP
+      </div>
+      <div class="sub-h">ประเภทคำสั่ง SQL</div>
+      <div class="cmp-wrap"><table class="cmp-tbl">
+        <tr><th>กลุ่ม</th><th>คำสั่ง</th><th>ทำอะไร</th></tr>
+        <tr><td><span class="tag t-purple">DDL</span></td><td class="c-eg">CREATE, ALTER, DROP, TRUNCATE</td><td class="c-desc">สร้าง/แก้ไข/ลบโครงสร้าง</td></tr>
+        <tr><td><span class="tag t-green">DML</span></td><td class="c-eg">SELECT, INSERT, UPDATE, DELETE</td><td class="c-desc">จัดการข้อมูล</td></tr>
+        <tr><td><span class="tag t-blue">DCL</span></td><td class="c-eg">GRANT, REVOKE</td><td class="c-desc">จัดการสิทธิ์ผู้ใช้</td></tr>
+        <tr><td><span class="tag t-orange">TCL</span></td><td class="c-eg">COMMIT, ROLLBACK</td><td class="c-desc">จัดการ transaction</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--green),var(--cyan))"></div>
+    <div class="card-head" onclick="tog(this)">
+      <span class="card-num">1.2</span>
+      <span class="card-title">โครงสร้างฐานข้อมูลเชิงสัมพันธ์</span>
+      <span class="card-tag t-green">Concept</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body">
+      <div class="g3">
+        <div class="m-card"><div class="mc-label">Table (ตาราง)</div><div class="mc-val">เก็บข้อมูลประเภทเดียวกัน เช่น student, department</div></div>
+        <div class="m-card"><div class="mc-label">Column / Field</div><div class="mc-val">คุณสมบัติแต่ละอย่าง เช่น id, name, address</div></div>
+        <div class="m-card"><div class="mc-label">Row / Record</div><div class="mc-val">ข้อมูล 1 รายการ เช่น นักศึกษา 1 คน</div></div>
+      </div>
+      <div class="sub-h">ตัวอย่างตาราง student (จากสไลด์)</div>
+      <div class="tbl-wrap"><table class="result-tbl">
+        <tr><th>id</th><th>name</th><th>address</th><th>iddpm</th></tr>
+        <tr><td>100</td><td>Anun</td><td>Phangkhon</td><td>2</td></tr>
+        <tr><td>101</td><td>Buncha</td><td>Phangkhon</td><td>1</td></tr>
+        <tr><td>102</td><td>Darunee</td><td>Waritchaphum</td><td>3</td></tr>
+        <tr><td>103</td><td>Piti</td><td>Waritchaphum</td><td>2</td></tr>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ SETUP ════════════════════════════════ -->
+<div id="sc-setup" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// บทที่ 2</div>
+    <h2>การ<span class="acc">ติดตั้ง</span>และเข้าใช้งาน</h2>
+    <p>เข้าใช้ MariaDB ผ่าน XAMPP บน Windows</p>
+  </div>
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--green),var(--blue))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">2.1</span>
+      <span class="card-title">เข้าใช้ MariaDB ผ่าน Command Prompt</span>
+      <span class="card-tag t-green">จากสไลด์</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-c">เปิด <strong>Command Prompt</strong> (Win + R → cmd)</div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-c">นำทางไปยัง MySQL bin: <code>cd\ → cd xampp → cd mysql → cd bin</code></div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-c">เข้า MariaDB: <code>mysql -u root</code></div></div>
+      </div>
+      <div class="code-block">
+        <div class="code-head"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>&nbsp;Command Prompt</div>
+        <div class="code-body">
+C:\Users\TUKKER><span class="kw">cd</span>\<br>
+C:\><span class="kw">cd</span> xampp<br>
+C:\xampp><span class="kw">cd</span> mysql<br>
+C:\xampp\mysql><span class="kw">cd</span> bin<br>
+C:\xampp\mysql\bin><span class="kw">mysql -u root</span><br>
+<span class="cmt">Welcome to the MariaDB monitor. Commands end with ; or \g.</span><br>
+MariaDB [(<span class="kw">none</span>)]> <span class="cmt">_</span>
+        </div>
+      </div>
+      <div class="info-box ib-yellow"><div class="ib-ico">⚠️</div><div class="ib-txt"><strong>ต้องเปิด MySQL ใน XAMPP Control Panel ก่อนทุกครั้ง</strong> และคำสั่งทุกอย่างต้องจบด้วย <code>;</code></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--purple),var(--blue))"></div>
+    <div class="card-head" onclick="tog(this)">
+      <span class="card-num">2.2</span>
+      <span class="card-title">คำสั่งจัดการฐานข้อมูล</span>
+      <span class="card-tag t-purple">DDL</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body">
+      <div class="g2">
+        <div><div class="sub-h">แสดงรายชื่อ DB</div>
+          <div class="code-block"><div class="code-body"><span class="kw">SHOW DATABASES</span>;</div></div></div>
+        <div><div class="sub-h">สร้าง DB ใหม่</div>
+          <div class="code-block"><div class="code-body"><span class="kw">CREATE DATABASE</span> <span class="tb">test1</span>;</div></div></div>
+        <div><div class="sub-h">เลือกใช้ DB</div>
+          <div class="code-block"><div class="code-body"><span class="kw">USE</span> <span class="tb">test1</span>;</div></div></div>
+        <div><div class="sub-h">ลบ DB</div>
+          <div class="code-block"><div class="code-body"><span class="kw">DROP DATABASE</span> <span class="tb">test1</span>;</div></div></div>
+      </div>
+      <div class="info-box ib-red"><div class="ib-ico">⛔</div><div class="ib-txt"><strong>DROP DATABASE</strong> ลบทุกอย่างถาวร กู้คืนไม่ได้!</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ DATA TYPES ════════════════════════════════ -->
+<div id="sc-datatypes" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// บทที่ 3</div>
+    <h2>ชนิด<span class="acc">ข้อมูล</span> (Data Types)</h2>
+    <p>ประเภทข้อมูลที่เก็บในแต่ละคอลัมน์</p>
+  </div>
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--purple),var(--orange))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">3.1</span>
+      <span class="card-title">ชนิดข้อมูลทั้งหมดที่ควรรู้</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+      <div class="sub-h">ตัวเลข (Numeric)</div>
+      <div class="cmp-wrap"><table class="cmp-tbl">
+        <tr><th>ชนิด</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr>
+        <tr><td class="c-kw">INT(n)</td><td class="c-desc">จำนวนเต็ม n=จำนวนหลักที่แสดง</td><td class="c-eg">INT(3) → 100, 255</td></tr>
+        <tr><td class="c-kw">TINYINT</td><td class="c-desc">จำนวนเต็มเล็ก -128 ถึง 127</td><td class="c-eg">age TINYINT</td></tr>
+        <tr><td class="c-kw">BIGINT</td><td class="c-desc">จำนวนเต็มขนาดใหญ่</td><td class="c-eg">population BIGINT</td></tr>
+        <tr><td class="c-kw">FLOAT</td><td class="c-desc">ทศนิยมความแม่นต่ำ</td><td class="c-eg">3.14</td></tr>
+        <tr><td class="c-kw">DECIMAL(p,s)</td><td class="c-desc">ทศนิยมแม่นสูง p=หลักทั้งหมด s=ทศนิยม</td><td class="c-eg">DECIMAL(10,2)</td></tr>
+      </table></div>
+      <div class="sub-h">ข้อความ (String)</div>
+      <div class="cmp-wrap"><table class="cmp-tbl">
+        <tr><th>ชนิด</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr>
+        <tr><td class="c-kw">CHAR(n)</td><td class="c-desc">ยาวคงที่ ใช้พื้นที่เต็ม n ตัวเสมอ</td><td class="c-eg">CHAR(10) รหัสประจำตัว</td></tr>
+        <tr><td class="c-kw">VARCHAR(n)</td><td class="c-desc">ยาวยืดหยุ่น ใช้พื้นที่ตามจริง</td><td class="c-eg">VARCHAR(15) ชื่อ</td></tr>
+        <tr><td class="c-kw">TEXT</td><td class="c-desc">ข้อความยาวสูงสุด 65,535 ตัว</td><td class="c-eg">description TEXT</td></tr>
+        <tr><td class="c-kw">ENUM</td><td class="c-desc">ค่าจากรายการที่กำหนด</td><td class="c-eg">gender ENUM('M','F')</td></tr>
+      </table></div>
+      <div class="sub-h">วันที่/เวลา (Date/Time)</div>
+      <div class="cmp-wrap"><table class="cmp-tbl">
+        <tr><th>ชนิด</th><th>รูปแบบ</th><th>ตัวอย่าง</th></tr>
+        <tr><td class="c-kw">DATE</td><td class="c-desc">YYYY-MM-DD</td><td class="c-eg">2024-03-15</td></tr>
+        <tr><td class="c-kw">TIME</td><td class="c-desc">HH:MM:SS</td><td class="c-eg">14:30:00</td></tr>
+        <tr><td class="c-kw">DATETIME</td><td class="c-desc">YYYY-MM-DD HH:MM:SS</td><td class="c-eg">2024-03-15 14:30:00</td></tr>
+        <tr><td class="c-kw">TIMESTAMP</td><td class="c-desc">อัปเดตอัตโนมัติเมื่อแก้ไข</td><td class="c-eg">updated_at TIMESTAMP</td></tr>
+        <tr><td class="c-kw">YEAR</td><td class="c-desc">YYYY</td><td class="c-eg">2024</td></tr>
+      </table></div>
+      <div class="info-box ib-blue"><div class="ib-ico">💡</div><div class="ib-txt"><strong>CHAR vs VARCHAR:</strong> ใช้ CHAR เมื่อข้อมูลยาวคงที่ (รหัส) ใช้ VARCHAR เมื่อยาวไม่แน่นอน (ชื่อ ที่อยู่)</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ DDL ════════════════════════════════ -->
+<div id="sc-ddl" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// บทที่ 4 — DDL</div>
+    <h2>CREATE · ALTER · <span class="acc">DROP</span></h2>
+    <p>คำสั่งสร้างและจัดการโครงสร้างฐานข้อมูล</p>
+  </div>
+
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--purple),var(--blue))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">4.1</span>
+      <span class="card-title">CREATE TABLE — สร้างตาราง</span>
+      <span class="card-tag t-green">จากสไลด์</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+      <div class="sub-h">ตารางโปรแกรมวิชา (department)</div>
+      <div class="code-block">
+        <div class="code-head"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>&nbsp;SQL — จากสไลด์</div>
+        <div class="code-body">
+<span class="kw">CREATE TABLE</span> <span class="tb">department</span> (<br>
+&nbsp;&nbsp;iddpm &nbsp;&nbsp;&nbsp;<span class="tp">INT(1)</span> <span class="kw">PRIMARY KEY</span>,<br>
+&nbsp;&nbsp;dpm_name <span class="tp">VARCHAR(15)</span><br>
+);<br>
+<span class="cmt">-- Query OK, 0 rows affected (0.821 sec)</span>
+        </div>
+      </div>
+      <div class="sub-h">ตารางนักศึกษา (student) — มี Foreign Key</div>
+      <div class="code-block">
+        <div class="code-body">
+<span class="kw">CREATE TABLE</span> <span class="tb">student</span> (<br>
+&nbsp;&nbsp;id &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tp">INT(3)</span> <span class="kw">PRIMARY KEY</span>,<br>
+&nbsp;&nbsp;name &nbsp;&nbsp;&nbsp;<span class="tp">VARCHAR(15)</span>,<br>
+&nbsp;&nbsp;address <span class="tp">VARCHAR(20)</span>,<br>
+&nbsp;&nbsp;iddpm &nbsp;&nbsp;<span class="tp">INT(1)</span>,<br>
+&nbsp;&nbsp;<span class="kw">CONSTRAINT</span> fk_iddpm <span class="kw">FOREIGN KEY</span>(iddpm)<br>
+&nbsp;&nbsp;<span class="kw">REFERENCES</span> <span class="tb">department</span>(iddpm)<br>
+&nbsp;&nbsp;<span class="kw">ON UPDATE CASCADE</span><br>
+);<br>
+<span class="cmt">-- Query OK, 0 rows affected (0.328 sec)</span>
+        </div>
+      </div>
+      <div class="info-box ib-green"><div class="ib-ico">✅</div><div class="ib-txt"><strong>ON UPDATE CASCADE</strong> = เมื่อค่า PRIMARY KEY ใน department เปลี่ยน FOREIGN KEY ใน student จะอัปเดตตามอัตโนมัติ</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--blue),var(--cyan))"></div>
+    <div class="card-head" onclick="tog(this)">
+      <span class="card-num">4.2</span>
+      <span class="card-title">DESCRIBE — ดูโครงสร้างตาราง</span>
+      <span class="card-tag t-blue">จากสไลด์</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body">
+      <div class="code-block"><div class="code-body">
+<span class="kw">DESCRIBE</span> <span class="tb">student</span>; <span class="cmt">-- หรือย่อ: DESC student;</span>
+      </div></div>
+      <div class="tbl-wrap"><table class="result-tbl">
+        <tr><th>Field</th><th>Type</th><th>Null</th><th>Key</th><th>Default</th><th>Extra</th></tr>
+        <tr><td>id</td><td>int(3)</td><td>NO</td><td><span class="tag t-yellow">PRI</span></td><td>NULL</td><td></td></tr>
+        <tr><td>name</td><td>varchar(15)</td><td>YES</td><td></td><td>NULL</td><td></td></tr>
+        <tr><td>address</td><td>varchar(20)</td><td>YES</td><td></td><td>NULL</td><td></td></tr>
+        <tr><td>iddpm</td><td>int(1)</td><td>YES</td><td><span class="tag t-blue">MUL</span></td><td>NULL</td><td></td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--orange),var(--yellow))"></div>
+    <div class="card-head" onclick="tog(this)">
+      <span class="card-num">4.3</span>
+      <span class="card-title">ALTER TABLE — แก้ไขโครงสร้าง</span>
+      <span class="card-tag t-orange">ALTER</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body">
+      <div class="g2">
+        <div><div class="sub-h">เพิ่มคอลัมน์</div>
+          <div class="code-block"><div class="code-body">
+<span class="kw">ALTER TABLE</span> <span class="tb">student</span><br>
+<span class="kw">ADD</span> email <span class="tp">VARCHAR(50)</span>;<br><br>
+<span class="cmt">-- เพิ่มหลังคอลัมน์ที่ระบุ</span><br>
+<span class="kw">ALTER TABLE</span> <span class="tb">student</span><br>
+<span class="kw">ADD</span> phone <span class="tp">VARCHAR(10)</span> <span class="kw">AFTER</span> name;
+          </div></div>
+        </div>
+        <div><div class="sub-h">ลบคอลัมน์</div>
+          <div class="code-block"><div class="code-body">
+<span class="kw">ALTER TABLE</span> <span class="tb">student</span><br>
+<span class="kw">DROP COLUMN</span> email;
+          </div></div>
+        </div>
+        <div><div class="sub-h">เปลี่ยนชนิดข้อมูล</div>
+          <div class="code-block"><div class="code-body">
+<span class="kw">ALTER TABLE</span> <span class="tb">student</span><br>
+<span class="kw">MODIFY</span> name <span class="tp">VARCHAR(30)</span>;
+          </div></div>
+        </div>
+        <div><div class="sub-h">เปลี่ยนชื่อตาราง</div>
+          <div class="code-block"><div class="code-body">
+<span class="kw">ALTER TABLE</span> <span class="tb">student</span><br>
+<span class="kw">RENAME TO</span> <span class="tb">students</span>;
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--red),var(--orange))"></div>
+    <div class="card-head" onclick="tog(this)">
+      <span class="card-num">4.4</span>
+      <span class="card-title">DROP vs TRUNCATE vs DELETE เปรียบเทียบ</span>
+      <span class="card-tag t-red">ลบ</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp-wrap"><table class="cmp-tbl">
+        <tr><th>คำสั่ง</th><th>ลบข้อมูล</th><th>ลบโครงสร้าง</th><th>WHERE ได้</th><th>Rollback</th><th>Auto Inc</th></tr>
+        <tr><td class="c-kw">DELETE</td><td>✅</td><td>❌</td><td>✅</td><td>✅</td><td>ไม่ reset</td></tr>
+        <tr><td class="c-kw">TRUNCATE</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>reset ✅</td></tr>
+        <tr><td class="c-kw">DROP TABLE</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>-</td></tr>
+      </table></div>
+      <div class="code-block"><div class="code-body">
+<span class="kw">DROP TABLE</span> <span class="tb">student</span>; <span class="cmt">-- ลบตาราง+ข้อมูลหมด</span><br>
+<span class="kw">TRUNCATE TABLE</span> <span class="tb">student</span>; <span class="cmt">-- ล้างข้อมูล เก็บโครงสร้าง</span><br>
+<span class="kw">DROP TABLE IF EXISTS</span> <span class="tb">student</span>; <span class="cmt">-- ไม่ error ถ้าไม่มี</span>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ SELECT ════════════════════════════════ -->
+<div id="sc-select" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// บทที่ 5 — DML</div>
+    <h2><span class="acc">SELECT</span> — ดึงข้อมูล</h2>
+    <p>คำสั่งที่ใช้บ่อยที่สุดใน SQL</p>
+  </div>
+
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--green),var(--cyan))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">5.1</span>
+      <span class="card-title">โครงสร้าง SELECT ครบสูตร</span>
+      <span class="card-tag t-green">syntax</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+      <div class="code-block">
+        <div class="code-head"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>&nbsp;โครงสร้างเต็ม</div>
+        <div class="code-body">
+<span class="kw">SELECT</span> [<span class="kw">DISTINCT</span>] col1, col2, ...<br>
+<span class="kw">FROM</span> <span class="tb">table_name</span><br>
+[<span class="kw">WHERE</span> condition]<br>
+[<span class="kw">GROUP BY</span> column]<br>
+[<span class="kw">HAVING</span> condition]<br>
+[<span class="kw">ORDER BY</span> column [<span class="kw">ASC</span>|<span class="kw">DESC</span>]]<br>
+[<span class="kw">LIMIT</span> <span class="num">n</span>];
+        </div>
+      </div>
+      <div class="info-box ib-blue"><div class="ib-ico">💡</div><div class="ib-txt"><strong>ลำดับการเขียน:</strong> SELECT → FROM → WHERE → GROUP BY → HAVING → ORDER BY → LIMIT</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--green),var(--cyan))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">5.2</span>
+      <span class="card-title">ตัวอย่าง SELECT จากสไลด์ครบทุกแบบ</span>
+      <span class="card-tag t-green">จากสไลด์</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+      <div class="g2">
+        <div>
+          <div class="sub-h">1. ดูทุกคอลัมน์</div>
+          <div class="code-block"><div class="code-body"><span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">department</span>;</div></div>
+          <div class="tbl-wrap"><table class="result-tbl">
+            <tr><th>iddpm</th><th>dpm_name</th></tr>
+            <tr><td>1</td><td>Electrical</td></tr>
+            <tr><td>2</td><td>Electronic</td></tr>
+            <tr><td>3</td><td>Computer</td></tr>
+          </table></div>
+        </div>
+        <div>
+          <div class="sub-h">2. เลือกบางคอลัมน์</div>
+          <div class="code-block"><div class="code-body"><span class="kw">SELECT</span> id, name <span class="kw">FROM</span> <span class="tb">student</span>;</div></div>
+          <div class="tbl-wrap"><table class="result-tbl">
+            <tr><th>id</th><th>name</th></tr>
+            <tr><td>100</td><td>Anun</td></tr>
+            <tr><td>101</td><td>Buncha</td></tr>
+            <tr><td>102</td><td>Darunee</td></tr>
+            <tr><td>103</td><td>Piti</td></tr>
+          </table></div>
+        </div>
+        <div>
+          <div class="sub-h">3. WHERE กรองตรงๆ</div>
+          <div class="code-block"><div class="code-body">
+<span class="kw">SELECT</span> id,name,address <span class="kw">FROM</span> <span class="tb">student</span><br>
+<span class="kw">WHERE</span> address=<span class="str">'Phangkhon'</span>;
+          </div></div>
+        </div>
+        <div>
+          <div class="sub-h">4. WHERE + LIKE</div>
+          <div class="code-block"><div class="code-body">
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">student</span><br>
+<span class="kw">WHERE</span> name <span class="kw">LIKE</span> <span class="str">'p%'</span>;<br>
+<span class="cmt">-- % = ตัวอักษรใดก็ได้</span>
+          </div></div>
+        </div>
+        <div>
+          <div class="sub-h">5. ORDER BY</div>
+          <div class="code-block"><div class="code-body">
+<span class="kw">SELECT</span> id,name <span class="kw">FROM</span> <span class="tb">student</span><br>
+<span class="kw">ORDER BY</span> name;<br>
+<span class="cmt">-- DESC = มากไปน้อย</span>
+          </div></div>
+        </div>
+        <div>
+          <div class="sub-h">6. COUNT นับจำนวน</div>
+          <div class="code-block"><div class="code-body">
+<span class="kw">SELECT COUNT</span>(id) <span class="kw">FROM</span> <span class="tb">student</span>;
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--blue),var(--purple))"></div>
+    <div class="card-head" onclick="tog(this)">
+      <span class="card-num">5.3</span>
+      <span class="card-title">SELECT คุณสมบัติพิเศษ</span>
+      <span class="card-tag t-blue">เพิ่มเติม</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body">
+      <div class="g2">
+        <div><div class="sub-h">DISTINCT — ไม่ซ้ำ</div>
+          <div class="code-block"><div class="code-body">
+<span class="kw">SELECT DISTINCT</span> address<br>
+<span class="kw">FROM</span> <span class="tb">student</span>;
+          </div></div>
+        </div>
+        <div><div class="sub-h">LIMIT — จำกัดแถว</div>
+          <div class="code-block"><div class="code-body">
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">student</span><br>
+<span class="kw">LIMIT</span> <span class="num">3</span>;
+          </div></div>
+        </div>
+        <div><div class="sub-h">Alias (AS)</div>
+          <div class="code-block"><div class="code-body">
+<span class="kw">SELECT</span> id <span class="kw">AS</span> รหัส,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name <span class="kw">AS</span> ชื่อ<br>
+<span class="kw">FROM</span> <span class="tb">student</span>;
+          </div></div>
+        </div>
+        <div><div class="sub-h">BETWEEN ช่วงค่า</div>
+          <div class="code-block"><div class="code-body">
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">student</span><br>
+<span class="kw">WHERE</span> id <span class="kw">BETWEEN</span> <span class="num">100</span> <span class="kw">AND</span> <span class="num">102</span>;
+          </div></div>
+        </div>
+        <div><div class="sub-h">IN หลายค่า</div>
+          <div class="code-block"><div class="code-body">
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">student</span><br>
+<span class="kw">WHERE</span> iddpm <span class="kw">IN</span>(<span class="num">1</span>, <span class="num">3</span>);
+          </div></div>
+        </div>
+        <div><div class="sub-h">IS NULL</div>
+          <div class="code-block"><div class="code-body">
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">student</span><br>
+<span class="kw">WHERE</span> address <span class="kw">IS NULL</span>;
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ INSERT ════════════════════════════════ -->
+<div id="sc-insert" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// บทที่ 6 — DML</div>
+    <h2><span class="acc">INSERT</span> — เพิ่มข้อมูล</h2>
+    <p>คำสั่งเพิ่มแถวข้อมูลลงในตาราง</p>
+  </div>
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--blue),var(--cyan))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">6.1</span>
+      <span class="card-title">รูปแบบคำสั่ง INSERT</span>
+      <span class="card-tag t-green">จากสไลด์</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+      <div class="sub-h">แบบ 1 — ระบุค่าทุกคอลัมน์ตามลำดับ (จากสไลด์)</div>
+      <div class="code-block"><div class="code-body">
+<span class="kw">INSERT INTO</span> <span class="tb">department</span> <span class="kw">VALUES</span>(<span class="str">'1'</span>, <span class="str">'Electrical'</span>);<br>
+<span class="kw">INSERT INTO</span> <span class="tb">department</span> <span class="kw">VALUES</span>(<span class="str">'2'</span>, <span class="str">'Electronic'</span>);<br>
+<span class="kw">INSERT INTO</span> <span class="tb">department</span> <span class="kw">VALUES</span>(<span class="str">'3'</span>, <span class="str">'Computer'</span>);<br>
+<span class="cmt">-- Query OK, 1 row affected</span>
+      </div></div>
+      <div class="sub-h">แบบ 2 — ระบุชื่อคอลัมน์ (แนะนำ)</div>
+      <div class="code-block"><div class="code-body">
+<span class="kw">INSERT INTO</span> <span class="tb">student</span>(id, name, address, iddpm)<br>
+<span class="kw">VALUES</span>(<span class="num">100</span>, <span class="str">'Anun'</span>, <span class="str">'Phangkhon'</span>, <span class="num">2</span>);<br><br>
+<span class="cmt">-- ใส่แค่บางคอลัมน์ ที่เหลือเป็น NULL</span><br>
+<span class="kw">INSERT INTO</span> <span class="tb">student</span>(id, name)<br>
+<span class="kw">VALUES</span>(<span class="num">104</span>, <span class="str">'Somchai'</span>);
+      </div></div>
+      <div class="sub-h">แบบ 3 — หลายแถวพร้อมกัน</div>
+      <div class="code-block"><div class="code-body">
+<span class="kw">INSERT INTO</span> <span class="tb">student</span> <span class="kw">VALUES</span><br>
+(<span class="num">100</span>, <span class="str">'Anun'</span>, <span class="str">'Phangkhon'</span>, <span class="num">2</span>),<br>
+(<span class="num">101</span>, <span class="str">'Buncha'</span>, <span class="str">'Phangkhon'</span>, <span class="num">1</span>),<br>
+(<span class="num">102</span>, <span class="str">'Darunee'</span>, <span class="str">'Waritchaphum'</span>, <span class="num">3</span>);
+      </div></div>
+      <div class="info-box ib-yellow"><div class="ib-ico">⚠️</div><div class="ib-txt"><strong>ลำดับค่าใน VALUES ต้องตรงกับลำดับคอลัมน์</strong> String ต้องใส่ใน <code>'...'</code></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ UPDATE ════════════════════════════════ -->
+<div id="sc-update" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// บทที่ 7 — DML</div>
+    <h2><span class="acc">UPDATE</span> — แก้ไขข้อมูล</h2>
+    <p>คำสั่งอัปเดตข้อมูลในตาราง</p>
+  </div>
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--orange),var(--yellow))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">7.1</span>
+      <span class="card-title">รูปแบบคำสั่ง UPDATE</span>
+      <span class="card-tag t-orange">UPDATE</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+      <div class="code-block"><div class="code-body">
+<span class="cmt">-- โครงสร้าง</span><br>
+<span class="kw">UPDATE</span> <span class="tb">table_name</span><br>
+<span class="kw">SET</span> col1=<span class="val">val1</span>, col2=<span class="val">val2</span><br>
+<span class="kw">WHERE</span> condition;<br><br>
+<span class="cmt">-- เปลี่ยนที่อยู่ id=101</span><br>
+<span class="kw">UPDATE</span> <span class="tb">student</span><br>
+<span class="kw">SET</span> address=<span class="str">'Sakon Nakhon'</span><br>
+<span class="kw">WHERE</span> id=<span class="num">101</span>;<br><br>
+<span class="cmt">-- แก้หลายคอลัมน์</span><br>
+<span class="kw">UPDATE</span> <span class="tb">student</span><br>
+<span class="kw">SET</span> name=<span class="str">'Buncha K'</span>, iddpm=<span class="num">3</span><br>
+<span class="kw">WHERE</span> id=<span class="num">101</span>;<br><br>
+<span class="cmt">-- นิพจน์คำนวณ</span><br>
+<span class="kw">UPDATE</span> <span class="tb">products</span> <span class="kw">SET</span> price=price*<span class="num">0.9</span>;<br>
+<span class="cmt">-- ลดราคาทุกอย่าง 10%</span>
+      </div></div>
+      <div class="info-box ib-red"><div class="ib-ico">🚨</div><div class="ib-txt"><strong>ถ้าลืม WHERE</strong> จะอัปเดตทุกแถวทั้งตาราง! เช่น <code style="color:var(--red)">UPDATE student SET address='X';</code> เปลี่ยนที่อยู่นักศึกษาทุกคน</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ DELETE ════════════════════════════════ -->
+<div id="sc-delete" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// บทที่ 8 — DML</div>
+    <h2><span class="acc">DELETE</span> — ลบข้อมูล</h2>
+    <p>คำสั่งลบแถวข้อมูลออกจากตาราง</p>
+  </div>
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--red),var(--orange))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">8.1</span>
+      <span class="card-title">รูปแบบคำสั่ง DELETE</span>
+      <span class="card-tag t-red">DELETE</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+      <div class="code-block"><div class="code-body">
+<span class="cmt">-- ลบแถวที่ตรงเงื่อนไข</span><br>
+<span class="kw">DELETE FROM</span> <span class="tb">student</span> <span class="kw">WHERE</span> id=<span class="num">103</span>;<br><br>
+<span class="cmt">-- ลบหลายแถว</span><br>
+<span class="kw">DELETE FROM</span> <span class="tb">student</span> <span class="kw">WHERE</span> iddpm=<span class="num">3</span>;<br><br>
+<span class="cmt">-- ลบด้วย LIKE</span><br>
+<span class="kw">DELETE FROM</span> <span class="tb">student</span> <span class="kw">WHERE</span> name <span class="kw">LIKE</span> <span class="str">'A%'</span>;<br><br>
+<span class="cmt">-- ลบทุกแถว (ใช้ TRUNCATE ดีกว่า)</span><br>
+<span class="kw">DELETE FROM</span> <span class="tb">student</span>;
+      </div></div>
+      <div class="info-box ib-red"><div class="ib-ico">🚨</div><div class="ib-txt"><strong>ระวัง Foreign Key!</strong> ถ้า student อ้างอิง department อยู่ จะ DELETE department ไม่ได้ ต้องลบ student ก่อน หรือตั้ง ON DELETE CASCADE</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ WHERE ════════════════════════════════ -->
+<div id="sc-where" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// บทที่ 9</div>
+    <h2><span class="acc">WHERE</span> &amp; Operators</h2>
+    <p>ตัวดำเนินการและเงื่อนไขกรองข้อมูลทั้งหมด</p>
+  </div>
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--yellow),var(--orange))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">9.1</span>
+      <span class="card-title">ตัวดำเนินการทั้งหมด</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+      <div class="cmp-wrap"><table class="cmp-tbl">
+        <tr><th>Operator</th><th>ความหมาย</th><th>ตัวอย่าง</th></tr>
+        <tr><td class="c-kw">=</td><td class="c-desc">เท่ากับ</td><td class="c-eg">WHERE id = 100</td></tr>
+        <tr><td class="c-kw">!= / &lt;&gt;</td><td class="c-desc">ไม่เท่ากับ</td><td class="c-eg">WHERE id != 100</td></tr>
+        <tr><td class="c-kw">&gt; / &lt;</td><td class="c-desc">มากกว่า / น้อยกว่า</td><td class="c-eg">WHERE id &gt; 100</td></tr>
+        <tr><td class="c-kw">&gt;= / &lt;=</td><td class="c-desc">มากกว่าหรือเท่ากับ</td><td class="c-eg">WHERE id &gt;= 101</td></tr>
+        <tr><td class="c-kw">LIKE</td><td class="c-desc">จับ pattern (% = หลายตัว, _ = 1 ตัว)</td><td class="c-eg">WHERE name LIKE 'A%'</td></tr>
+        <tr><td class="c-kw">NOT LIKE</td><td class="c-desc">ไม่ตรง pattern</td><td class="c-eg">WHERE name NOT LIKE '%n'</td></tr>
+        <tr><td class="c-kw">IN</td><td class="c-desc">อยู่ในรายการ</td><td class="c-eg">WHERE iddpm IN(1,2)</td></tr>
+        <tr><td class="c-kw">NOT IN</td><td class="c-desc">ไม่อยู่ในรายการ</td><td class="c-eg">WHERE iddpm NOT IN(3)</td></tr>
+        <tr><td class="c-kw">BETWEEN…AND</td><td class="c-desc">อยู่ในช่วง (รวมปลาย)</td><td class="c-eg">WHERE id BETWEEN 100 AND 102</td></tr>
+        <tr><td class="c-kw">IS NULL</td><td class="c-desc">ค่าเป็น NULL</td><td class="c-eg">WHERE address IS NULL</td></tr>
+        <tr><td class="c-kw">IS NOT NULL</td><td class="c-desc">ค่าไม่เป็น NULL</td><td class="c-eg">WHERE address IS NOT NULL</td></tr>
+        <tr><td class="c-kw">AND</td><td class="c-desc">ทุกเงื่อนไขต้องจริง</td><td class="c-eg">WHERE id&gt;100 AND iddpm=2</td></tr>
+        <tr><td class="c-kw">OR</td><td class="c-desc">เงื่อนไขใดจริงก็ได้</td><td class="c-eg">WHERE iddpm=1 OR iddpm=2</td></tr>
+        <tr><td class="c-kw">NOT</td><td class="c-desc">นิเสธ</td><td class="c-eg">WHERE NOT iddpm=3</td></tr>
+      </table></div>
+      <div class="sub-h">LIKE Pattern ตัวอย่าง</div>
+      <div class="code-block"><div class="code-body">
+<span class="str">'P%'</span>   <span class="cmt">-- ขึ้นต้น P → Piti, Phangkhon</span><br>
+<span class="str">'%n'</span>   <span class="cmt">-- ลงท้าย n → Anun, Phangkhon</span><br>
+<span class="str">'%an%'</span> <span class="cmt">-- มี an ตรงไหนก็ได้ → Anun, Phangkhon</span><br>
+<span class="str">'___n'</span> <span class="cmt">-- 4 ตัว ลงท้าย n → Anun</span>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ JOIN ════════════════════════════════ -->
+<div id="sc-join" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// บทที่ 10</div>
+    <h2><span class="acc">JOIN</span> — รวมข้อมูลหลายตาราง</h2>
+    <p>นำข้อมูลจากหลายตารางมารวมกันผ่านคอลัมน์ที่สัมพันธ์กัน</p>
+  </div>
+
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--cyan),var(--green))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">10.1</span>
+      <span class="card-title">INNER JOIN — ตัวอย่างจากสไลด์</span>
+      <span class="card-tag t-cyan">จากสไลด์</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+      <div class="code-block"><div class="code-body">
+<span class="kw">SELECT</span> student.id, student.name,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;student.address, department.dpm_name<br>
+<span class="kw">FROM</span> <span class="tb">student</span><br>
+<span class="kw">INNER JOIN</span> <span class="tb">department</span><br>
+<span class="kw">ON</span> student.iddpm = department.iddpm;
+      </div></div>
+      <div class="tbl-wrap"><table class="result-tbl">
+        <tr><th>id</th><th>name</th><th>address</th><th>dpm_name</th></tr>
+        <tr><td>100</td><td>Anun</td><td>Phangkhon</td><td>Electronic</td></tr>
+        <tr><td>101</td><td>Buncha</td><td>Phangkhon</td><td>Electrical</td></tr>
+        <tr><td>102</td><td>Darunee</td><td>Waritchaphum</td><td>Computer</td></tr>
+        <tr><td>103</td><td>Piti</td><td>Waritchaphum</td><td>Electronic</td></tr>
+      </table></div>
+      <div class="sub-h">JOIN + WHERE</div>
+      <div class="code-block"><div class="code-body">
+<span class="kw">SELECT</span> student.id, student.name, department.dpm_name<br>
+<span class="kw">FROM</span> <span class="tb">student</span><br>
+<span class="kw">INNER JOIN</span> <span class="tb">department</span> <span class="kw">ON</span> student.iddpm=department.iddpm<br>
+<span class="kw">WHERE</span> dpm_name=<span class="str">'Electronic'</span>;
+      </div></div>
+      <div class="tbl-wrap"><table class="result-tbl">
+        <tr><th>id</th><th>name</th><th>dpm_name</th></tr>
+        <tr><td>100</td><td>Anun</td><td>Electronic</td></tr>
+        <tr><td>103</td><td>Piti</td><td>Electronic</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--blue),var(--cyan))"></div>
+    <div class="card-head" onclick="tog(this)">
+      <span class="card-num">10.2</span>
+      <span class="card-title">ประเภท JOIN ทั้งหมด</span>
+      <span class="card-tag t-blue">เพิ่มเติม</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp-wrap"><table class="cmp-tbl">
+        <tr><th>ประเภท</th><th>ผลลัพธ์</th></tr>
+        <tr><td class="c-kw">INNER JOIN</td><td class="c-desc">เฉพาะแถวที่ match ในทั้ง 2 ตาราง</td></tr>
+        <tr><td class="c-kw">LEFT JOIN</td><td class="c-desc">ทุกแถวจากตารางซ้าย + match จากขวา (ไม่ match = NULL)</td></tr>
+        <tr><td class="c-kw">RIGHT JOIN</td><td class="c-desc">ทุกแถวจากตารางขวา + match จากซ้าย (ไม่ match = NULL)</td></tr>
+        <tr><td class="c-kw">CROSS JOIN</td><td class="c-desc">ทุกการจับคู่ที่เป็นไปได้ (Cartesian Product)</td></tr>
+      </table></div>
+      <div class="sub-h">Table Alias — ชื่อย่อตาราง</div>
+      <div class="code-block"><div class="code-body">
+<span class="kw">SELECT</span> s.id, s.name, d.dpm_name<br>
+<span class="kw">FROM</span> <span class="tb">student</span> <span class="kw">AS</span> s<br>
+<span class="kw">LEFT JOIN</span> <span class="tb">department</span> <span class="kw">AS</span> d <span class="kw">ON</span> s.iddpm=d.iddpm;<br>
+<span class="cmt">-- แสดงทุกคนแม้ไม่มีสาขา</span>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ AGGREGATE ════════════════════════════════ -->
+<div id="sc-aggregate" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// บทที่ 11</div>
+    <h2><span class="acc">Aggregate</span> Functions</h2>
+    <p>ฟังก์ชันสรุปข้อมูล: COUNT · SUM · AVG · MAX · MIN</p>
+  </div>
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--yellow),var(--orange))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">11.1</span>
+      <span class="card-title">ฟังก์ชัน Aggregate ทั้งหมด</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+      <div class="cmp-wrap"><table class="cmp-tbl">
+        <tr><th>ฟังก์ชัน</th><th>ทำอะไร</th><th>ตัวอย่าง</th></tr>
+        <tr><td class="c-kw">COUNT(col)</td><td class="c-desc">นับแถวที่ไม่เป็น NULL</td><td class="c-eg">SELECT COUNT(id) FROM student;</td></tr>
+        <tr><td class="c-kw">COUNT(*)</td><td class="c-desc">นับทุกแถวรวม NULL</td><td class="c-eg">SELECT COUNT(*) FROM student;</td></tr>
+        <tr><td class="c-kw">SUM(col)</td><td class="c-desc">รวมค่าทั้งหมด</td><td class="c-eg">SELECT SUM(score) FROM grade;</td></tr>
+        <tr><td class="c-kw">AVG(col)</td><td class="c-desc">ค่าเฉลี่ย</td><td class="c-eg">SELECT AVG(score) FROM grade;</td></tr>
+        <tr><td class="c-kw">MAX(col)</td><td class="c-desc">ค่าสูงสุด</td><td class="c-eg">SELECT MAX(score) FROM grade;</td></tr>
+        <tr><td class="c-kw">MIN(col)</td><td class="c-desc">ค่าต่ำสุด</td><td class="c-eg">SELECT MIN(score) FROM grade;</td></tr>
+      </table></div>
+      <div class="sub-h">ตัวอย่างจากสไลด์</div>
+      <div class="code-block"><div class="code-body">
+<span class="kw">SELECT COUNT</span>(id) <span class="kw">FROM</span> <span class="tb">student</span>;<br>
+<span class="cmt">-- ผล: 4</span>
+      </div></div>
+      <div class="sub-h">รวมหลาย Aggregate</div>
+      <div class="code-block"><div class="code-body">
+<span class="kw">SELECT</span><br>
+&nbsp;&nbsp;<span class="fn">MAX</span>(score) <span class="kw">AS</span> คะแนนสูงสุด,<br>
+&nbsp;&nbsp;<span class="fn">MIN</span>(score) <span class="kw">AS</span> คะแนนต่ำสุด,<br>
+&nbsp;&nbsp;<span class="fn">AVG</span>(score) <span class="kw">AS</span> คะแนนเฉลี่ย,<br>
+&nbsp;&nbsp;<span class="fn">SUM</span>(score) <span class="kw">AS</span> คะแนนรวม<br>
+<span class="kw">FROM</span> <span class="tb">grade</span>;
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ GROUP BY ════════════════════════════════ -->
+<div id="sc-groupby" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// บทที่ 12</div>
+    <h2><span class="acc">GROUP BY</span> &amp; HAVING</h2>
+    <p>จัดกลุ่มและกรองผลลัพธ์ Aggregate</p>
+  </div>
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--orange),var(--yellow))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">12.1</span>
+      <span class="card-title">GROUP BY + HAVING</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+      <div class="code-block"><div class="code-body">
+<span class="cmt">-- นับนักศึกษาในแต่ละสาขา</span><br>
+<span class="kw">SELECT</span> iddpm, <span class="fn">COUNT</span>(id) <span class="kw">AS</span> จำนวน<br>
+<span class="kw">FROM</span> <span class="tb">student</span><br>
+<span class="kw">GROUP BY</span> iddpm;<br><br>
+<span class="cmt">-- รวม JOIN ดูชื่อสาขา</span><br>
+<span class="kw">SELECT</span> d.dpm_name, <span class="fn">COUNT</span>(s.id) <span class="kw">AS</span> จำนวน<br>
+<span class="kw">FROM</span> <span class="tb">student</span> s<br>
+<span class="kw">INNER JOIN</span> <span class="tb">department</span> d <span class="kw">ON</span> s.iddpm=d.iddpm<br>
+<span class="kw">GROUP BY</span> d.dpm_name;<br><br>
+<span class="cmt">-- HAVING: กรองกลุ่มที่มีนักศึกษา &gt; 1 คน</span><br>
+<span class="kw">SELECT</span> iddpm, <span class="fn">COUNT</span>(id) <span class="kw">AS</span> จำนวน<br>
+<span class="kw">FROM</span> <span class="tb">student</span><br>
+<span class="kw">GROUP BY</span> iddpm<br>
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(id) > <span class="num">1</span>;
+      </div></div>
+      <div class="info-box ib-yellow"><div class="ib-ico">💡</div><div class="ib-txt"><strong>WHERE vs HAVING:</strong> WHERE กรองแถวก่อน GROUP BY / HAVING กรองกลุ่มหลัง GROUP BY — ไม่สามารถใช้ aggregate function ใน WHERE ได้</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ CONSTRAINTS ════════════════════════════════ -->
+<div id="sc-constraints" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// บทที่ 13</div>
+    <h2><span class="acc">Constraints</span> &amp; Keys</h2>
+    <p>ข้อจำกัดและกฎที่กำหนดให้คอลัมน์</p>
+  </div>
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--purple),var(--blue))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">13.1</span>
+      <span class="card-title">Constraints ทั้งหมด</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+      <div class="cmp-wrap"><table class="cmp-tbl">
+        <tr><th>Constraint</th><th>ความหมาย</th><th>ตัวอย่าง</th></tr>
+        <tr><td class="c-kw">PRIMARY KEY</td><td class="c-desc">ระบุตัวตน ไม่ซ้ำ ไม่ NULL</td><td class="c-eg">id INT PRIMARY KEY</td></tr>
+        <tr><td class="c-kw">FOREIGN KEY</td><td class="c-desc">อ้างอิง PK ตารางอื่น</td><td class="c-eg">FOREIGN KEY(iddpm) REFERENCES department(iddpm)</td></tr>
+        <tr><td class="c-kw">UNIQUE</td><td class="c-desc">ไม่ซ้ำ (NULL ได้)</td><td class="c-eg">email VARCHAR(50) UNIQUE</td></tr>
+        <tr><td class="c-kw">NOT NULL</td><td class="c-desc">ต้องมีค่า</td><td class="c-eg">name VARCHAR(15) NOT NULL</td></tr>
+        <tr><td class="c-kw">DEFAULT</td><td class="c-desc">ค่าเริ่มต้น</td><td class="c-eg">status VARCHAR(10) DEFAULT 'active'</td></tr>
+        <tr><td class="c-kw">CHECK</td><td class="c-desc">ตรวจสอบเงื่อนไข</td><td class="c-eg">age INT CHECK(age &gt;= 0)</td></tr>
+        <tr><td class="c-kw">AUTO_INCREMENT</td><td class="c-desc">เพิ่มอัตโนมัติ</td><td class="c-eg">id INT AUTO_INCREMENT PRIMARY KEY</td></tr>
+      </table></div>
+      <div class="sub-h">ตัวอย่างใช้หลาย Constraints</div>
+      <div class="code-block"><div class="code-body">
+<span class="kw">CREATE TABLE</span> <span class="tb">users</span> (<br>
+&nbsp;&nbsp;id &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tp">INT</span> <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,<br>
+&nbsp;&nbsp;username <span class="tp">VARCHAR(30)</span> <span class="kw">NOT NULL UNIQUE</span>,<br>
+&nbsp;&nbsp;email &nbsp;&nbsp;&nbsp;<span class="tp">VARCHAR(50)</span> <span class="kw">UNIQUE</span>,<br>
+&nbsp;&nbsp;age &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tp">INT</span> <span class="kw">CHECK</span>(age >= <span class="num">0</span>),<br>
+&nbsp;&nbsp;status &nbsp;&nbsp;<span class="tp">VARCHAR(10)</span> <span class="kw">DEFAULT</span> <span class="str">'active'</span><br>
+);
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ CHEAT SHEET ════════════════════════════════ -->
+<div id="sc-cheatsheet" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// สรุป</div>
+    <h2>SQL <span class="acc">Cheat Sheet</span></h2>
+    <p>สรุปคำสั่งทั้งหมดในหน้าเดียว</p>
+  </div>
+  <div class="cs-grid">
+    <div class="cs-card">
+      <div class="cs-hdr" style="background:rgba(188,140,255,0.1);color:var(--purple)">DDL — โครงสร้าง</div>
+      <div class="cs-body">
+        <span class="kw">SHOW DATABASES</span>;<br>
+        <span class="kw">CREATE DATABASE</span> <span class="tb">db</span>;<br>
+        <span class="kw">USE</span> <span class="tb">db</span>;<br>
+        <span class="kw">DROP DATABASE</span> <span class="tb">db</span>;<br>
+        <span class="kw">SHOW TABLES</span>;<br>
+        <span class="kw">CREATE TABLE</span> <span class="tb">t</span>(col type <span class="kw">PK</span>);<br>
+        <span class="kw">DESCRIBE</span> <span class="tb">t</span>;<br>
+        <span class="kw">ALTER TABLE</span> <span class="tb">t</span> <span class="kw">ADD</span> col type;<br>
+        <span class="kw">ALTER TABLE</span> <span class="tb">t</span> <span class="kw">DROP COLUMN</span> col;<br>
+        <span class="kw">ALTER TABLE</span> <span class="tb">t</span> <span class="kw">MODIFY</span> col type;<br>
+        <span class="kw">DROP TABLE</span> <span class="tb">t</span>;<br>
+        <span class="kw">TRUNCATE TABLE</span> <span class="tb">t</span>;
+      </div>
+    </div>
+    <div class="cs-card">
+      <div class="cs-hdr" style="background:rgba(63,185,80,0.1);color:var(--green)">SELECT — ดึงข้อมูล</div>
+      <div class="cs-body">
+        <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">t</span>;<br>
+        <span class="kw">SELECT</span> c1,c2 <span class="kw">FROM</span> <span class="tb">t</span>;<br>
+        <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">t</span> <span class="kw">WHERE</span> c=<span class="val">v</span>;<br>
+        <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">t</span> <span class="kw">WHERE</span> c <span class="kw">LIKE</span> <span class="str">'x%'</span>;<br>
+        <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">t</span> <span class="kw">ORDER BY</span> c;<br>
+        <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">t</span> <span class="kw">ORDER BY</span> c <span class="kw">DESC</span>;<br>
+        <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">t</span> <span class="kw">LIMIT</span> <span class="num">5</span>;<br>
+        <span class="kw">SELECT DISTINCT</span> c <span class="kw">FROM</span> <span class="tb">t</span>;<br>
+        <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">t</span> <span class="kw">WHERE</span> c <span class="kw">BETWEEN</span> <span class="num">1</span> <span class="kw">AND</span> <span class="num">5</span>;<br>
+        <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">t</span> <span class="kw">WHERE</span> c <span class="kw">IN</span>(<span class="val">a</span>,<span class="val">b</span>);<br>
+        <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">t</span> <span class="kw">WHERE</span> c <span class="kw">IS NULL</span>;
+      </div>
+    </div>
+    <div class="cs-card">
+      <div class="cs-hdr" style="background:rgba(88,166,255,0.1);color:var(--blue)">INSERT / UPDATE / DELETE</div>
+      <div class="cs-body">
+        <span class="cmt">-- INSERT</span><br>
+        <span class="kw">INSERT INTO</span> <span class="tb">t</span> <span class="kw">VALUES</span>(<span class="val">v1</span>,<span class="val">v2</span>);<br>
+        <span class="kw">INSERT INTO</span> <span class="tb">t</span>(c1,c2) <span class="kw">VALUES</span>(<span class="val">v1</span>,<span class="val">v2</span>);<br>
+        <span class="cmt">-- UPDATE</span><br>
+        <span class="kw">UPDATE</span> <span class="tb">t</span> <span class="kw">SET</span> c=<span class="val">v</span> <span class="kw">WHERE</span> id=<span class="num">1</span>;<br>
+        <span class="kw">UPDATE</span> <span class="tb">t</span> <span class="kw">SET</span> c1=<span class="val">v</span>,c2=<span class="val">v</span> <span class="kw">WHERE</span> …;<br>
+        <span class="cmt">-- DELETE</span><br>
+        <span class="kw">DELETE FROM</span> <span class="tb">t</span> <span class="kw">WHERE</span> id=<span class="num">1</span>;<br>
+        <span class="kw">DELETE FROM</span> <span class="tb">t</span>; <span class="cmt">-- ทั้งหมด!</span>
+      </div>
+    </div>
+    <div class="cs-card">
+      <div class="cs-hdr" style="background:rgba(57,211,83,0.1);color:var(--cyan)">JOIN</div>
+      <div class="cs-body">
+        <span class="kw">SELECT</span> … <span class="kw">FROM</span> <span class="tb">a</span><br>
+        <span class="kw">INNER JOIN</span> <span class="tb">b</span> <span class="kw">ON</span> a.id=b.id;<br>
+        <span class="kw">SELECT</span> … <span class="kw">FROM</span> <span class="tb">a</span><br>
+        <span class="kw">LEFT JOIN</span> <span class="tb">b</span> <span class="kw">ON</span> a.id=b.id;<br>
+        <span class="kw">SELECT</span> … <span class="kw">FROM</span> <span class="tb">a</span><br>
+        <span class="kw">RIGHT JOIN</span> <span class="tb">b</span> <span class="kw">ON</span> a.id=b.id;<br>
+        <span class="cmt">-- + WHERE</span><br>
+        … <span class="kw">INNER JOIN</span> … <span class="kw">ON</span> …<br>
+        <span class="kw">WHERE</span> b.col=<span class="str">'x'</span>;
+      </div>
+    </div>
+    <div class="cs-card">
+      <div class="cs-hdr" style="background:rgba(210,153,34,0.1);color:var(--yellow)">Aggregate + GROUP BY</div>
+      <div class="cs-body">
+        <span class="kw">SELECT COUNT</span>(*) <span class="kw">FROM</span> <span class="tb">t</span>;<br>
+        <span class="kw">SELECT SUM</span>(c) <span class="kw">FROM</span> <span class="tb">t</span>;<br>
+        <span class="kw">SELECT AVG</span>(c) <span class="kw">FROM</span> <span class="tb">t</span>;<br>
+        <span class="kw">SELECT MAX</span>(c) <span class="kw">FROM</span> <span class="tb">t</span>;<br>
+        <span class="kw">SELECT MIN</span>(c) <span class="kw">FROM</span> <span class="tb">t</span>;<br>
+        <span class="kw">SELECT</span> c,<span class="kw">COUNT</span>(*)<br>
+        <span class="kw">FROM</span> <span class="tb">t</span> <span class="kw">GROUP BY</span> c;<br>
+        … <span class="kw">HAVING COUNT</span>(*)><span class="num">1</span>;
+      </div>
+    </div>
+    <div class="cs-card">
+      <div class="cs-hdr" style="background:rgba(240,136,62,0.1);color:var(--orange)">Data Types</div>
+      <div class="cs-body">
+        <span class="cmt">-- ตัวเลข</span><br>
+        <span class="kw">INT</span>(n), TINYINT, BIGINT<br>
+        <span class="kw">FLOAT</span>, <span class="kw">DECIMAL</span>(p,s)<br>
+        <span class="cmt">-- ข้อความ</span><br>
+        <span class="kw">CHAR</span>(n) <span class="cmt">-- ยาวคงที่</span><br>
+        <span class="kw">VARCHAR</span>(n) <span class="cmt">-- ยืดหยุ่น</span><br>
+        <span class="kw">TEXT</span>, LONGTEXT<br>
+        <span class="cmt">-- วันที่</span><br>
+        <span class="kw">DATE</span>, <span class="kw">DATETIME</span>, <span class="kw">TIMESTAMP</span><br>
+        <span class="cmt">-- อื่นๆ</span><br>
+        <span class="kw">BOOLEAN</span>, <span class="kw">ENUM</span>(<span class="str">'a'</span>,<span class="str">'b'</span>)
+      </div>
+    </div>
+    <div class="cs-card">
+      <div class="cs-hdr" style="background:rgba(248,81,73,0.1);color:var(--red)">Constraints</div>
+      <div class="cs-body">
+        <span class="kw">PRIMARY KEY</span> <span class="cmt">-- ไม่ซ้ำ ไม่ NULL</span><br>
+        <span class="kw">FOREIGN KEY</span>(c) <span class="kw">REFERENCES</span> t(c)<br>
+        <span class="kw">UNIQUE</span> <span class="cmt">-- ไม่ซ้ำ</span><br>
+        <span class="kw">NOT NULL</span> <span class="cmt">-- ต้องมีค่า</span><br>
+        <span class="kw">DEFAULT</span> <span class="str">'val'</span><br>
+        <span class="kw">CHECK</span>(condition)<br>
+        <span class="kw">AUTO_INCREMENT</span>
+      </div>
+    </div>
+    <div class="cs-card">
+      <div class="cs-hdr" style="background:rgba(57,211,83,0.1);color:var(--green)">WHERE Operators</div>
+      <div class="cs-body">
+        = &nbsp;!= &nbsp;&lt; &nbsp;&gt; &nbsp;&lt;= &nbsp;&gt;=<br>
+        <span class="kw">LIKE</span> <span class="str">'x%'</span> &nbsp;<span class="cmt">-- % หลายตัว</span><br>
+        <span class="kw">LIKE</span> <span class="str">'_x'</span> &nbsp;<span class="cmt">-- _ 1 ตัว</span><br>
+        <span class="kw">IN</span>(a,b,c)<br>
+        <span class="kw">NOT IN</span>(a,b)<br>
+        <span class="kw">BETWEEN</span> a <span class="kw">AND</span> b<br>
+        <span class="kw">IS NULL</span> &nbsp;/ <span class="kw">IS NOT NULL</span><br>
+        <span class="kw">AND</span> &nbsp;/ <span class="kw">OR</span> &nbsp;/ <span class="kw">NOT</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ EXAMPLE ════════════════════════════════ -->
+<div id="sc-example" class="screen">
+  <div class="sec-hdr">
+    <div class="eyebrow">// ตัวอย่าง</div>
+    <h2>Ex SQL จาก<span class="acc">สไลด์</span>ครบ 8 ข้อ</h2>
+    <p>ตัวอย่างคำสั่งทั้งหมดจากสไลด์อาจารย์ พร้อมผลลัพธ์</p>
+  </div>
+
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--green),var(--blue))"></div>
+    <div class="card-head open" onclick="tog(this)">
+      <span class="card-num">Ex</span>
+      <span class="card-title">ข้อ 1–8 จากสไลด์ + อธิบาย</span>
+      <span class="card-tag t-green">จากสไลด์</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body open">
+
+      <div class="sub-h">ข้อ 1 — ดูทุกคอลัมน์จาก department</div>
+      <div class="code-block"><div class="code-body"><span class="kw">SELECT</span>*<span class="kw">FROM</span> <span class="tb">department</span>;</div></div>
+      <div class="tbl-wrap"><table class="result-tbl">
+        <tr><th>iddpm</th><th>dpm_name</th></tr>
+        <tr><td>1</td><td>Electrical</td></tr><tr><td>2</td><td>Electronic</td></tr><tr><td>3</td><td>Computer</td></tr>
+      </table></div>
+
+      <div class="sub-h">ข้อ 2 — เลือกเฉพาะ id, name จาก student</div>
+      <div class="code-block"><div class="code-body"><span class="kw">SELECT</span> id,name <span class="kw">FROM</span> <span class="tb">student</span>;</div></div>
+      <div class="tbl-wrap"><table class="result-tbl">
+        <tr><th>id</th><th>name</th></tr>
+        <tr><td>100</td><td>Anun</td></tr><tr><td>101</td><td>Buncha</td></tr><tr><td>102</td><td>Darunee</td></tr><tr><td>103</td><td>Piti</td></tr>
+      </table></div>
+
+      <div class="sub-h">ข้อ 3 — ชื่อขึ้นต้น 'p' (LIKE)</div>
+      <div class="code-block"><div class="code-body"><span class="kw">SELECT</span>*<span class="kw">FROM</span> <span class="tb">student</span> <span class="kw">WHERE</span> name <span class="kw">LIKE</span> <span class="str">'p%'</span>;</div></div>
+      <div class="info-box ib-green"><div class="ib-ico">✅</div><div class="ib-txt">ได้: Piti (id=103) — LIKE ไม่ case-sensitive ใน MariaDB ค่าเริ่มต้น</div></div>
+
+      <div class="sub-h">ข้อ 4 — กรองที่อยู่ Phangkhon</div>
+      <div class="code-block"><div class="code-body"><span class="kw">SELECT</span> id,name,address <span class="kw">FROM</span> <span class="tb">student</span> <span class="kw">WHERE</span> address=<span class="str">'Phangkhon'</span>;</div></div>
+      <div class="tbl-wrap"><table class="result-tbl">
+        <tr><th>id</th><th>name</th><th>address</th></tr>
+        <tr><td>100</td><td>Anun</td><td>Phangkhon</td></tr><tr><td>101</td><td>Buncha</td><td>Phangkhon</td></tr>
+      </table></div>
+
+      <div class="sub-h">ข้อ 5 — iddpm = 2</div>
+      <div class="code-block"><div class="code-body"><span class="kw">SELECT</span> id,name <span class="kw">FROM</span> <span class="tb">student</span> <span class="kw">WHERE</span> iddpm=<span class="num">2</span>;</div></div>
+      <div class="info-box ib-blue"><div class="ib-ico">💡</div><div class="ib-txt">iddpm=2 คือ Electronic → ได้ Anun (100) และ Piti (103)</div></div>
+
+      <div class="sub-h">ข้อ 6 — นับจำนวนนักศึกษา</div>
+      <div class="code-block"><div class="code-body"><span class="kw">SELECT COUNT</span>(id) <span class="kw">FROM</span> <span class="tb">student</span>;</div></div>
+      <div class="tbl-wrap"><table class="result-tbl"><tr><th>COUNT(id)</th></tr><tr><td>4</td></tr></table></div>
+
+      <div class="sub-h">ข้อ 7 — เรียงชื่อตัวอักษร</div>
+      <div class="code-block"><div class="code-body"><span class="kw">SELECT</span> id,name <span class="kw">FROM</span> <span class="tb">student</span> <span class="kw">ORDER BY</span> name;</div></div>
+      <div class="tbl-wrap"><table class="result-tbl">
+        <tr><th>id</th><th>name</th></tr>
+        <tr><td>100</td><td>Anun</td></tr><tr><td>101</td><td>Buncha</td></tr><tr><td>102</td><td>Darunee</td></tr><tr><td>103</td><td>Piti</td></tr>
+      </table></div>
+
+      <div class="sub-h">ข้อ 8 — JOIN หาสาขา Electronic</div>
+      <div class="code-block"><div class="code-body">
+<span class="kw">SELECT</span> student.id, student.name, department.dpm_name<br>
+<span class="kw">FROM</span> <span class="tb">student</span><br>
+<span class="kw">INNER JOIN</span> <span class="tb">department</span><br>
+<span class="kw">ON</span> student.iddpm=department.iddpm<br>
+<span class="kw">WHERE</span> dpm_name=<span class="str">'Electronic'</span>;
+      </div></div>
+      <div class="tbl-wrap"><table class="result-tbl">
+        <tr><th>id</th><th>name</th><th>dpm_name</th></tr>
+        <tr><td>100</td><td>Anun</td><td>Electronic</td></tr>
+        <tr><td>103</td><td>Piti</td><td>Electronic</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top-bar" style="background:linear-gradient(90deg,var(--yellow),var(--orange))"></div>
+    <div class="card-head" onclick="tog(this)">
+      <span class="card-num">+</span>
+      <span class="card-title">โจทย์เพิ่มเติม — ลองทำเอง!</span>
+      <span class="card-tag t-yellow">ฝึกหัด</span>
+      <span class="card-arrow">▶</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp-wrap"><table class="cmp-tbl">
+        <tr><th>#</th><th>โจทย์</th><th>เฉลย</th></tr>
+        <tr><td>1</td><td class="c-desc">เพิ่มสาขา iddpm=4 ชื่อ "Civil"</td><td class="c-eg">INSERT INTO department VALUES(4,'Civil');</td></tr>
+        <tr><td>2</td><td class="c-desc">เปลี่ยนชื่อ Darunee → Darunee S.</td><td class="c-eg">UPDATE student SET name='Darunee S.' WHERE id=102;</td></tr>
+        <tr><td>3</td><td class="c-desc">ลบนักศึกษา address=Waritchaphum</td><td class="c-eg">DELETE FROM student WHERE address='Waritchaphum';</td></tr>
+        <tr><td>4</td><td class="c-desc">นับนักศึกษาแต่ละสาขา</td><td class="c-eg">SELECT iddpm, COUNT(id) FROM student GROUP BY iddpm;</td></tr>
+        <tr><td>5</td><td class="c-desc">ดูชื่อสาขาของนักศึกษาใน Phangkhon</td><td class="c-eg">SELECT DISTINCT d.dpm_name FROM student s INNER JOIN department d ON s.iddpm=d.iddpm WHERE s.address='Phangkhon';</td></tr>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div><!-- /wrap -->
+
 <script>
-// ===================== DATA =====================
-
-const cmds=[
-  // DDL
-  {c:'ddl',t:'CREATE DATABASE',tag:'DDL',d:'สร้างฐานข้อมูลใหม่ในระบบ',sql:'CREATE DATABASE school;',r:'Query OK, 1 row affected'},
-  {c:'ddl',t:'DROP DATABASE',tag:'DDL',d:'ลบฐานข้อมูล (ข้อมูลหายถาวร!)',sql:'DROP DATABASE school;',r:'Query OK, 0 rows affected'},
-  {c:'ddl',t:'USE',tag:'DDL',d:'เลือกฐานข้อมูลที่ต้องการใช้งาน',sql:'USE school;',r:'Database changed'},
-  {c:'ddl',t:'SHOW DATABASES',tag:'DDL',d:'แสดงรายชื่อฐานข้อมูลทั้งหมดในระบบ',sql:'SHOW DATABASES;',r:'herb | mysql | test | test1 ...'},
-  {c:'ddl',t:'SHOW TABLES',tag:'DDL',d:'แสดงรายชื่อตารางทั้งหมดในฐานข้อมูล',sql:'SHOW TABLES;',r:'department | student'},
-  {c:'ddl',t:'CREATE TABLE',tag:'DDL',d:'สร้างตารางใหม่พร้อมกำหนดคอลัมน์',sql:'CREATE TABLE student(\n  id INT(3) PRIMARY KEY,\n  name VARCHAR(15),\n  address VARCHAR(20),\n  iddpm INT(1)\n);',r:'Query OK, 0 rows affected'},
-  {c:'ddl',t:'FOREIGN KEY',tag:'DDL',d:'สร้างตารางพร้อม FOREIGN KEY เชื่อมตารางอื่น',sql:'CREATE TABLE student(\n  id INT(3) PRIMARY KEY,\n  name VARCHAR(15),\n  iddpm INT(1),\n  CONSTRAINT fk_iddpm\n  FOREIGN KEY(iddpm)\n  REFERENCES department(iddpm)\n  ON UPDATE CASCADE\n);',r:'Query OK, 0 rows affected'},
-  {c:'ddl',t:'DROP TABLE',tag:'DDL',d:'ลบตารางออกจากฐานข้อมูล',sql:'DROP TABLE student;',r:'Query OK, 0 rows affected'},
-  {c:'ddl',t:'ALTER TABLE ADD',tag:'DDL',d:'เพิ่มคอลัมน์ใหม่ในตาราง',sql:'ALTER TABLE student\n  ADD email VARCHAR(30);',r:'Query OK, 0 rows affected'},
-  {c:'ddl',t:'ALTER TABLE MODIFY',tag:'DDL',d:'แก้ไขชนิดข้อมูลของคอลัมน์',sql:'ALTER TABLE student\n  MODIFY name VARCHAR(25);',r:'Query OK, 0 rows affected'},
-  {c:'ddl',t:'ALTER TABLE DROP',tag:'DDL',d:'ลบคอลัมน์ออกจากตาราง',sql:'ALTER TABLE student\n  DROP COLUMN email;',r:'Query OK, 0 rows affected'},
-  {c:'ddl',t:'DESCRIBE',tag:'DDL',d:'แสดงโครงสร้างของตาราง',sql:'DESCRIBE student;\n-- หรือ DESC student;',r:'id | int(3) | PRI\nname | varchar(15)'},
-
-  // DML
-  {c:'dml',t:'INSERT (ทุกคอลัมน์)',tag:'DML',d:'เพิ่มข้อมูลแถวใหม่ลงในตาราง',sql:"INSERT INTO department\n  VALUES('1','Electrical');",r:'Query OK, 1 row affected'},
-  {c:'dml',t:'INSERT (เลือกคอลัมน์)',tag:'DML',d:'เพิ่มข้อมูลโดยระบุชื่อคอลัมน์',sql:"INSERT INTO student(id,name)\n  VALUES('104','Somchai');",r:'Query OK, 1 row affected'},
-  {c:'dml',t:'UPDATE SET',tag:'DML',d:'แก้ไขข้อมูลที่มีอยู่แล้วในตาราง',sql:"UPDATE student\n  SET address='Bangkok'\n  WHERE id=100;",r:'Query OK, 1 row affected'},
-  {c:'dml',t:'DELETE FROM',tag:'DML',d:'ลบข้อมูลในตารางตามเงื่อนไข',sql:"DELETE FROM student\n  WHERE id=100;",r:'Query OK, 1 row affected'},
-  {c:'dml',t:'TRUNCATE TABLE',tag:'DML',d:'ล้างข้อมูลทั้งหมดในตาราง (ตารางยังอยู่)',sql:'TRUNCATE TABLE student;',r:'Query OK, 0 rows affected'},
-
-  // DQL
-  {c:'dql',t:'SELECT * (ทั้งหมด)',tag:'DQL',d:'แสดงข้อมูลทุกคอลัมน์จากตาราง',sql:'SELECT * FROM student;',r:'100 | Anun | Phangkhon | 2\n101 | Buncha | ...'},
-  {c:'dql',t:'SELECT คอลัมน์เลือก',tag:'DQL',d:'แสดงเฉพาะคอลัมน์ที่ระบุ',sql:'SELECT id, name FROM student;',r:'100 | Anun\n101 | Buncha'},
-  {c:'dql',t:'WHERE = เท่ากับ',tag:'DQL',d:'กรองข้อมูลที่มีค่าเท่ากับที่กำหนด',sql:"SELECT * FROM student\n  WHERE address='Phangkhon';",r:'Anun | Buncha'},
-  {c:'dql',t:'WHERE LIKE ค้นหา',tag:'DQL',d:"ค้นหารูปแบบข้อความ % แทนอักขระใดก็ได้",sql:"SELECT * FROM student\n  WHERE name LIKE 'p%';",r:'Piti'},
-  {c:'dql',t:'WHERE AND / OR',tag:'DQL',d:'กำหนดเงื่อนไขหลายข้อ',sql:"SELECT * FROM student\n  WHERE address='Phangkhon'\n  AND iddpm=1;",r:'101 | Buncha'},
-  {c:'dql',t:'WHERE BETWEEN',tag:'DQL',d:'กรองข้อมูลในช่วงค่า',sql:'SELECT * FROM student\n  WHERE id BETWEEN 100 AND 102;',r:'100 | 101 | 102'},
-  {c:'dql',t:'WHERE IN',tag:'DQL',d:'กรองค่าตรงกับรายการที่กำหนด',sql:'SELECT * FROM student\n  WHERE iddpm IN (1, 2);',r:'Anun | Buncha | Piti'},
-  {c:'dql',t:'ORDER BY',tag:'DQL',d:'เรียงลำดับ ASC=น้อยไปมาก DESC=มากไปน้อย',sql:'SELECT id, name FROM student\n  ORDER BY name ASC;',r:'Anun → Buncha → Darunee → Piti'},
-  {c:'dql',t:'LIMIT',tag:'DQL',d:'จำกัดจำนวนแถวที่แสดง',sql:'SELECT * FROM student LIMIT 2;',r:'แสดงแค่ 2 แถวแรก'},
-  {c:'dql',t:'DISTINCT',tag:'DQL',d:'แสดงค่าที่ไม่ซ้ำกัน',sql:'SELECT DISTINCT address\n  FROM student;',r:'Phangkhon | Waritchaphum'},
-
-  // JOIN
-  {c:'join',t:'INNER JOIN',tag:'JOIN',d:'รวมข้อมูลจาก 2 ตาราง เฉพาะแถวที่ตรงกัน',sql:'SELECT student.id, student.name,\n  department.dpm_name\nFROM student\nINNER JOIN department\nON student.iddpm=department.iddpm;',r:'100|Anun|Electronic\n101|Buncha|Electrical'},
-  {c:'join',t:'INNER JOIN + WHERE',tag:'JOIN',d:'รวม 2 ตาราง พร้อมกรองเงื่อนไข',sql:"SELECT student.id, student.name,\n  department.dpm_name\nFROM student\nINNER JOIN department\nON student.iddpm=department.iddpm\nWHERE dpm_name='Electronic';",r:'100|Anun|Electronic\n103|Piti|Electronic'},
-  {c:'join',t:'LEFT JOIN',tag:'JOIN',d:'แสดงทุกแถวจากตารางซ้าย แม้ไม่มีคู่',sql:'SELECT s.name, d.dpm_name\nFROM student s\nLEFT JOIN department d\nON s.iddpm=d.iddpm;',r:'ทุก student แม้ไม่มี dept'},
-  {c:'join',t:'RIGHT JOIN',tag:'JOIN',d:'แสดงทุกแถวจากตารางขวา',sql:'SELECT s.name, d.dpm_name\nFROM student s\nRIGHT JOIN department d\nON s.iddpm=d.iddpm;',r:'ทุก dept แม้ไม่มี student'},
-
-  // FUNCTIONS
-  {c:'fn',t:'COUNT() นับจำนวน',tag:'FUNC',d:'นับจำนวนแถวในตาราง',sql:'SELECT COUNT(id) FROM student;',r:'4'},
-  {c:'fn',t:'SUM() ผลรวม',tag:'FUNC',d:'หาผลรวมของตัวเลข',sql:'SELECT SUM(score) FROM result;',r:'350'},
-  {c:'fn',t:'AVG() ค่าเฉลี่ย',tag:'FUNC',d:'หาค่าเฉลี่ยของตัวเลข',sql:'SELECT AVG(score) FROM result;',r:'87.5'},
-  {c:'fn',t:'MAX() / MIN()',tag:'FUNC',d:'หาค่าสูงสุด/ต่ำสุด',sql:'SELECT MAX(score), MIN(score)\nFROM result;',r:'100 | 75'},
-  {c:'fn',t:'GROUP BY',tag:'FUNC',d:'จัดกลุ่มข้อมูล ใช้คู่กับ aggregate',sql:'SELECT dpm_name, COUNT(student.id)\nFROM student\nINNER JOIN department\nON student.iddpm=department.iddpm\nGROUP BY dpm_name;',r:'Electronic|2\nElectrical|1\nComputer|1'},
-  {c:'fn',t:'HAVING',tag:'FUNC',d:'กรองหลัง GROUP BY',sql:'SELECT dpm_name, COUNT(*)\nFROM student\nINNER JOIN department\nON student.iddpm=department.iddpm\nGROUP BY dpm_name\nHAVING COUNT(*) > 1;',r:'Electronic | 2'},
-
-  // ADVANCED
-  {c:'adv',t:'SUBQUERY',tag:'ADV',d:'SELECT ซ้อนใน SELECT',sql:"SELECT name FROM student\nWHERE iddpm = (\n  SELECT iddpm FROM department\n  WHERE dpm_name='Electronic'\n);",r:'Anun | Piti'},
-  {c:'adv',t:'ALIAS (AS)',tag:'ADV',d:'ตั้งชื่อย่อให้ตารางหรือคอลัมน์',sql:'SELECT s.id, s.name, d.dpm_name\nFROM student AS s\nINNER JOIN department AS d\nON s.iddpm = d.iddpm;',r:'ใช้ชื่อย่อแทนตาราง'},
-  {c:'adv',t:'CONCAT()',tag:'ADV',d:'รวมข้อความหลายคอลัมน์',sql:"SELECT CONCAT(name,' - ',address)\n  AS full_info FROM student;",r:"Anun - Phangkhon"},
-  {c:'adv',t:'UPPER() / LOWER()',tag:'ADV',d:'แปลงพิมพ์ใหญ่/เล็ก',sql:'SELECT UPPER(name) FROM student;',r:'ANUN | BUNCHA | DARUNEE | PITI'},
-  {c:'adv',t:'LENGTH()',tag:'ADV',d:'นับจำนวนตัวอักษร',sql:'SELECT name, LENGTH(name)\nFROM student;',r:'Anun|4\nBuncha|6'},
-  {c:'adv',t:'NOW() / DATE()',tag:'ADV',d:'ดึงวันที่และเวลาปัจจุบัน',sql:"SELECT NOW();\nSELECT DATE(NOW());",r:'2025-03-05 14:30:00'},
-];
-
-const tagColor={DDL:'c1',DML:'c2',DQL:'c3',JOIN:'c4',FUNC:'c2',ADV:'c5'};
-
-const cheatList=[
-  {c:'CREATE DATABASE db;',d:'สร้างฐานข้อมูล'},
-  {c:'DROP DATABASE db;',d:'ลบฐานข้อมูล'},
-  {c:'USE db;',d:'เลือกฐานข้อมูล'},
-  {c:'SHOW DATABASES;',d:'แสดงฐานข้อมูลทั้งหมด'},
-  {c:'SHOW TABLES;',d:'แสดงตารางทั้งหมด'},
-  {c:'DESCRIBE table;',d:'ดูโครงสร้างตาราง'},
-  {c:'CREATE TABLE t(...);',d:'สร้างตาราง'},
-  {c:'DROP TABLE t;',d:'ลบตาราง'},
-  {c:'ALTER TABLE ADD col TYPE;',d:'เพิ่มคอลัมน์'},
-  {c:'INSERT INTO t VALUES(...);',d:'เพิ่มข้อมูล'},
-  {c:'UPDATE t SET col=val WHERE;',d:'แก้ไขข้อมูล'},
-  {c:'DELETE FROM t WHERE;',d:'ลบข้อมูล'},
-  {c:'TRUNCATE TABLE t;',d:'ล้างข้อมูลทั้งหมด'},
-  {c:'SELECT * FROM t;',d:'ดูข้อมูลทั้งหมด'},
-  {c:"SELECT * FROM t WHERE col='val';",d:'กรองข้อมูล'},
-  {c:"WHERE col LIKE 'p%';",d:'ขึ้นต้นด้วย p'},
-  {c:"WHERE col LIKE '%p';",d:'ลงท้ายด้วย p'},
-  {c:"WHERE col LIKE '%p%';",d:'มี p อยู่ที่ไหนก็ได้'},
-  {c:'ORDER BY col ASC/DESC;',d:'เรียงลำดับ'},
-  {c:'LIMIT n;',d:'จำกัดจำนวนแถว'},
-  {c:'DISTINCT col',d:'ค่าไม่ซ้ำ'},
-  {c:'WHERE BETWEEN a AND b;',d:'ค่าในช่วง a–b'},
-  {c:'WHERE col IN (a,b,c);',d:'ค่าตรงกับรายการ'},
-  {c:'COUNT() SUM() AVG()',d:'ฟังก์ชันคำนวณ'},
-  {c:'MAX() MIN()',d:'สูงสุด / ต่ำสุด'},
-  {c:'GROUP BY col;',d:'จัดกลุ่ม'},
-  {c:'HAVING condition;',d:'กรองหลัง GROUP BY'},
-  {c:'INNER JOIN t2 ON cond;',d:'รวมเฉพาะที่ตรงกัน'},
-  {c:'LEFT JOIN / RIGHT JOIN',d:'รวมแบบซ้าย/ขวา'},
-  {c:'CONCAT(a,b)',d:'รวมข้อความ'},
-  {c:'UPPER() LOWER()',d:'พิมพ์ใหญ่/เล็ก'},
-  {c:'PRIMARY KEY',d:'กุญแจหลัก ห้ามซ้ำ-ว่าง'},
-  {c:'FOREIGN KEY REFERENCES',d:'กุญแจนอก เชื่อมตาราง'},
-  {c:'ON UPDATE CASCADE',d:'อัปเดตอัตโนมัติ'},
-];
-
-const gameData={
-  easy:[
-    {d:'แสดงฐานข้อมูลทั้งหมด',q:'SHOW DATABASES;'},
-    {d:'เลือกใช้ฐานข้อมูล test1',q:'USE test1;'},
-    {d:'แสดงตารางทั้งหมด',q:'SHOW TABLES;'},
-    {d:'ดูโครงสร้างตาราง student',q:'DESCRIBE student;'},
-    {d:'แสดงข้อมูลทั้งหมดจาก student',q:'SELECT * FROM student;'},
-    {d:'แสดง id และ name',q:'SELECT id, name FROM student;'},
-    {d:'สร้างฐานข้อมูล mydb',q:'CREATE DATABASE mydb;'},
-    {d:'นับจำนวนนักศึกษา',q:'SELECT COUNT(id) FROM student;'},
-  ],
-  med:[
-    {d:'แสดงนักศึกษาที่อยู่ Phangkhon',q:"SELECT * FROM student WHERE address='Phangkhon';"},
-    {d:'ชื่อขึ้นต้นด้วย P',q:"SELECT * FROM student WHERE name LIKE 'p%';"},
-    {d:'เรียงตามชื่อ A→Z',q:'SELECT id, name FROM student ORDER BY name;'},
-    {d:'สังกัด iddpm=2',q:'SELECT id, name FROM student WHERE iddpm=2;'},
-    {d:'เพิ่มข้อมูล department',q:"INSERT INTO department VALUES('1','Electrical');"},
-    {d:'เพิ่มนักศึกษา Anun',q:"INSERT INTO student VALUES('100','Anun','Phangkhon','2');"},
-    {d:'ค่าไม่ซ้ำของที่อยู่',q:'SELECT DISTINCT address FROM student;'},
-    {d:'แสดง 3 แถวแรก',q:'SELECT * FROM student LIMIT 3;'},
-  ],
-  hard:[
-    {d:'สร้างตาราง department',q:'CREATE TABLE department(iddpm INT(1) PRIMARY KEY, dpm_name VARCHAR(15));'},
-    {d:'INNER JOIN student + department',q:'SELECT student.id, student.name, department.dpm_name FROM student INNER JOIN department ON student.iddpm=department.iddpm;'},
-    {d:'JOIN เฉพาะ Electronic',q:"SELECT student.id, student.name, department.dpm_name FROM student INNER JOIN department ON student.iddpm=department.iddpm WHERE dpm_name='Electronic';"},
-    {d:'นับนักศึกษาแต่ละสาขา',q:'SELECT department.dpm_name, COUNT(student.id) FROM student INNER JOIN department ON student.iddpm=department.iddpm GROUP BY dpm_name;'},
-    {d:'แก้ไขที่อยู่ id=100',q:"UPDATE student SET address='Bangkok' WHERE id=100;"},
-    {d:'ลบนักศึกษา id=103',q:'DELETE FROM student WHERE id=103;'},
-  ]
+const SCREENS = {
+  home:'sc-home', intro:'sc-intro', setup:'sc-setup', datatypes:'sc-datatypes',
+  ddl:'sc-ddl', select:'sc-select', insert:'sc-insert', update:'sc-update',
+  delete:'sc-delete', where:'sc-where', join:'sc-join', aggregate:'sc-aggregate',
+  groupby:'sc-groupby', constraints:'sc-constraints', cheatsheet:'sc-cheatsheet', example:'sc-example'
 };
+const NAMES = Object.keys(SCREENS);
+const visited = new Set(['home']);
 
-const mcqData=[
-  {q:'คำสั่งใดใช้สร้างฐานข้อมูลใหม่?',o:['USE database;','SHOW DATABASES;','CREATE DATABASE database;','DROP DATABASE database;'],a:2,e:'CREATE DATABASE ใช้สร้างฐานข้อมูลใหม่'},
-  {q:'คำสั่งใดใช้เลือกใช้งานฐานข้อมูล?',o:['SELECT database;','USE database;','SHOW database;','OPEN database;'],a:1,e:'USE database; เลือกฐานข้อมูลที่ต้องการ'},
-  {q:'คำสั่งใดแสดงฐานข้อมูลทั้งหมด?',o:['SELECT DATABASES;','SHOW DATABASES;','LIST DATABASES;','DESCRIBE DATABASES;'],a:1,e:'SHOW DATABASES; แสดงรายการทั้งหมด'},
-  {q:'คำสั่งใดดูโครงสร้างของตาราง?',o:['SHOW TABLE student;','SELECT * FROM student;','DESCRIBE student;','VIEW student;'],a:2,e:'DESCRIBE (หรือ DESC) แสดงโครงสร้าง'},
-  {q:'PRIMARY KEY มีคุณสมบัติอย่างไร?',o:['ซ้ำได้','ว่างได้','ไม่ซ้ำ ไม่ว่าง','ซ้ำได้และว่างได้'],a:2,e:'PRIMARY KEY ต้องไม่ซ้ำ (UNIQUE) และไม่ว่าง (NOT NULL)'},
-  {q:'FOREIGN KEY ใช้ทำอะไร?',o:['กำหนดค่าเริ่มต้น','เชื่อมความสัมพันธ์ระหว่าง 2 ตาราง','นับจำนวนแถว','เรียงลำดับข้อมูล'],a:1,e:'FOREIGN KEY อ้างอิง PRIMARY KEY ของตารางอื่น'},
-  {q:'คำสั่งใดเพิ่มข้อมูลลงตาราง?',o:['INSERT INTO student VALUES(...);','ADD INTO student VALUES(...);','UPDATE student VALUES(...);','PUT INTO student VALUES(...);'],a:0,e:'INSERT INTO ใช้เพิ่มข้อมูล'},
-  {q:'SELECT * FROM student; หมายความว่า?',o:['ดึงเฉพาะคอลัมน์ *','ดึงข้อมูลทุกคอลัมน์จาก student','ลบข้อมูลใน student','นับข้อมูลใน student'],a:1,e:'* คือทุกคอลัมน์'},
-  {q:"WHERE address = 'Phangkhon' หมายความว่า?",o:['เรียงตามที่อยู่','กรองเฉพาะ address เป็น Phangkhon','นับคนที่อยู่ Phangkhon','ลบข้อมูล Phangkhon'],a:1,e:'WHERE กรองเงื่อนไข'},
-  {q:"LIKE 'p%' หมายความว่า?",o:['ลงท้ายด้วย p','มี p ตรงกลาง','ขึ้นต้นด้วย p','ความยาวเท่า p'],a:2,e:"p% = ขึ้นต้นด้วย p"},
-  {q:'COUNT() ใช้ทำอะไร?',o:['หาผลรวม','หาค่าเฉลี่ย','นับจำนวนแถว','หาค่าสูงสุด'],a:2,e:'COUNT() นับจำนวน rows'},
-  {q:'ORDER BY name คือ?',o:['Z→A','A→Z (ค่าเริ่มต้น)','สุ่ม','เรียงตาม id'],a:1,e:'ORDER BY ค่าเริ่มต้น ASC (น้อยไปมาก)'},
-  {q:'INNER JOIN ทำอะไร?',o:['ลบข้อมูลจาก 2 ตาราง','รวมข้อมูลที่มีค่าตรงกัน','คัดลอกตาราง','สร้างตารางใหม่'],a:1,e:'INNER JOIN รวมเฉพาะแถวที่ตรงกันทั้ง 2 ตาราง'},
-  {q:'ON UPDATE CASCADE หมายความว่า?',o:['ลบอัตโนมัติ','อัปเดตตารางลูกอัตโนมัติเมื่อแม่เปลี่ยน','ป้องกันการแก้ไข','สร้างสำเนา'],a:1,e:'CASCADE ส่งผลการเปลี่ยนแปลงไปยัง FK'},
-  {q:'VARCHAR(15) หมายความว่า?',o:['ตัวเลขสูงสุด 15','ข้อความสูงสุด 15 ตัวอักษร','ทศนิยม 15 หลัก','วันที่ 15 หลัก'],a:1,e:'VARCHAR คือข้อความ ตัวเลขคือความยาวสูงสุด'},
-  {q:'UPDATE...SET...WHERE ใช้ทำอะไร?',o:['เพิ่มข้อมูล','ลบข้อมูล','แก้ไขข้อมูล','ค้นหาข้อมูล'],a:2,e:'UPDATE ใช้แก้ไขข้อมูลที่มีอยู่'},
-  {q:'DELETE FROM student WHERE id=103; ทำอะไร?',o:['ลบตาราง student','ลบนักศึกษา id=103','แก้ไขนักศึกษา id=103','ค้นหา id=103'],a:1,e:'DELETE FROM ลบข้อมูลตามเงื่อนไข WHERE'},
-  {q:'GROUP BY ใช้ทำอะไร?',o:['เรียงลำดับ','จัดกลุ่มข้อมูล','กรองข้อมูล','รวมตาราง'],a:1,e:'GROUP BY จัดกลุ่มเพื่อใช้กับ aggregate functions'},
-  {q:'AVG() คืออะไร?',o:['ค่าสูงสุด','ค่าต่ำสุด','ค่าเฉลี่ย','ผลรวม'],a:2,e:'AVG() คำนวณค่าเฉลี่ย'},
-  {q:'DISTINCT ทำอะไร?',o:['เรียงลำดับ','แสดงค่าไม่ซ้ำ','นับจำนวน','กรองข้อมูล'],a:1,e:'DISTINCT กรองให้เหลือค่าที่ไม่ซ้ำกัน'},
-  {q:'LEFT JOIN ต่างจาก INNER JOIN อย่างไร?',o:['LEFT แสดงเฉพาะที่ตรงกัน','LEFT แสดงทุกแถวจากตารางซ้ายแม้ไม่มีคู่','LEFT ลบข้อมูล','LEFT เร็วกว่า'],a:1,e:'LEFT JOIN คืนทุก record จากตารางซ้าย'},
-  {q:'LIMIT 5 คือ?',o:['แสดงทุกแถว','ข้ามแถวที่ 5','แสดงแค่ 5 แถวแรก','ลบ 5 แถวแรก'],a:2,e:'LIMIT จำกัดจำนวนแถวผลลัพธ์'},
-  {q:'คำสั่งสร้างตารางที่ถูก?',o:['CREATE table(id INT);','CREATE TABLE t(id INT PRIMARY KEY);','MAKE TABLE t(id INT);','BUILD TABLE t;'],a:1,e:'CREATE TABLE ชื่อ(column type constraint)'},
-  {q:'ALTER TABLE ทำอะไร?',o:['ลบตาราง','แก้ไขโครงสร้างตาราง','สร้างตารางใหม่','คัดลอกตาราง'],a:1,e:'ALTER TABLE แก้ไข schema เช่น ADD/DROP/MODIFY คอลัมน์'},
-  {q:'WHERE BETWEEN a AND b คือ?',o:['รวมข้อความ','กรองค่าในช่วง a–b','เรียงลำดับ','จัดกลุ่ม'],a:1,e:"BETWEEN กรองค่าที่อยู่ระหว่าง a และ b (รวมขอบ)"},
-  {q:'CONCAT(a,b) ทำอะไร?',o:['นับตัวอักษร','รวมข้อความหลายส่วน','แปลงพิมพ์ใหญ่','หาความยาว'],a:1,e:'CONCAT รวมสตริงหลายค่าเข้าด้วยกัน'},
-  {q:'HAVING ต่างจาก WHERE อย่างไร?',o:['HAVING ใช้ก่อน GROUP BY','HAVING ใช้หลัง GROUP BY กับ aggregate','ไม่ต่าง','HAVING เร็วกว่า'],a:1,e:'HAVING กรองผลลัพธ์หลัง GROUP BY'},
-  {q:'DROP TABLE vs TRUNCATE TABLE?',o:['ไม่ต่าง','DROP ลบตาราง TRUNCATE ล้างข้อมูลแต่ตารางอยู่','TRUNCATE ลบตาราง DROP ล้างข้อมูล','DROP เร็วกว่า'],a:1,e:'DROP ลบทั้งตาราง, TRUNCATE ล้างแค่ข้อมูล'},
-  {q:'INT(3) หมายความว่า?',o:['ค่าสูงสุด 3','ข้อความ 3 ตัว','ตัวเลขจำนวนเต็ม กว้างแสดง 3 หลัก','ทศนิยม 3 ตำแหน่ง'],a:2,e:'INT คือตัวเลขจำนวนเต็ม (3) คือ display width'},
-  {q:'ผลลัพธ์ SELECT COUNT(id) FROM student; (4 คน)?',o:['student','id','100','4'],a:3,e:'COUNT() นับจำนวนแถวที่ไม่ใช่ NULL'},
-];
-
-const writtenData=[
-  {q:'จงเขียนคำสั่งแสดงฐานข้อมูลทั้งหมดในระบบ',a:'SHOW DATABASES;',h:'ใช้ SHOW'},
-  {q:'จงเขียนคำสั่งสร้างฐานข้อมูลชื่อ school',a:'CREATE DATABASE school;',h:'ใช้ CREATE DATABASE'},
-  {q:'จงเขียนคำสั่งเลือกใช้งานฐานข้อมูล school',a:'USE school;',h:'ใช้ USE'},
-  {q:'จงเขียนคำสั่งดูโครงสร้างของตาราง student',a:'DESCRIBE student;',h:'ใช้ DESCRIBE หรือ DESC'},
-  {q:'จงเขียนคำสั่งแสดงข้อมูลทั้งหมดจากตาราง department',a:'SELECT * FROM department;',h:'ใช้ SELECT * FROM'},
-  {q:'จงเขียนคำสั่งแสดงเฉพาะ id และ name จากตาราง student',a:'SELECT id, name FROM student;',h:'ระบุชื่อคอลัมน์แทน *'},
-  {q:"จงเขียนคำสั่งแสดงนักศึกษาที่อยู่ที่ Phangkhon (ทุกคอลัมน์)",a:"SELECT * FROM student WHERE address='Phangkhon';",h:"WHERE address='Phangkhon'"},
-  {q:"จงเขียนคำสั่งแสดงนักศึกษาที่ชื่อขึ้นต้นด้วย P",a:"SELECT * FROM student WHERE name LIKE 'P%';",h:"LIKE 'P%'"},
-  {q:'จงเขียนคำสั่งแสดงนักศึกษาที่สังกัด iddpm = 2',a:'SELECT id, name FROM student WHERE iddpm=2;',h:'WHERE iddpm=2'},
-  {q:'จงเขียนคำสั่งนับจำนวนนักศึกษาทั้งหมด',a:'SELECT COUNT(id) FROM student;',h:'COUNT()'},
-  {q:'จงเขียนคำสั่งแสดง id, name เรียงตามชื่อ A→Z',a:'SELECT id, name FROM student ORDER BY name;',h:'ORDER BY'},
-  {q:"จงเขียนคำสั่งเพิ่มข้อมูล department: iddpm=1, dpm_name='Electrical'",a:"INSERT INTO department VALUES('1','Electrical');",h:'INSERT INTO VALUES'},
-  {q:"จงเขียนคำสั่งเพิ่มนักศึกษา: id=100, Anun, Phangkhon, iddpm=2",a:"INSERT INTO student VALUES('100','Anun','Phangkhon','2');",h:'ใส่ค่าตามลำดับคอลัมน์'},
-  {q:'จงเขียนคำสั่งแก้ไขที่อยู่นักศึกษา id=100 เป็น Bangkok',a:"UPDATE student SET address='Bangkok' WHERE id=100;",h:'UPDATE...SET...WHERE'},
-  {q:'จงเขียนคำสั่งลบนักศึกษา id=103',a:'DELETE FROM student WHERE id=103;',h:'DELETE FROM...WHERE'},
-  {q:'จงเขียน INNER JOIN แสดง id, name, dpm_name จาก 2 ตาราง',a:'SELECT student.id, student.name, department.dpm_name FROM student INNER JOIN department ON student.iddpm=department.iddpm;',h:'INNER JOIN...ON'},
-  {q:"จงเขียน INNER JOIN เฉพาะสาขา Electronic",a:"SELECT student.id, student.name, department.dpm_name FROM student INNER JOIN department ON student.iddpm=department.iddpm WHERE dpm_name='Electronic';",h:'ต่อท้าย WHERE dpm_name'},
-  {q:'จงเขียนคำสั่งนับนักศึกษาแต่ละโปรแกรมวิชา',a:'SELECT department.dpm_name, COUNT(student.id) FROM student INNER JOIN department ON student.iddpm=department.iddpm GROUP BY dpm_name;',h:'GROUP BY + COUNT'},
-  {q:'จงเขียนสร้างตาราง department (iddpm INT PK, dpm_name VARCHAR)',a:'CREATE TABLE department(iddpm INT(1) PRIMARY KEY, dpm_name VARCHAR(15));',h:'CREATE TABLE'},
-  {q:'จงเขียนคำสั่งแสดง address ที่ไม่ซ้ำกัน',a:'SELECT DISTINCT address FROM student;',h:'DISTINCT'},
-];
-
-// ===================== RENDER LEARN =====================
-function renderLearn(){
-  document.getElementById('cmd-grid').innerHTML=cmds.map(c=>`
-    <div class="cmd-card" data-c="${c.c}">
-      <div class="cmd-card-head">
-        <span class="cmd-tag badge-${tagColor[c.tag]}" style="background:rgba(var(--${tagColor[c.tag]}-rgb,0,245,255),0.12);color:var(--${tagColor[c.tag]});border:1px solid rgba(0,245,255,0.2);border-radius:4px;padding:2px 8px;font-size:0.65rem;font-family:'Fira Code';font-weight:700;">${c.tag}</span>
-        <span class="cmd-title">${c.t}</span>
-      </div>
-      <div class="cmd-desc">${c.d}</div>
-      <div class="code-block">${c.sql}</div>
-      <div class="result-pill">→ ${c.r}</div>
-    </div>`).join('');
-}
-
-function filterCmd(cat,btn){
-  document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.cmd-card').forEach(el=>{
-    el.style.display=(cat==='all'||el.dataset.c===cat)?'':'none';
+function go(key) {
+  if (!SCREENS[key]) return;
+  // hide all
+  Object.values(SCREENS).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
   });
-}
-
-// ===================== RENDER CHEAT =====================
-function renderCheat(){
-  document.getElementById('cheat-grid').innerHTML=cheatList.map(c=>`
-    <div class="cheat-card">
-      <div class="cheat-code">${c.c}</div>
-      <div class="cheat-desc">${c.d}</div>
-    </div>`).join('');
-}
-
-// ===================== TYPING GAME =====================
-let G={run:false,diff:'easy',idx:0,timer:null,left:60,correct:0,total:0,t0:null};
-
-function setDiff(d,btn){
-  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  G.diff=d;G.idx=0;loadPrompt();
-}
-
-function loadPrompt(){
-  const arr=gameData[G.diff];
-  const p=arr[G.idx%arr.length];
-  document.getElementById('g-desc').textContent=p.d;
-  const disp=document.getElementById('prompt-disp');
-  disp.innerHTML=p.q.split('').map((c,i)=>`<span class="ch ${i===0?'cur':'nd'}" data-i="${i}">${c===' '?'&nbsp;':c}</span>`).join('');
-  document.getElementById('typing-input').value='';
-}
-
-function startGame(){
-  resetGame();
-  G.run=true;G.left=60;G.correct=0;G.total=0;G.t0=Date.now();
-  const inp=document.getElementById('typing-input');
-  inp.disabled=false;inp.focus();
-  document.getElementById('game-result').style.display='none';
-  loadPrompt();
-  G.timer=setInterval(()=>{
-    G.left--;
-    document.getElementById('g-time').textContent=G.left;
-    document.getElementById('timer-fill').style.width=(G.left/60*100)+'%';
-    if(G.left<=0)endGame();
-  },1000);
-}
-
-function endGame(){
-  clearInterval(G.timer);G.run=false;
-  document.getElementById('typing-input').disabled=true;
-  const min=(Date.now()-G.t0)/60000;
-  const wpm=Math.round(G.correct/5/Math.max(min,0.001));
-  document.getElementById('g-wpm').textContent=isFinite(wpm)?wpm:0;
-  const rb=document.getElementById('game-result');
-  rb.style.display='block';
-  document.getElementById('game-result-text').textContent=`พิมพ์ถูก ${G.correct} ตัวอักษร · WPM: ${isFinite(wpm)?wpm:0} · คะแนน: ${G.correct}`;
-}
-
-function resetGame(){
-  clearInterval(G.timer);G.run=false;G.left=60;G.correct=0;G.total=0;
-  ['g-time','g-wpm','g-acc','g-score'].forEach((id,i)=>document.getElementById(id).textContent=[60,0,100,0][i]);
-  document.getElementById('timer-fill').style.width='100%';
-  document.getElementById('typing-input').disabled=true;
-  document.getElementById('typing-input').value='';
-  document.getElementById('game-result').style.display='none';
-  loadPrompt();
-}
-
-function nextP(){if(!G.run)return;G.idx++;loadPrompt();}
-
-function onType(){
-  if(!G.run)return;
-  const inp=document.getElementById('typing-input').value;
-  const arr=gameData[G.diff];
-  const target=arr[G.idx%arr.length].q;
-  const spans=document.querySelectorAll('.ch');
-  let ok=0;
-  spans.forEach((s,i)=>{
-    s.className='ch';
-    if(i<inp.length){if(inp[i]===target[i]){s.classList.add('ok');ok++;}else s.classList.add('bad');}
-    else if(i===inp.length)s.classList.add('cur');
-    else s.classList.add('nd');
+  // show target
+  document.getElementById(SCREENS[key]).classList.add('active');
+  // update nav
+  const tabs = document.querySelectorAll('.nav-tab');
+  tabs.forEach((t, i) => {
+    t.classList.toggle('active', NAMES[i] === key);
   });
-  const delta=ok-G.total;if(delta>0){G.correct+=delta;G.total=ok;}
-  const acc=inp.length?Math.round(ok/inp.length*100):100;
-  document.getElementById('g-acc').textContent=acc;
-  document.getElementById('g-score').textContent=G.correct;
-  const min=(Date.now()-G.t0)/60000;
-  const wpm=Math.round(G.correct/5/Math.max(min,0.001));
-  document.getElementById('g-wpm').textContent=isFinite(wpm)?wpm:0;
-  if(inp===target){G.idx++;G.total=0;setTimeout(loadPrompt,180);}
+  // scroll to target tab
+  const activeTab = document.querySelector('.nav-tab.active');
+  if (activeTab) activeTab.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+  // progress
+  visited.add(key);
+  const pct = Math.round((visited.size / NAMES.length) * 100);
+  document.getElementById('prog-bar').style.width = pct + '%';
+  // scroll top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ===================== MCQ =====================
-let M={cur:0,ans:Array(30).fill(null),score:0};
-
-function renderMCQ(){
-  const q=mcqData[M.cur];
-  const picked=M.ans[M.cur];
-  document.getElementById('mcq-box').innerHTML=`
-    <div class="mcq-card">
-      <div class="mcq-num">ข้อ ${M.cur+1} / ${mcqData.length}</div>
-      <div class="mcq-q">${q.q}</div>
-      <div class="mcq-opts">
-        ${q.o.map((o,i)=>`
-          <button class="mcq-opt ${picked!==null?(i===q.a?'ok':(i===picked&&picked!==q.a?'ng':'')):''}
-          " onclick="pickMCQ(${i})" ${picked!==null?'disabled':''}>
-            <span class="opt-lbl">${['ก','ข','ค','ง'][i]}</span>
-            <span class="opt-txt">${o}</span>
-          </button>`).join('')}
-      </div>
-      <div class="mcq-fb ${picked!==null?'show':''} ${picked!==null?(picked===q.a?'ok':'ng'):''}">
-        ${picked!==null?(picked===q.a?'✅ ถูกต้อง! ':'❌ ผิด! เฉลย: <b>'+q.o[q.a]+'</b><br>')+q.e:''}
-      </div>
-    </div>`;
-  document.getElementById('mcq-fill').style.width=((M.cur+1)/mcqData.length*100)+'%';
-  document.getElementById('mcq-sc').textContent=M.score;
-  renderDots();
+function tog(head) {
+  head.classList.toggle('open');
+  const body = head.nextElementSibling;
+  if (body) body.classList.toggle('open');
 }
-
-function pickMCQ(i){
-  if(M.ans[M.cur]!==null)return;
-  M.ans[M.cur]=i;
-  if(i===mcqData[M.cur].a)M.score++;
-  renderMCQ();
-}
-function nextQ(){if(M.cur<mcqData.length-1){M.cur++;renderMCQ();}}
-function prevQ(){if(M.cur>0){M.cur--;renderMCQ();}}
-
-function renderDots(){
-  document.getElementById('q-dots').innerHTML=mcqData.map((_,i)=>{
-    let cls='q-dot';
-    if(i===M.cur)cls+=' cur';
-    else if(M.ans[i]!==null)cls+=M.ans[i]===mcqData[i].a?' c-ok':' c-ng';
-    return `<div class="${cls}" onclick="gotoQ(${i})"></div>`;
-  }).join('');
-}
-function gotoQ(i){M.cur=i;renderMCQ();}
-
-function showResult(){
-  const s=M.score,t=mcqData.length,p=Math.round(s/t*100);
-  let emoji='📚',grade='ต้องฝึกเพิ่ม',gc='var(--c5)';
-  if(p>=90){emoji='🏆';grade='ดีเยี่ยม!';gc='var(--c3)';}
-  else if(p>=75){emoji='🎉';grade='ดีมาก!';gc='var(--c1)';}
-  else if(p>=50){emoji='😊';grade='ผ่าน';gc='var(--c4)';}
-  document.getElementById('m-emoji').textContent=emoji;
-  document.getElementById('m-title').textContent='ผลการสอบปรนัย';
-  document.getElementById('m-score').textContent=`${s}/${t}`;
-  document.getElementById('m-pct').textContent=`คิดเป็น ${p}%`;
-  document.getElementById('m-grade').textContent=grade;
-  document.getElementById('m-grade').style.color=gc;
-  document.getElementById('modal').classList.add('open');
-}
-
-function resetMCQ(){M={cur:0,ans:Array(30).fill(null),score:0};renderMCQ();}
-function closeModal(){document.getElementById('modal').classList.remove('open');}
-
-// ===================== WRITTEN =====================
-function renderWritten(){
-  document.getElementById('written-box').innerHTML=writtenData.map((w,i)=>`
-    <div class="exam-q" id="eq-${i}">
-      <div class="eq-num">ข้อ ${i+1} / ${writtenData.length}</div>
-      <div class="eq-q">${w.q}</div>
-      <textarea class="eq-input" id="ei-${i}" placeholder="เขียนคำสั่ง SQL..."></textarea>
-      <button class="eq-hint-btn" onclick="toggleHint(${i})">💡 คำใบ้</button>
-      <div class="eq-hint" id="eh-${i}">${w.h}</div>
-      <div class="eq-ans" id="ea-${i}">
-        <div class="eq-ans-lbl">✅ เฉลย</div>
-        <pre>${w.a}</pre>
-      </div>
-    </div>`).join('');
-}
-
-function toggleHint(i){
-  const h=document.getElementById('eh-'+i);
-  h.style.display=h.style.display==='block'?'none':'block';
-}
-
-function checkWritten(){
-  let score=0;
-  writtenData.forEach((w,i)=>{
-    const inp=document.getElementById('ei-'+i);
-    const ea=document.getElementById('ea-'+i);
-    const eq=document.getElementById('eq-'+i);
-    ea.style.display='block';
-    const ua=inp.value.trim().toUpperCase().replace(/\s+/g,' ');
-    const ca=w.a.trim().toUpperCase().replace(/\s+/g,' ');
-    eq.classList.remove('graded-ok','graded-ng');
-    if(ua===ca){score++;eq.classList.add('graded-ok');}
-    else eq.classList.add('graded-ng');
-  });
-  const t=writtenData.length,p=Math.round(score/t*100);
-  let emoji='📚',grade='ต้องฝึกเพิ่ม',gc='var(--c5)';
-  if(p>=90){emoji='🏆';grade='ดีเยี่ยม!';gc='var(--c3)';}
-  else if(p>=75){emoji='🎉';grade='ดีมาก!';gc='var(--c1)';}
-  else if(p>=50){emoji='😊';grade='ผ่าน';gc='var(--c4)';}
-  document.getElementById('m-emoji').textContent=emoji;
-  document.getElementById('m-title').textContent='ผลการสอบอัตนัย';
-  document.getElementById('m-score').textContent=`${score}/${t}`;
-  document.getElementById('m-pct').textContent=`คิดเป็น ${p}%`;
-  document.getElementById('m-grade').textContent=grade;
-  document.getElementById('m-grade').style.color=gc;
-  document.getElementById('modal').classList.add('open');
-}
-
-function showAllAns(){
-  writtenData.forEach((_,i)=>{document.getElementById('ea-'+i).style.display='block';});
-}
-
-function resetWritten(){
-  writtenData.forEach((_,i)=>{
-    document.getElementById('ei-'+i).value='';
-    document.getElementById('ea-'+i).style.display='none';
-    document.getElementById('eh-'+i).style.display='none';
-    const eq=document.getElementById('eq-'+i);
-    eq.classList.remove('graded-ok','graded-ng');
-  });
-}
-
-// ===================== NAVIGATION =====================
-function goPage(id, btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.navlink').forEach(b=>b.classList.remove('active'));
-  document.getElementById('pg-'+id).classList.add('active');
-  if(btn)btn.classList.add('active');
-  // sync bottom nav
-  document.querySelectorAll('.bnav-btn').forEach((b,i)=>{
-    const ids=['home','learn','cheat','game','mcq','written'];
-    b.classList.toggle('active',ids[i]===id);
-  });
-  window.scrollTo(0,0);
-}
-
-function goPageMob(id,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.navlink').forEach(b=>b.classList.remove('active'));
-  document.getElementById('pg-'+id).classList.add('active');
-  btn.classList.add('active');
-  // sync top nav
-  document.querySelectorAll('.navlink').forEach(b=>{
-    if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+id+"'"))b.classList.add('active');
-  });
-  window.scrollTo(0,0);
-}
-
-function goPageId(id){
-  // called from home cards
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.navlink,.bnav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('pg-'+id).classList.add('active');
-  document.querySelectorAll('.navlink').forEach(b=>{
-    if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+id+"'"))b.classList.add('active');
-  });
-  document.querySelectorAll('.bnav-btn').forEach((b,i)=>{
-    const ids=['home','learn','cheat','game','mcq','written'];
-    b.classList.toggle('active',ids[i]===id);
-  });
-  window.scrollTo(0,0);
-}
-
-// ===================== INIT =====================
-renderLearn();
-renderCheat();
-renderMCQ();
-renderWritten();
-loadPrompt();
 </script>
 </body>
 </html>
